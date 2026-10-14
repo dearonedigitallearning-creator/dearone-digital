@@ -3865,7 +3865,7 @@ function go(){
   var key=sub.split(':')[0];
   on=true;
   document.body.classList.add(role==='teacher'?'mtcTeacherCheckOn':'mtcAdminCheckOn','mtcCkOn');
-  label=(role==='teacher'?'👩‍🏫 Teacher जाँच — '+teacher:'🛡️ Admin जाँच')+' • Class '+cls;
+  label=(role==='teacher'?'👨‍🏫 Staff — '+teacher:'🛡️ Admin जाँच')+' • Class '+cls;
   closePanel();
   mute(2500);
   try{
@@ -3880,9 +3880,9 @@ function go(){
     },500);
   },400);
   bar.className=role==='teacher'?'t':'';
-  bar.innerHTML='<span>'+esc(label)+'</span><button type="button" id="mtcCkExit">✖ जाँच बंद करें</button>';
+  bar.innerHTML='<span>'+esc(label)+'</span><span style="display:flex;gap:6px"><button type="button" id="mtcCkChg" style="color:#00695c!important">🔄 Class बदलें</button><button type="button" id="mtcCkExit">✖ बाहर</button></span>';
   bar.setAttribute('data-open','1');
-  $('mtcCkExit').onclick=exitCheck;
+  $('mtcCkExit').onclick=exitCheck;$('mtcCkChg').onclick=function(){stepChoose();panel.setAttribute('data-open','1');panel.setAttribute('aria-hidden','false')};
 }
 function exitCheck(){
   on=false;
@@ -4172,7 +4172,7 @@ window.schoolOpenTopic=function(si,k){
 <h2>👨‍🏫 Staff Login</h2>
 <div class="stfSub">MOTHER TERESA CHILDREN SECONDARY SCHOOL, Kota</div>
 <div id="mtcStaffGrid"><div class="stfCell top" onclick="mtcStaffPick(0)" style="border-color:#c62828;background:#c6282822"><span class="stfEm">👨‍🏫</span><span class="stfTxt"><b style="color:#c62828">M.S. Pathan Sir</b><i>Principal</i></span></div><div class="stfCell top" onclick="mtcStaffPick(1)" style="border-color:#1565c0;background:#1565c022"><span class="stfEm">👩‍🏫</span><span class="stfTxt"><b style="color:#1565c0">Guddi Madam</b><i>Vice Principal</i></span></div><div class="stfCell" onclick="mtcStaffPick(2)" style="border-color:#2e7d32;background:#2e7d3222"><span class="stfEm">👨‍🏫</span><span class="stfTxt"><b style="color:#2e7d32">Rajesh Sir</b></span></div><div class="stfCell" onclick="mtcStaffPick(3)" style="border-color:#6a1b9a;background:#6a1b9a22"><span class="stfEm">👨‍🏫</span><span class="stfTxt"><b style="color:#6a1b9a">Jitendra Malav Sir</b></span></div><div class="stfCell" onclick="mtcStaffPick(4)" style="border-color:#ef6c00;background:#ef6c0022"><span class="stfEm">👨‍🏫</span><span class="stfTxt"><b style="color:#ef6c00">O.P. Verma Sir</b></span></div><div class="stfCell" onclick="mtcStaffPick(5)" style="border-color:#00838f;background:#00838f22"><span class="stfEm">👨‍🏫</span><span class="stfTxt"><b style="color:#00838f">Mukesh Sir</b></span></div><div class="stfCell" onclick="mtcStaffPick(6)" style="border-color:#ad1457;background:#ad145722"><span class="stfEm">👨‍🏫</span><span class="stfTxt"><b style="color:#ad1457">Mushahid Sir</b></span></div><div class="stfCell" onclick="mtcStaffPick(7)" style="border-color:#4527a0;background:#4527a022"><span class="stfEm">👩‍🏫</span><span class="stfTxt"><b style="color:#4527a0">Noorfsha Madam</b></span></div><div class="stfCell" onclick="mtcStaffPick(8)" style="border-color:#558b2f;background:#558b2f22"><span class="stfEm">👩‍🏫</span><span class="stfTxt"><b style="color:#558b2f">Khushnuma Madam</b></span></div><div class="stfCell" onclick="mtcStaffPick(9)" style="border-color:#d84315;background:#d8431522"><span class="stfEm">👩‍🏫</span><span class="stfTxt"><b style="color:#d84315">Kavita Madam</b></span></div><div class="stfCell" onclick="mtcStaffPick(10)" style="border-color:#0277bd;background:#0277bd22"><span class="stfEm">👩‍🏫</span><span class="stfTxt"><b style="color:#0277bd">Priya Madam</b></span></div><div class="stfCell" onclick="mtcStaffPick(11)" style="border-color:#7b1fa2;background:#7b1fa222"><span class="stfEm">👩‍🏫</span><span class="stfTxt"><b style="color:#7b1fa2">Yashima Madam</b></span></div><div class="stfCell" onclick="mtcStaffPick(12)" style="border-color:#00695c;background:#00695c22"><span class="stfEm">👨‍🏫</span><span class="stfTxt"><b style="color:#00695c">Sameer Sir</b></span></div></div>
-<div id="mtcStaffBtns"><button type="button" onclick="mtcStaffEnter()" style="background:linear-gradient(135deg,#004d40,#00897b)">🔐 ID डालकर प्रवेश</button><button type="button" onclick="mtcCloseStaff()" style="background:#757575">✖ बंद करें</button></div>
+<div id="mtcStaffBtns"><button type="button" onclick="mtcCloseStaff()" style="background:#757575">✖ बंद करें</button></div>
 <div id="mtcStaffIdBox"><div style="font-size:42px" id="mtcStaffIdEm"></div><div class="nm" id="mtcStaffIdNm"></div><div class="stfSub">अपनी Staff ID डालें</div><input id="mtcStaffIdIn" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="Staff ID"><button type="button" onclick="mtcStaffCheck()" style="background:linear-gradient(135deg,#004d40,#00897b)">🔓 प्रवेश करें</button><button type="button" onclick="mtcStaffBack()" style="background:#757575">⬅️ वापस (नाम बदलें)</button><div id="mtcStaffMsg"></div></div>
 </div></div>
 <script id="mtc-staff-script">
@@ -4182,7 +4182,7 @@ function mtcStaffBack(){mtcStaffSel=-1;var a=document.getElementById('mtcStaffId
 function mtcStaffPick(i){mtcStaffSel=i;var n=MTC_STAFF[i][0];var a=document.getElementById('mtcStaffIdBox'),g=document.getElementById('mtcStaffGrid'),b=document.getElementById('mtcStaffBtns'),h=document.querySelectorAll('#mtcStaffBox>h2,#mtcStaffBox>.stfSub');h.forEach(function(x){x.style.display='none'});if(g)g.style.display='none';if(b)b.style.display='none';if(a)a.style.display='block';document.getElementById('mtcStaffIdEm').textContent=/Madam/.test(n)?'👩‍🏫':'👨‍🏫';document.getElementById('mtcStaffIdNm').textContent=n;var inp=document.getElementById('mtcStaffIdIn');inp.value='';document.getElementById('mtcStaffMsg').textContent='';setTimeout(function(){try{inp.focus()}catch(e){}},80);inp.onkeydown=function(e){if(e.key==='Enter')mtcStaffCheck()}}
 function mtcStaffCheck(){var m=document.getElementById('mtcStaffMsg'),inp=document.getElementById('mtcStaffIdIn');var v=String(inp.value||'').trim();if(mtcStaffSel<0)return;if(!v){m.style.color='#c62828';m.textContent='❌ पहले ID डालें।';return}var n=MTC_STAFF[mtcStaffSel][0];var ok=false;try{ok=(__sh(n+'|'+v)===MTC_STAFF[mtcStaffSel][1])}catch(e){}if(!ok){m.style.color='#c62828';m.textContent='❌ ID सही नहीं है।';inp.value='';return}mtcCloseStaff();mtcStaffBack();try{closePortalLanding()}catch(e){}if(typeof window.mtcStaffStart==='function'){window.mtcStaffStart(n)}else{alert('Staff access उपलब्ध नहीं है।')}}
 function mtcCloseStaff(){var p=document.getElementById('mtcStaffPanel');if(p){p.classList.remove('open');p.setAttribute('aria-hidden','true')}}
-function mtcStaffEnter(){mtcCloseStaff();try{closePortalLanding()}catch(e){}try{document.body.classList.add('gateLocked')}catch(e){}try{openGateMode('notes')}catch(e){}}
+function mtcStaffEnter(){mtcCloseStaff()}
 function mtcAddGateStaff(){
   try{
     var gc=document.getElementById('idGateCard');
@@ -5178,7 +5178,7 @@ S["9|sst3|4"]=window.mtcWs9({"t": "अर्थशास्त्र अध्�
  var lastAt=0;
  function greet(ov){
   try{
-   var o=occasionToday();if(!o)return;
+   var o=occasionToday();if(!o)return;if(document.body.classList.contains('mtcCkOn'))return;
    var v=(typeof ov==='string'&&ov)?ov:curId(),r=rec(v);if(!r)return;
    var nowT=Date.now();if(lastShown===v&&nowT-lastAt<30000)return;lastShown=v;lastAt=nowT;
    var en=isEn(v),nm=en?niceName(r[0]):r[0];
@@ -5994,5 +5994,35 @@ try{
   IDS.forEach(function(i){try{localStorage.removeItem("MTC_DAYLOCK_ADMIN_"+i)}catch(e){}});
   S(FLAG,"1");
 }catch(e){}
+})();
+</script>
+
+<style id="mtc-staff-clean-css">
+/* Staff / Admin check mode: no student name, no student-side screens, no student route */
+body.mtcCkOn #mtcOccasion,body.mtcCkOn #mtcVoiceCard,body.mtcCkOn #schoolSectionBack,body.mtcCkOn #schoolSectionGate,body.mtcCkOn #v5Panel{display:none!important}
+#mtcTeacherLandingCard,.mtcTeacherBtn,#mtcGateCheckRow button:last-child{display:none!important}
+#mtcStaffBtns{grid-template-columns:1fr!important}
+</style>
+<script id="mtc-staff-clean-js">
+(function(){
+ function ck(){return document.body.classList.contains('mtcCkOn')}
+ var staff='';
+ /* no speech (student name announcement) while a staff / admin check is open */
+ try{var ss=window.speechSynthesis;if(ss&&!ss.__mtcQuiet){var o=ss.speak;ss.speak=function(){if(ck())return;return o.apply(this,arguments)};ss.__mtcQuiet=1}}catch(e){}
+ var ms=window.mtcStaffStart;
+ window.mtcStaffStart=function(n){staff=String(n||'');return typeof ms==='function'?ms.apply(this,arguments):undefined};
+ var ma=window.mtcOpenAdminCheck;
+ window.mtcOpenAdminCheck=function(){staff='';return typeof ma==='function'?ma.apply(this,arguments):undefined};
+ /* staff log in only with their own Staff ID (no separate Teacher password route) */
+ window.mtcOpenTeacherCheck=function(){try{mtcOpenStaff()}catch(e){}};
+ function who(){var c='';try{c=STUDENTS[id][1]}catch(e){}return (staff?'👨‍🏫 Staff: '+staff:'🛡️ Admin जाँच')+(c?' &nbsp;|&nbsp; Class: '+c:'')}
+ function esc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+ setInterval(function(){
+  if(!ck())return;
+  var h=who();
+  var a=document.getElementById('notesStudentInfo');if(a&&a.innerHTML!==h)a.innerHTML=h;
+  var u=document.getElementById('schoolSectionUser');if(u)u.innerHTML=h;
+  var m=document.getElementById('idGateMsg');if(m&&m.textContent)m.textContent='';
+ },200);
 })();
 </script>
