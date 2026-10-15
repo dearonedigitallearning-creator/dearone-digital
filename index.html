@@ -3615,7 +3615,12 @@ function who(){try{var st=STUDENTS[id];return st?{i:String(id),c:st[1]}:null}cat
 /* ---- आज सब Notes खोलने की तारीख़ें: जिस दिन सब बच्चों के सारे Chapters खुले रखने हों, वह तारीख़ यहाँ लिखें (DD-MM-YYYY) ---- */
 window.MTC_OPEN_ALL_DATES=window.MTC_OPEN_ALL_DATES||["15-10-2026"];
 function openToday(){var d=new Date(),t=("0"+d.getDate()).slice(-2)+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+d.getFullYear();if((window.MTC_OPEN_ALL_DATES||[]).indexOf(t)<0)return 0;d.setHours(23,59,59,999);return d.getTime()}
-function until(c,s,se,k,i){var o=openToday();if(o)return o;var g=L(KEY,{}),u=g[ck(c,s,se,k,i)];return u>Date.now()?u:0}
+/* गुरुवार, शनिवार, रविवार (MTC_LOCK_CONFIG.allowedDays) को School IDs के सारे Chapters अपने-आप खुलते हैं; manualUnlockIds वाली ID हर दिन खुली रहती है */
+function weekdayOpen(i){try{var cf=window.MTC_LOCK_CONFIG||{},days=cf.allowedDays||[0,4,6],sid=String(i||""),DOL=["601","1101","1102","1201","501","502","503","504"];
+ if(!sid||DOL.indexOf(sid)>=0||typeof STUDENTS==="undefined"||!STUDENTS[sid])return 0;
+ if((cf.manualUnlockIds||[]).map(String).indexOf(sid)<0&&days.indexOf(new Date().getDay())<0)return 0;
+ var d=new Date();d.setHours(23,59,59,999);return d.getTime()}catch(e){return 0}}
+function until(c,s,se,k,i){var o=openToday()||weekdayOpen(i);if(o)return o;var g=L(KEY,{}),u=g[ck(c,s,se,k,i)];return u>Date.now()?u:0}
 window.mtcChapterAllowed=function(c,s,se,k,i){if(['Admin','11th','12th'].indexOf(String(c))>=0)return true;return !!until(c,s,se,k,i||(who()||{}).i)};
 window.snUnlockInfo=function(se,k){var w=who();if(!w)return null;if(['Admin','11th','12th'].indexOf(String(w.c))>=0)return {until:Date.now()+315360000000,hours:876000};var u=until(w.c,window.__snSubj||'',se,k,w.i);return u?{until:u,hours:Math.max(1,Math.ceil((u-Date.now())/36e5))}:null};
 window.mtcRedeem=window.snUnlockTopic=window.mtcPickRedeem=function(){};
@@ -6642,3 +6647,177 @@ setTimeout(function(){flush()},3000);
 })();
 </script>
 
+<!-- MTC Class 5 English Grammar Ch-19: Active and Passive Voice (Explanation + Worksheet with answers) -->
+<script id="mtc-c5-ch19">
+(function(){
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+/* हर शब्द अलग रंग में (Chapter-18 जैसा) */
+function cw(t){return String(t).split(" ").map(function(w,i){return '<span class="w'+(i%6)+'">'+esc(w)+'</span>'}).join(" ")}
+function rule(label,n,text){return '<div class="rule"><b class="tm tm'+(n%6)+'">'+esc(label)+'</b> '+cw(text)+'</div>'}
+function ex(a,p){return '<div class="example"><span class="lab">Active</span> '+cw(a)+'<br><span class="lab" style="background:#d81b60">Passive</span> '+cw(p)+'</div>'}
+function ws(items){return items.map(function(x,i){return '<div class="q"><b>'+(i+1)+'.</b> '+esc(x[0])+'</div><div class="ans"><b>Ans.</b> '+esc(x[1])+'</div>'}).join("")}
+
+var A=[
+ ["She will take a photograph.","A photograph will be taken by her."],
+ ["They are baking cakes.","Cakes are being baked by them."],
+ ["The teacher will give homework.","Homework will be given by the teacher."],
+ ["The old women were discussing the matter.","The matter was being discussed by the old women."],
+ ["Sushmita has bought new shoes.","New shoes have been bought by Sushmita."],
+ ["The big monkey plucked the mangoes.","The mangoes were plucked by the big monkey."],
+ ["We write funny poems.","Funny poems are written by us."],
+ ["You understand my problem.","My problem is understood by you."],
+ ["She told many lies.","Many lies were told by her."],
+ ["The poor man was carrying a torn bag.","A torn bag was being carried by the poor man."]
+];
+var B=[
+ ["I eat an apple.","A (Active Voice)"],
+ ["A car was bought by him.","P (Passive Voice)"],
+ ["The students viewed the comet.","A (Active Voice)"],
+ ["The entire building was painted by Ron.","P (Passive Voice)"],
+ ["Ron changed the flat tire.","A (Active Voice)"],
+ ["Mom read the novel.","A (Active Voice)"],
+ ["A movie is going to be watched by us.","P (Passive Voice)"],
+ ["The kangaroo carried her baby in her pouch.","A (Active Voice)"]
+];
+var C=[
+ ["He was praised by his men.","His men praised him."],
+ ["She will be pardoned by his father.","His father will pardon her."],
+ ["By whom will she be saved?","Who will save her?"],
+ ["He was loved by all his friends.","All his friends loved him."],
+ ["The trees will be planted by the Chief Minister.","The Chief Minister will plant the trees."],
+ ["He was laughed at by all his friends.","All his friends laughed at him."],
+ ["The small boy was knocked down by a car.","A car knocked down the small boy."],
+ ["The car will be driven by me.","I will drive the car."]
+];
+var D=[
+ ["Who broke this flower vase?","By whom was this flower vase broken?"],
+ ["Why did she scold us?","Why were we scolded by her?"],
+ ["She teaches us English.","We are taught English by her."],
+ ["Which doctor will treat you?","By which doctor will you be treated?"],
+ ["Who will help her?","By whom will she be helped?"],
+ ["The teacher gave him a prize.","He was given a prize by the teacher. (OR) A prize was given to him by the teacher."],
+ ["How did he pass the exam?","How was the exam passed by him?"]
+];
+var E=[
+ ["He sent a letter to the customers.","A letter was sent to the customers by him."],
+ ["You should take the night flight.","The night flight should be taken by you."],
+ ["Amazon will release a new tablet.","A new tablet will be released by Amazon."],
+ ["John ate 2 burgers at dinner.","2 burgers were eaten by John at dinner."],
+ ["Anna kicked the ball.","The ball was kicked by Anna."],
+ ["Jane wrote this beautiful poem.","This beautiful poem was written by Jane."],
+ ["The car mechanic changed flat tyre.","The flat tyre was changed by the car mechanic."],
+ ["He will clean the car every Saturday.","The car will be cleaned by him every Saturday."]
+];
+var T=[
+ ["Simple Present","is / am / are + V3","She writes a letter.","A letter is written by her."],
+ ["Simple Past","was / were + V3","She wrote a letter.","A letter was written by her."],
+ ["Simple Future","will be + V3","She will write a letter.","A letter will be written by her."],
+ ["Present Continuous","is / am / are being + V3","They are baking cakes.","Cakes are being baked by them."],
+ ["Past Continuous","was / were being + V3","He was carrying a bag.","A bag was being carried by him."],
+ ["Present Perfect","has / have been + V3","Sushmita has bought new shoes.","New shoes have been bought by Sushmita."],
+ ["With can / should / must","can / should / must be + V3","You should take the night flight.","The night flight should be taken by you."]
+];
+var V3=[["break","broke","broken"],["write","wrote","written"],["eat","ate","eaten"],["take","took","taken"],["give","gave","given"],["drive","drove","driven"],["teach","taught","taught"],["tell","told","told"],["buy","bought","bought"],["send","sent","sent"]];
+
+var CSS='<style id="c5ch19-style">'+
+'.c5ch19{font-family:Arial,sans-serif;font-size:24px;line-height:2;font-weight:900;color:#17324d}'+
+'.c5ch19 b{font-weight:900}'+
+'.c5ch19 .hero{background:linear-gradient(90deg,#6a1b9a,#e91e63,#ff9800);color:#fff;padding:16px;border-radius:14px;text-align:center;font-size:30px;font-weight:900;line-height:1.5}'+
+'.c5ch19 h3{background:#fff176!important;color:#b71c1c!important;border:4px solid #e65100;padding:12px 14px;border-radius:10px;font-size:27px;font-weight:900;margin:18px 0 8px;text-shadow:none}'+
+'.c5ch19 .rule{background:#e3f2fd;border-left:8px solid #1565c0;padding:12px 14px;margin:10px 0;border-radius:10px;font-size:24px}'+
+'.c5ch19 .example{background:#fff8e1;border-left:8px solid #fb8c00;padding:12px 14px;margin:10px 0;border-radius:10px;font-size:24px}'+
+'.c5ch19 .q{background:#f0f7ff;border-left:8px solid #7b1fa2;padding:12px 14px;margin:10px 0 4px;border-radius:10px;font-size:25px;color:#d81b60}'+
+'.c5ch19 .ans{background:#e8f5e9;border-left:8px solid #2e7d32;padding:12px 14px;margin:4px 0 14px;border-radius:10px;font-size:25px;color:#1565c0}'+
+'.c5ch19 .tm{display:inline-block;color:#fff;border-radius:8px;padding:0 12px;margin-right:6px;font-size:26px;font-weight:900}'+
+'.c5ch19 .tm0{background:#d81b60}.c5ch19 .tm1{background:#1565c0}.c5ch19 .tm2{background:#2e7d32}.c5ch19 .tm3{background:#e65100}.c5ch19 .tm4{background:#6a1b9a}.c5ch19 .tm5{background:#00838f}'+
+'.c5ch19 .lab{display:inline-block;background:#2e7d32;color:#fff;border-radius:8px;padding:0 12px;margin-right:6px;font-size:22px;font-weight:900}'+
+'.c5ch19 .w0{color:#d81b60}.c5ch19 .w1{color:#1565c0}.c5ch19 .w2{color:#2e7d32}.c5ch19 .w3{color:#e65100}.c5ch19 .w4{color:#6a1b9a}.c5ch19 .w5{color:#00838f}'+
+'.c5ch19 .tw{overflow-x:auto;margin:10px 0}.c5ch19 table{border-collapse:collapse;width:100%;min-width:560px;font-size:21px;line-height:1.5}'+
+'.c5ch19 th{background:linear-gradient(90deg,#6a1b9a,#e91e63);color:#fff;padding:8px;border:2px solid #4a148c}'+
+'.c5ch19 td{padding:8px;border:2px solid #7b1fa2;background:#fff;font-weight:900}.c5ch19 td:nth-child(1){color:#d81b60}.c5ch19 td:nth-child(2){color:#1565c0}.c5ch19 td:nth-child(3){color:#2e7d32}.c5ch19 td:nth-child(4){color:#e65100}'+
+'.c5ch19 .end{margin-top:18px;background:linear-gradient(90deg,#2e7d32,#1565c0,#7b1fa2);color:#fff;text-align:center;padding:14px;border-radius:10px;font-size:26px;font-weight:900}'+
+'</style>';
+
+var h=CSS+'<div class="c5ch19"><div class="hero">📘 Class 5 English Grammar — Chapter 19<br>Active and Passive Voice</div>'+
+'<h3>Explanation</h3>'+
+rule("Voice",0,"It shows whether the subject does the action or the action is done to the subject. There are two voices: Active Voice and Passive Voice.")+
+rule("Active Voice",1,"It tells us what a person or thing does. The subject performs the action on the object.")+
+ex("Anna painted the house.","The house was painted by Anna.")+
+ex("The teacher always answers the student's questions.","The student's questions are answered by the teacher.")+
+rule("Passive Voice",2,"It tells us what is done to someone or something. The subject is being acted upon. The doer is shown after the word by.")+
+'<h3>Rule of Conversion from Active to Passive Voice</h3>'+
+rule("Step 1",3,"Identify the subject, the verb and the object.")+
+rule("Step 2",4,"Change the object into the subject.")+
+rule("Step 3",5,"Change the subject into an object and put by before it.")+
+rule("Step 4",0,"Use the correct helping verb (is, am, are, was, were, will be, has been) with the third form of the main verb (V3).")+
+ex("She bought a new car. (She is the subject and a new car is the object.)","A new car was bought by her. (A new car is the subject and her is the object.)")+
+'<h3>Pronouns Change Their Form</h3>'+
+rule("Remember",1,"After the word by we use the object form of the pronoun. I becomes me, we becomes us, he becomes him, she becomes her, they becomes them. You and it do not change.")+
+ex("They are baking cakes.","Cakes are being baked by them.")+
+ex("We write funny poems.","Funny poems are written by us.")+
+'<h3>Helping Verbs for Different Tenses</h3>'+
+'<div class="tw"><table><tr><th>Tense</th><th>Passive Form</th><th>Active</th><th>Passive</th></tr>'+
+T.map(function(r){return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td></tr>'}).join("")+
+'</table></div>'+
+rule("Note",2,"Use is, was, has with a singular subject and use are, were, have with a plural subject. Example: A car was bought. Two cars were bought.")+
+'<h3>Third Form of Some Verbs</h3>'+
+'<div class="tw"><table><tr><th>V1</th><th>V2</th><th>V3 (used in Passive)</th></tr>'+
+V3.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'}).join("")+
+'</table></div>'+
+'<h3>Passive Voice of Questions</h3>'+
+rule("Who",3,"A question that starts with Who changes to By whom in the passive voice.")+
+ex("Who broke this flower vase?","By whom was this flower vase broken?")+
+rule("Why / How",4,"A question that starts with Why or How keeps that word first. Then the passive verb and the object come.")+
+ex("Why did she scold us?","Why were we scolded by her?")+
+'<h3>Passive to Active</h3>'+
+rule("Rule",5,"To change passive to active, make the person after by the subject. Then make the old subject the object and use the verb in the same tense.")+
+ex("His men praised him.","He was praised by his men.")+
+ex("The Chief Minister will plant the trees.","The trees will be planted by the Chief Minister.")+
+rule("Tip",0,"If a sentence has a helping verb with the third form of a verb, and often by, it is in the passive voice. If the subject does the action, it is in the active voice.")+
+'<h3>Worksheet A — Change the following active sentences to passive</h3>'+ws(A)+
+'<h3>Worksheet B — Circle A if the sentence is in active voice or P if it is in passive voice</h3>'+ws(B)+
+'<h3>Worksheet C — Change the following sentences from the passive to the active voice</h3>'+ws(C)+
+'<h3>Worksheet D — Change the sentences from active into passive</h3>'+ws(D)+
+'<h3>NEP Corner — E. Change the following sentences from active voice to passive voice</h3>'+ws(E)+
+'<div class="end">✅ End of Chapter 19 — Active and Passive Voice</div></div>';
+window.SPECIAL_NOTE_ACT5=h;
+
+/* index में Ch-19 का card भरना */
+try{
+  var G=SCHOOL_NUMBER_NOTES['5'].English.Grammar,t=G.find(function(x){return String(x.k)==='19'});
+  if(t){t.title='Active and Passive Voice';t.ex=h;t.ex2=h;t.legacyHtml='';t.empty=false;t.lock=false}
+}catch(e){}
+
+/* Topic-number वाले screen से (Topic 19) */
+var prevTopic=window.mtcOpenClass5GrammarTopic;
+window.mtcOpenClass5GrammarTopic=function(){
+  var input=document.getElementById('c5GrammarTopicNo'),out=document.getElementById('c5GrammarTopicResult');
+  if(!input||!out)return typeof prevTopic==='function'?prevTopic.apply(this,arguments):undefined;
+  if(parseInt(input.value,10)!==19)return typeof prevTopic==='function'?prevTopic.apply(this,arguments):undefined;
+  out.innerHTML='<div class="c5TopicBox"><h3 style="color:#ad1457">Topic 19: Active and Passive Voice</h3><button class="c5TopicBtn" onclick="document.getElementById(\'secBody\').innerHTML=window.mtcClass5GrammarPicker()">⬅ Topic Index</button><div>'+h+'</div><button class="c5TopicBtn" onclick="document.getElementById(\'secBody\').innerHTML=window.mtcClass5GrammarPicker()">⬅ Topic Index पर वापस जाएँ</button></div>';
+  try{out.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
+};
+
+/* Index से Ch-19 खोलना (Chapter-18 की तरह, lock के साथ) */
+var prevOpen=window.schoolOpenTopic;
+window.schoolOpenTopic=function(si,k){
+  try{
+    var st=STUDENTS[id],cls=st&&st[1];
+    if(String(k)==='19'&&typeof snKey==='function'&&snKey(cls)==='5'){
+      var secs=schoolSectionsFor('5'),x=secs[Number(si)],box=document.getElementById('schoolChapterNotesBox');
+      if(x&&box&&x.subj==='English'&&x.sec==='Grammar'){
+        window.__snIdx=Number(si)||0;window.__snSubj=x.subj;window.__snSec=x.sec;
+        var inf=(typeof snUnlockInfo==='function')?snUnlockInfo(x.sec,k):null;
+        box.innerHTML='<div class="schoolNotesRoot"><div style="text-align:center;margin-bottom:8px"><button onclick="schoolRenderNumberNotes()" style="background:#00897b">⬅️ Index पर वापस जाएँ</button></div>'+
+          '<div class="schoolTopicCard"><div class="schoolTopicHeader">📘 English • Grammar<br><span>Ch-19 — Active and Passive Voice</span></div>'+
+          (inf?'<div class="topicUnlocked">🔓 Unlocked for '+inf.hours+' hours <span id="snTimer_19"></span></div>':'')+h+'</div></div>';
+        try{box.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
+        if(inf&&typeof snStartTimer==='function')setTimeout(function(){try{snStartTimer('Grammar','19',inf.until)}catch(e){}},30);
+        return;
+      }
+    }
+  }catch(e){}
+  return prevOpen.apply(this,arguments);
+};
+})();
+</script>
