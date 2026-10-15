@@ -6821,3 +6821,88 @@ window.schoolOpenTopic=function(si,k){
 };
 })();
 </script>
+
+<style id="mtc-c5-single-colour-css">
+/* Class 5: ek prashn = ek hi colour (pink), ek uttar = ek hi colour (blue) */
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdQ,.v5q,.q,.hq,.nx-q,.stdOpts,.v5opts,.op,.v5opt,.mtc5Q),
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdQ,.v5q,.q,.hq,.nx-q,.stdOpts,.v5opts,.op,.v5opt,.mtc5Q) *{
+  color:#d81b60!important;text-shadow:none!important}
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdQ,.v5q,.q,.hq,.nx-q,.stdOpts,.v5opts,.op,.v5opt,.mtc5Q) :is(span,b,i,u,em,strong){
+  background:transparent!important}
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdQ,.v5q){
+  background:#fce4ec!important;border-left-color:#d81b60!important;border-color:#d81b60!important}
+/* answers */
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdA,.v5a,.an,.ans,.nx-ans,.c5inAns,.mtc5A,.op.ok,.v5opt.ok,.v5fill),
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdA,.v5a,.an,.ans,.nx-ans,.c5inAns,.mtc5A,.op.ok,.v5opt.ok,.v5fill) *{
+  color:#1565c0!important;text-shadow:none!important}
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdA,.v5a,.an,.ans,.nx-ans,.c5inAns,.mtc5A,.op.ok,.v5opt.ok,.v5fill) :is(span,b,i,u,em,strong){
+  background:transparent!important}
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.stdA,.v5a,.an,.ans,.nx-ans){
+  background:#e3f2fd!important;border-left-color:#1565c0!important;border-color:#1565c0!important}
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.op.ok,.v5opt.ok){border-color:#1565c0!important}
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) :is(.an,.v5a,.ans) .lb{
+  background:#1565c0!important;color:#fff!important}
+body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) .nx-q .blank{border-bottom-color:#d81b60!important}
+</style>
+<script id="mtc-c5-single-colour-js">
+(function(){
+ var SC='#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult';
+ function isC5(){try{return typeof snKey==='function'&&typeof STUDENTS!=='undefined'&&snKey(STUDENTS[id]&&STUDENTS[id][1])==='5'}catch(e){return false}}
+ /* worksheet <li> questions that hold an answer inside: wrap the question part so it can be coloured pink */
+ function tagLi(){
+  try{
+   document.querySelectorAll(SC).forEach(function(root){
+    root.querySelectorAll('li').forEach(function(li){
+     if(li.__mtc5)return;
+     var ans=null;for(var i=0;i<li.children.length;i++){var c=li.children[i];if(c.classList&&(c.classList.contains('ans')||c.classList.contains('c5inAns'))){ans=c;break}}
+     if(!ans||li.querySelector(':scope > .mtc5Q')){li.__mtc5=1;return}
+     var w=document.createElement('span');w.className='mtc5Q';
+     var kids=Array.prototype.slice.call(li.childNodes);
+     kids.forEach(function(n){
+      if(n===ans||(n.nodeType===1&&/^(UL|OL)$/.test(n.tagName)))return;
+      if(n.nodeType===1&&n.classList&&(n.classList.contains('ans')||n.classList.contains('c5inAns')))return;
+      w.appendChild(n);
+     });
+     if(w.childNodes.length)li.insertBefore(w,li.firstChild);
+     li.__mtc5=1;
+    });
+   });
+  }catch(e){}
+ }
+ /* question/instruction headings kept in .bx boxes (Q.1 ..., A. ..., (क) ...?) are questions too */
+ var BXQ=/^\s*(Q\.?\s*\d|\d+\.\s|[A-Z]\.\s|\([\u0915-\u0939]\)|\([a-z]\))|[\u2013?]\s*$/;
+ function tagBx(){
+  try{
+   document.querySelectorAll(SC).forEach(function(root){
+    root.querySelectorAll('.bx').forEach(function(el){
+     if(el.__mtc5b)return;el.__mtc5b=1;
+     if(BXQ.test(el.textContent||''))el.classList.add('mtc5Q');
+    });
+   });
+  }catch(e){}
+ }
+ var busy=0,obs=null;
+ function run(){
+  busy=0;
+  var c5=isC5();
+  if(document.body&&document.body.classList.contains('mtcC5')!==c5)document.body.classList.toggle('mtcC5',c5);
+  if(c5){ if(obs)obs.disconnect(); tagLi(); tagBx(); if(obs&&document.body)obs.observe(document.body,{childList:true,subtree:true}); }
+ }
+ function sched(){if(busy)return;busy=1;(window.requestAnimationFrame||setTimeout)(run)}
+ function start(){
+  if(!document.body){setTimeout(start,100);return}
+  obs=new MutationObserver(sched);
+  obs.observe(document.body,{childList:true,subtree:true});
+  run();
+ }
+ start();
+ window.mtcC5Refresh=run;
+})();
+</script>
+
+<style id="mtc-the-end-red-css">
+/* "The End" = bold red in every class */
+.v5end,.theEnd,p.end,div.end,.v5end *,.theEnd *,p.end *,div.end *{
+  color:#d50000!important;font-weight:900!important;-webkit-text-fill-color:#d50000!important;text-shadow:none!important}
+div.end,p.end,.theEnd{background:#fff5f5!important;border:3px solid #d50000!important;border-radius:12px!important;text-align:center!important;padding:12px!important}
+</style>
