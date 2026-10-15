@@ -1123,6 +1123,7 @@ function finish(){
        name:stu[0],className:testClass,subject:subject,obtained:score,maximum:bank.length,total:pct,
        date:fD(d),time:fT(d)
      }));
+     try{window.mtcFsSaveResult&&window.mtcFsSaveResult({portal:portalName,studentId:id,studentName:stu[0],studentClass:testClass,subject:subject,obtained:score,maximum:bank.length,percentage:pct,date:fD(d),time:fT(d)})}catch(e){}
    }catch(e){}
  }
  try{document.getElementById("test").classList.add("hidden");document.getElementById("result").classList.remove("hidden")}catch(e){}
@@ -6439,7 +6440,10 @@ function students(c){
 }
 function dates(c){
   var rows=window.MTC_EXAM_ROWS||[],k=col(cn(c)),out=[];
-  if(!k)return out;
+  if(!k){
+    if(cn(c)>=9&&cn(c)<=10)rows.forEach(function(r){out.push([r[0],r[1],"Class "+cn(c)+" (Time Table अभी नहीं आया)"])});
+    return out;
+  }
   rows.forEach(function(r){var cell=String(r[2][k]);if(/Bring the Bags/i.test(cell))return;out.push([r[0],r[1],cell.replace(/\s+/g," ")])});
   return out;
 }
@@ -6526,3 +6530,112 @@ window.mtcStaffStart=function(n){
 };
 })();
 </script>
+
+<!-- MTC Firestore save: उपस्थिति (attendance) और test results Firestore में भेजता है। Internet न हो तो phone/browser में रुककर बाद में अपने-आप जाता है। -->
+<script id="mtc-firestore-save">
+(function(){
+var CFG={apiKey:"AIzaSyC-Zbdf8pcRvhXfnPnc0mZhqpG11iaF7K8",authDomain:"mtc-school-portal.firebaseapp.com",projectId:"mtc-school-portal",storageBucket:"mtc-school-portal.firebasestorage.app",messagingSenderId:"341986124082",appId:"1:341986124082:web:b0f50ba218a76bacb8772b"};
+var PK="mtc_fs_pending_v1",AK="mtc_attendance_v1",RESULT_COL="test-records",ATT_COL="attendance";
+var URL_APP="https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js",URL_FS="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+var dbp=null,busy=null;
+function $(i){return document.getElementById(i)}
+function getQ(){try{return JSON.parse(localStorage.getItem(PK)||"[]")}catch(e){return []}}
+function setQ(q){try{localStorage.setItem(PK,JSON.stringify(q))}catch(e){}}
+function enqueue(item){var q=getQ().filter(function(x){return !(x.col===item.col&&x.id===item.id)});q.push(item);setQ(q)}
+function db(){
+  if(!dbp)dbp=Promise.all([import(URL_APP),import(URL_FS)]).then(function(m){
+    var app=m[0].initializeApp(CFG,"mtc-writes");return {fs:m[1],db:m[1].getFirestore(app)};
+  });
+  return dbp.catch(function(e){dbp=null;throw e});
+}
+function withTimeout(p,ms){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej(new Error("timeout"))},ms)})])}
+/* pending items को Firestore में भेजता है; सफल होने पर ही queue से हटाता है */
+function flush(){
+  if(busy)return busy;
+  var q=getQ();if(!q.length)return Promise.resolve({sent:0,left:0});
+  busy=db().then(function(x){
+    var sent=0;
+    return q.reduce(function(chain,it){
+      return chain.then(function(){
+        var data=Object.assign({},it.data,{savedAt:x.fs.serverTimestamp()});
+        return withTimeout(x.fs.setDoc(x.fs.doc(x.db,it.col,it.id),data),15000).then(function(){
+          sent++;setQ(getQ().filter(function(z){return !(z.col===it.col&&z.id===it.id&&z.v===it.v)}));
+        }).catch(function(){});
+      });
+    },Promise.resolve()).then(function(){return {sent:sent,left:getQ().length}});
+  }).catch(function(){return {sent:0,left:getQ().length}}).then(function(r){busy=null;return r});
+  return busy;
+}
+/* ---------- test results ---------- */
+window.mtcFsSaveResult=function(r){
+  try{
+    var id=[r.portal||"school",r.studentId,String(r.subject||"").replace(/[\/\s]+/g,"_"),Date.now()].join("_");
+    enqueue({col:RESULT_COL,id:id,v:Date.now(),data:{
+      studentId:String(r.studentId),studentName:String(r.studentName||""),studentClass:String(r.studentClass||""),
+      subject:String(r.subject||""),portal:String(r.portal||"school"),obtained:Number(r.obtained)||0,
+      maximum:Number(r.maximum)||0,percentage:Number(r.percentage)||0,date:String(r.date||""),time:String(r.time||"")}});
+    flush();
+  }catch(e){}
+};
+/* ---------- attendance ---------- */
+function attMsg(t,ok){var m=$("mtcAttMsg");if(m){m.style.color=ok?"#1b5e20":"#b26a00";m.textContent=t}}
+function queueAtt(){
+  var c=($("mtcAttCls")||{}).value,ds=$("mtcAttDate"),d=ds&&ds.value;
+  if(!c||!d)return false;
+  var base=window.MTC_ATTENDANCE||{},marks={},p=0,a=0;
+  Object.keys(STUDENTS).forEach(function(k){
+    if(STUDENTS[k][1]!==c||!/^\d{1,3}$/.test(k))return;
+    var v=base[k]&&base[k][d];if(v==="P"){marks[k]="P";p++}else if(v==="A"){marks[k]="A";a++}
+  });
+  var opt=ds.options[ds.selectedIndex],who=($("mtcAttWho")||{}).textContent||"";
+  enqueue({col:ATT_COL,id:d+"_"+c,v:Date.now(),data:{
+    date:d,studentClass:c,paper:opt?opt.text:"",staff:who.replace(/^.*Staff:\s*/,"").trim(),marks:marks,present:p,absent:a}});
+  return true;
+}
+function pull(){
+  return db().then(function(x){
+    return withTimeout(x.fs.getDocs(x.fs.collection(x.db,ATT_COL)),15000).then(function(snap){
+      var base=window.MTC_ATTENDANCE=window.MTC_ATTENDANCE||{},n=0;
+      snap.forEach(function(s){
+        var v=s.data();if(!v||!v.marks||!v.date||!v.studentClass)return;
+        Object.keys(STUDENTS).forEach(function(k){
+          if(STUDENTS[k][1]!==v.studentClass||!/^\d{1,3}$/.test(k))return;
+          var m=v.marks[k];
+          if(m==="P"||m==="A"){base[k]=base[k]||{};base[k][v.date]=m;n++}
+          else if(base[k]){delete base[k][v.date]}
+        });
+      });
+      try{localStorage.setItem(AK,JSON.stringify(base))}catch(e){}
+      var s=$("mtcAttDate");if(s&&typeof s.onchange==="function")s.onchange();
+      return n;
+    });
+  });
+}
+if(typeof window.mtcAttSave==="function"){
+  var _save=window.mtcAttSave;
+  window.mtcAttSave=function(){
+    var r=_save.apply(this,arguments),ok=false;
+    try{ok=queueAtt()}catch(e){}
+    if(ok){
+      var local=($("mtcAttMsg")||{}).textContent||"";
+      flush().then(function(res){
+        if(res.left===0)attMsg(local+" ☁️ Firestore में भी Save हो गई।",true);
+        else attMsg(local+" ☁️ Internet/Firestore नहीं मिला — जुड़ते ही अपने-आप चला जाएगा।",false);
+      });
+    }
+    return r;
+  };
+}
+if(typeof window.mtcAttOpen==="function"){
+  var _open=window.mtcAttOpen;
+  window.mtcAttOpen=function(){
+    var r=_open.apply(this,arguments);
+    flush().then(function(){return pull()}).catch(function(){});
+    return r;
+  };
+}
+window.addEventListener("online",function(){flush()});
+setTimeout(function(){flush()},3000);
+})();
+</script>
+
