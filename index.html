@@ -3612,7 +3612,10 @@ var css=document.createElement('style');css.textContent='.pwlBox{text-align:cent
 function L(k,d){try{return JSON.parse(localStorage.getItem(k)||'null')||d}catch(e){return d}}
 function ck(c,s,se,k,i){return [i,c,s,se,k].join('|')}
 function who(){try{var st=STUDENTS[id];return st?{i:String(id),c:st[1]}:null}catch(e){return null}}
-function until(c,s,se,k,i){var g=L(KEY,{}),u=g[ck(c,s,se,k,i)];return u>Date.now()?u:0}
+/* ---- आज सब Notes खोलने की तारीख़ें: जिस दिन सब बच्चों के सारे Chapters खुले रखने हों, वह तारीख़ यहाँ लिखें (DD-MM-YYYY) ---- */
+window.MTC_OPEN_ALL_DATES=window.MTC_OPEN_ALL_DATES||["15-10-2026"];
+function openToday(){var d=new Date(),t=("0"+d.getDate()).slice(-2)+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+d.getFullYear();if((window.MTC_OPEN_ALL_DATES||[]).indexOf(t)<0)return 0;d.setHours(23,59,59,999);return d.getTime()}
+function until(c,s,se,k,i){var o=openToday();if(o)return o;var g=L(KEY,{}),u=g[ck(c,s,se,k,i)];return u>Date.now()?u:0}
 window.mtcChapterAllowed=function(c,s,se,k,i){if(['Admin','11th','12th'].indexOf(String(c))>=0)return true;return !!until(c,s,se,k,i||(who()||{}).i)};
 window.snUnlockInfo=function(se,k){var w=who();if(!w)return null;if(['Admin','11th','12th'].indexOf(String(w.c))>=0)return {until:Date.now()+315360000000,hours:876000};var u=until(w.c,window.__snSubj||'',se,k,w.i);return u?{until:u,hours:Math.max(1,Math.ceil((u-Date.now())/36e5))}:null};
 window.mtcRedeem=window.snUnlockTopic=window.mtcPickRedeem=function(){};
