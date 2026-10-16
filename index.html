@@ -827,7 +827,7 @@ function _showSpecialNote0(id,subjectName){
   }
   let languageLine="";
   if(subjectName==="संस्कृत / उर्दू"){
-    const urduIds=["03","04","06","07","08","10","16","21","30","31","33","48"];
+    const urduIds=["03","04","06","07","08","10","16","21","30","31","33","47","48"];
     languageLine=urduIds.includes(id)?"उर्दू":"संस्कृत";
   }
   content.innerHTML="<div class='warn' style='font-weight:900;font-size:17px;text-align:center'>"+st[0]+" ("+st[1]+") के लिए <b>"+subjectName+(languageLine?" — "+languageLine:"")+"</b> के कोई Notes उपलब्ध नहीं हैं।<br>आपके लिए कोई नोट्स उपलब्ध नहीं है।</div>";
@@ -848,7 +848,7 @@ function checkID(){
  if(["03","04","06","07","08","10","48"].includes(id)) a=["उर्दू कक्षा 6"];
  if(stu[1]==="7th") a=["संस्कृत कक्षा 7"];
  if(stu[1]==="8th") a=["संस्कृत कक्षा 8"];
- if(id==="16") a=["उर्दू कक्षा 7"];
+ if(id==="16"||id==="47") a=["उर्दू कक्षा 7"];
  if(stu[1]==="5th") a=["हिन्दी व्याकरण कक्षा 5"];
  if(stu[1]==="5th") a.push("गणित एडवांस कक्षा 5");
  if(stu[1]==="4th") a=["हिन्दी व्याकरण कक्षा 4"];
@@ -882,7 +882,7 @@ function getStudentSubjects(id, cls){
   if(["03","04","06","07","08","10","48"].includes(id)) a=["उर्दू कक्षा 6"];
   if(cls==="7th") a=["संस्कृत कक्षा 7"];
   if(cls==="8th") a=["संस्कृत कक्षा 8"];
-  if(id==="16") a=["उर्दू कक्षा 7"];
+  if(id==="16"||id==="47") a=["उर्दू कक्षा 7"];
   if(cls==="5th") a=["हिन्दी व्याकरण कक्षा 5"];
   if(cls==="5th") a.push("गणित एडवांस कक्षा 5");
   if(cls==="4th") a=["हिन्दी व्याकरण कक्षा 4"];
@@ -2960,7 +2960,7 @@ try{ applyRows(JSON.parse(localStorage.getItem(CACHE_KEY)||"[]")); }catch(e){}
 if(window.__mtcV5)return;window.__mtcV5=1;
 function esc(x){return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function cid(){try{return String(id)}catch(e){return ''}}
-var S=SCHOOL_NUMBER_NOTES,URDU=["03","04","06","07","08","10","16","21","30","31","33","48"];
+var S=SCHOOL_NUMBER_NOTES,URDU=["03","04","06","07","08","10","16","21","30","31","33","47","48"];
 /* ---- structure: classes 3-8, subjects + sections ---- */
 try{
 function ord(o,a){var r={};a.forEach(function(k){if(o[k])r[k]=o[k]});Object.keys(o).forEach(function(k){if(!r[k])r[k]=o[k]});return r}
@@ -3250,7 +3250,7 @@ if(window.__mtcV6)return;window.__mtcV6=1;
 /* old code reads window.id, but id is a script-level let — expose it so My Books / Result buttons get the ID */
 try{Object.defineProperty(window,'id',{configurable:true,get:function(){try{return id}catch(e){return ''}},set:function(v){}})}catch(e){}
 
-var URDU=["03","04","06","07","08","10","16","21","30","31","33","48"];
+var URDU=["03","04","06","07","08","10","16","21","30","31","33","47","48"];
 var BLANK='<div class="v5blank">📭 इस पाठ / Topic की Explanation व Worksheet अभी खाली है — जल्द जोड़ी जाएगी।</div>';
 var SOON='<div class="v5soon">📭 इस Section में Lessons / Topics जल्द जोड़े जाएँगे।</div>';
 
@@ -3784,7 +3784,7 @@ sync();updBtn();
 if(window.__mtcCheck2)return;window.__mtcCheck2=1;
 var ADMIN_H='ac4c8e9867776e5909e2ed257a850642230962adba12e34121f05ce03642ae8f';
 var TEACH_H='3f83e9ad5be63bd5bf2fd009fffe6b7dd4066243975bc962edc37459c17e65b9';
-var URDU=['03','04','06','07','08','10','16','21','30','31','33','48'];
+var URDU=['03','04','06','07','08','10','16','21','30','31','33','47','48'];
 var NONURDU={'4':'44','5':'34','6':'05','7':'12','8':'18','9':'22','10':'32'};
 var URDUID={'6':'03','7':'16','9':'21','10':'31'};
 var role=null,teacher='',on=false,label='';
@@ -5746,7 +5746,7 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 "use strict";
 /* ---------- settings ---------- */
 var LAST_KEY=20261030;                         /* reminders stop after 30/10/2026 */
-var URDU_IDS=["03","04","06","07","08","10","16","21","30","31","33","48"];
+var URDU_IDS=["03","04","06","07","08","10","16","21","30","31","33","47","48"];
 var SKIP_IDS=["601","1101","1102","1201"];     /* these keep their own Dear One Digital welcome */
 var HI={"Hindi":"हिन्दी","English":"अंग्रेज़ी","Maths":"गणित","Science":"विज्ञान","EVS":"ई.वी.एस.","G.K.":"सामान्य ज्ञान","Computer":"कंप्यूटर","Sanskrit":"संस्कृत","Urdu":"उर्दू","S.St.":"सामाजिक विज्ञान","Social Science":"सामाजिक विज्ञान","Drawing":"ड्राइंग","Moral":"नैतिक शिक्षा"};
 var DAY_HI={"Monday":"सोमवार","Tuesday":"मंगलवार","Wednesday":"बुधवार","Thursday":"गुरुवार","Friday":"शुक्रवार","Saturday":"शनिवार","Sunday":"रविवार"};
@@ -6847,7 +6847,7 @@ body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) .nx-q .bla
 <script id="mtc-c5-single-colour-js">
 (function(){
  var SC='#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult';
- function isC5(){try{return typeof snKey==='function'&&typeof STUDENTS!=='undefined'&&snKey(STUDENTS[id]&&STUDENTS[id][1])==='5'}catch(e){return false}}
+ function isC5(){try{return typeof snKey==='function'&&typeof STUDENTS!=='undefined'&&!!snKey(STUDENTS[id]&&STUDENTS[id][1])}catch(e){return false}}
  /* worksheet <li> questions that hold an answer inside: wrap the question part so it can be coloured pink */
  function tagLi(){
   try{
