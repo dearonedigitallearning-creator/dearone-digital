@@ -40,7 +40,7 @@
  ss.cancel=function(){clearTimeout(timer);pend=[];queue=[];gen++;oCancel()};
  window.__mtcInjectShim=function(h){var s='<script>('+window.__mtcShimFn.toString()+')()<'+'/script>';
   return /<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,function(m){return m+s}):s+h};
-};window.__mtcShimFn();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+};window.__mtcShimFn();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 <title>MTC School Portal 2026-27</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans Devanagari",sans-serif;background:#eef4ff;color:#172033}
@@ -240,6 +240,9 @@ body{background:#f4ebe4!important}
 </style><style id="mtcHubAfterPortal">body:not(.mtcSchoolChosen) #mtcHub .hubSecGrid{display:none!important}</style></head><body class="gateLocked">
 <div id="portalLanding">
   <div class="portalLandingInner">
+    <div id="plIdBox" onclick="event.stopPropagation()"><b>🎓 Student Login<br><span style="font-size:15px">🔐 पहले अपनी Student ID डालें</span></b>
+<input id="plStudentId" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Student ID" oninput="plIdCheck()">
+<div id="plIdMsg"></div></div>
     <div id="mtcStaffLandingCard" style="margin:0 auto 14px;max-width:520px;padding:12px 16px;border:3px solid #e65100;border-radius:18px;background:linear-gradient(135deg,#fff8e1,#ffe0b2);box-shadow:0 6px 18px #0002;text-align:center">
       <button type="button" onclick="event.stopPropagation();mtcOpenStaff()" style="width:100%;background:linear-gradient(135deg,#e65100,#f9a825);color:#fff;border:0;border-radius:25px;padding:13px 20px;font-size:20px;font-weight:1000">👨‍🏫 Staff Login</button>
     </div>
@@ -256,9 +259,7 @@ body{background:#f4ebe4!important}
 #plIdMsg{font-weight:900;font-size:16px;margin-top:6px;min-height:22px}
 </style>
 <div id="plLogoRow"><img id="plTopSchoolLogo" alt="MTC School"><img id="plTopDolLogo" alt="Dear One Digital Learning"></div>
-<div id="plIdBox" onclick="event.stopPropagation()"><b>🔐 पहले अपनी Student ID डालें</b>
-<input id="plStudentId" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Student ID" oninput="plIdCheck()">
-<div id="plIdMsg"></div></div>
+
 <div class="plBrand">
       <div class="plBrandName">MOTHER TERESA CHILDREN SECONDARY SCHOOL</div>
       <div class="plBrandSub">VIGYAN NAGAR, KOTA (RAJ.) &bull; Session 2026-27</div>
@@ -2012,7 +2013,7 @@ p.querySelector('#v3unlock').onclick=function(){var d=p.querySelector('input[nam
 p.querySelector('#v3lock').onclick=function(){var c=val('v3class'),s=val('v3subj'),se=val('v3sec'),k=val('v3key');if(!s||!se||!k)return;mtcChapterLock(c,s,se,k);list()};
 p.querySelector('#v3close').onclick=function(){p.style.display='none'};
 setInterval(function(){b.style.display=isAdmin()?'block':'none';clean()},1000)}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();})();</script><script id="mtc-note-lock-hook">(function(){function lock(){try{var c=window.STUDENTS&&window.STUDENTS[window.id]&&window.STUDENTS[window.id][1];if(!c||c==='Admin'||c==='11th'||c==='12th')return;var root=document.getElementById('notesContent');if(!root)return;var cards=[].slice.call(root.querySelectorAll('.noteCard,.schoolTopicCard'));cards.forEach(function(card,idx){if(card.getAttribute('data-mtc-lock'))return;var sub=window.__snSubj||'',sec=window.__snSec||'Textbook',k=card.getAttribute('data-lock-key')||String(idx+1);if(window.mtcChapterAllowed&&window.mtcChapterAllowed(c,sub,sec,k,window.id)){card.setAttribute('data-mtc-lock','1');return}var w=document.createElement('div');w.className='mtcLockedCard';var h=card.querySelector('.noteSummary,.schoolTopicHeader');w.innerHTML='<div class="mtcLockOverlay">🔒 '+((h&&h.textContent)||('Chapter '+k))+'<br><span style="font-size:14px">यह Chapter अभी Locked है। Admin Sir द्वारा unlock होने पर खुलेगा।</span></div>';card.replaceWith(w)})}catch(e){}}var a=window.showSpecialNote;if(a)window.showSpecialNote=function(id,s){window.__snSubj=s;var r=a.apply(this,arguments);setTimeout(lock,80);return r};var b=window.showSection;if(b)window.showSection=function(id,s,k,btn){window.__snSubj=s;window.__snSec=k;var r=b.apply(this,arguments);setTimeout(lock,100);return r}})();</script><script id="mtc-school-initial-lock">(function(){function lock(){try{document.body.classList.add('gateLocked');var g=document.getElementById('idGate');if(g)g.classList.remove('hiddenGate');}catch(e){}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock);else lock();})();</script>
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();})();</script><script id="mtc-note-lock-hook">(function(){function lock(){try{var c=window.STUDENTS&&window.STUDENTS[window.id]&&window.STUDENTS[window.id][1];if(!c||c==='Admin'||c==='11th'||c==='12th')return;var root=document.getElementById('notesContent');if(!root)return;var cards=[].slice.call(root.querySelectorAll('.noteCard,.schoolTopicCard'));cards.forEach(function(card,idx){if(card.getAttribute('data-mtc-lock'))return;var sub=window.__snSubj||'',sec=window.__snSec||'Textbook',k=card.getAttribute('data-lock-key')||String(idx+1);if(window.mtcChapterAllowed&&window.mtcChapterAllowed(c,sub,sec,k,window.id)){card.setAttribute('data-mtc-lock','1');return}var w=document.createElement('div');w.className='mtcLockedCard';var h=card.querySelector('.noteSummary,.schoolTopicHeader');w.innerHTML='<div class="mtcLockOverlay">🔒 '+((h&&h.textContent)||('Chapter '+k))+'<br><span style="font-size:14px">यह Chapter अभी Locked है। Admin Sir द्वारा unlock होने पर खुलेगा।</span></div>';card.replaceWith(w)})}catch(e){}}var a=window.showSpecialNote;if(a)window.showSpecialNote=function(id,s){window.__snSubj=s;var r=a.apply(this,arguments);setTimeout(lock,80);return r};var b=window.showSection;if(b)window.showSection=function(id,s,k,btn){window.__snSubj=s;window.__snSec=k;var r=b.apply(this,arguments);setTimeout(lock,100);return r}})();</script><script id="mtc-school-initial-lock">/* FIX: पहले यह script शुरू होते ही पुराना Student-ID gate खोल देती थी (पुरानी setting); अब शुरुआत में Portal चुनने वाली screen ही खुलेगी। gate सिर्फ़ School चुनने पर खुलेगा। */(function(){function lock(){try{document.body.classList.add('gateLocked');var g=document.getElementById('idGate');if(g)g.classList.add('hiddenGate');var pl=document.getElementById('portalLanding');if(pl&&!(typeof gateUnlocked!=='undefined'&&gateUnlocked))pl.classList.remove('hidden');}catch(e){}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock);else lock();})();</script>
 <script id="mtc-school-final-ui-script">
 (function(){
   function buildSchoolGate(){
@@ -5912,10 +5913,10 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 #mtcAdmit .adTitle{margin:8px auto 0;display:inline-block;padding:8px 22px;border-radius:30px;background:linear-gradient(135deg,#e65100,#f9a825,#2e7d32);color:#fff;font-size:21px;font-weight:1000;letter-spacing:1px;box-shadow:0 3px 8px #0003}
 #mtcAdmit .adSub{font-size:14px;font-weight:900;color:#1a237e;margin:5px 0 2px}
 #mtcAdmit .adWho{display:flex;gap:12px;align-items:center;padding:8px 14px}
-#mtcAdmit .adCirc{flex:none;width:86px;height:86px;border-radius:50%;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:1000;text-align:center;border:6px solid;box-shadow:0 4px 10px #0004}
-#mtcAdmit .adCirc small{font-size:13px;line-height:1.1}#mtcAdmit .adCirc b{font-size:28px;line-height:1.1}
+#mtcAdmit .adCirc{flex:none;width:98px;height:98px;border-radius:50%;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:1000;text-align:center;border:6px solid;box-shadow:0 4px 10px #0004}
+#mtcAdmit .adCirc small{font-size:15px;line-height:1.1;font-weight:1000}#mtcAdmit .adCirc b{font-size:38px;line-height:1.1;-webkit-text-stroke:.8px #fff}
 #mtcAdmit .adInfo{flex:1;min-width:0}
-#mtcAdmit .adNm{font-size:24px;font-weight:1000;color:#c2185b;line-height:1.15;word-break:break-word}
+#mtcAdmit .adNm{font-size:32px;font-weight:1000;color:#c2185b;line-height:1.15;word-break:break-word;-webkit-text-stroke:.8px #c2185b}
 #mtcAdmit .adLn{font-size:16px;font-weight:900;color:#0d47a1;margin-top:3px}
 #mtcAdmit .adLn span{color:#d32f2f}
 #mtcAdmit .adWrap{padding:2px 10px 4px;overflow-x:auto}
@@ -5945,9 +5946,9 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 #mtcAdmit .adSub{font-size:11.5px;margin:3px 0 0}
 #mtcAdmit .adX{width:28px;height:28px;font-size:14px;top:12px}
 #mtcAdmit .adWho{gap:8px;padding:6px 10px}
-#mtcAdmit .adCirc{width:56px;height:56px;border-width:4px}
-#mtcAdmit .adCirc small{font-size:10px}#mtcAdmit .adCirc b{font-size:18px}
-#mtcAdmit .adNm{font-size:20px}
+#mtcAdmit .adCirc{width:70px;height:70px;border-width:4px}
+#mtcAdmit .adCirc small{font-size:12px}#mtcAdmit .adCirc b{font-size:27px}
+#mtcAdmit .adNm{font-size:26px}
 #mtcAdmit .adLn{font-size:13px;margin-top:1px}
 #mtcAdmit .adWrap{padding:0 8px 2px}
 #mtcAdmit table{border-spacing:2px}
@@ -5993,9 +5994,9 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 #mtcAdmit.adA4 .adTitle{font-size:26px;padding:8px 30px;margin-top:8px}
 #mtcAdmit.adA4 .adSub{font-size:17px;margin-top:6px}
 #mtcAdmit.adA4 .adWho{padding:10px 24px;gap:16px}
-#mtcAdmit.adA4 .adCirc{width:104px;height:104px;border-width:6px}
-#mtcAdmit.adA4 .adCirc small{font-size:15px}#mtcAdmit.adA4 .adCirc b{font-size:34px}
-#mtcAdmit.adA4 .adNm{font-size:34px}
+#mtcAdmit.adA4 .adCirc{width:124px;height:124px;border-width:7px}
+#mtcAdmit.adA4 .adCirc small{font-size:19px}#mtcAdmit.adA4 .adCirc b{font-size:46px}
+#mtcAdmit.adA4 .adNm{font-size:42px}
 #mtcAdmit.adA4 .adLn{font-size:20px;margin-top:3px}
 #mtcAdmit.adA4 .adWrap{flex:1;padding:4px 22px 6px;overflow:hidden}
 #mtcAdmit.adA4 table{height:100%;border-spacing:4px}
@@ -6046,10 +6047,10 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 .rcTitle{margin:5px auto 0;display:inline-block;padding:4px 18px;border-radius:30px;background:linear-gradient(135deg,#00897b,#43a047,#f9a825);color:#fff;font-size:16px;font-weight:1000;letter-spacing:.5px;box-shadow:0 3px 8px #0003}
 .rcSub{font-size:11.5px;font-weight:900;color:#1a237e;margin:3px 0 0}
 .rcWho{display:flex;gap:8px;align-items:center;padding:6px 10px}
-.rcCirc{flex:none;width:56px;height:56px;border-radius:50%;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:1000;text-align:center;border:4px solid;box-shadow:0 4px 10px #0004}
-.rcCirc small{font-size:10px;line-height:1.1}.rcCirc b{font-size:18px;line-height:1.1;font-weight:1000}
+.rcCirc{flex:none;width:66px;height:66px;border-radius:50%;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:1000;text-align:center;border:4px solid;box-shadow:0 4px 10px #0004}
+.rcCirc small{font-size:12px;line-height:1.1;font-weight:1000}.rcCirc b{font-size:25px;line-height:1.1;font-weight:1000;-webkit-text-stroke:.7px #fff}
 .rcInfo{flex:1;min-width:0}
-.rcNm{font-size:20px;font-weight:1000;color:#c2185b;line-height:1.15;word-break:break-word}
+.rcNm{font-size:25px;font-weight:1000;color:#c2185b;line-height:1.15;word-break:break-word;-webkit-text-stroke:.8px #c2185b}
 .rcLn{font-size:13px;font-weight:900;color:#0d47a1;margin-top:1px}.rcLn span{color:#d32f2f}
 .rcWrap{padding:0 8px 2px}
 .rcBox table{width:100%;border-collapse:separate;border-spacing:2px;table-layout:fixed}
@@ -6088,8 +6089,8 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 .rcShot .rcSch{font-size:27px}.rcShot .rcAdr{font-size:14px}
 .rcShot .rcTitle{font-size:26px;padding:8px 30px;margin-top:8px}.rcShot .rcSub{font-size:17px;margin-top:6px}
 .rcShot .rcWho{padding:10px 24px;gap:16px}
-.rcShot .rcCirc{width:104px;height:104px;border-width:6px}.rcShot .rcCirc small{font-size:15px}.rcShot .rcCirc b{font-size:34px}
-.rcShot .rcNm{font-size:34px}.rcShot .rcLn{font-size:20px;margin-top:3px}
+.rcShot .rcCirc{width:124px;height:124px;border-width:7px}.rcShot .rcCirc small{font-size:19px}.rcShot .rcCirc b{font-size:46px;-webkit-text-stroke:1px #fff}
+.rcShot .rcNm{font-size:42px;-webkit-text-stroke:1.2px #c2185b}.rcShot .rcLn{font-size:20px;margin-top:3px}
 .rcShot .rcWrap{flex:1;padding:4px 22px 6px;overflow:hidden}
 .rcShot table{height:100%;border-spacing:4px}
 .rcShot th{font-size:17px;padding:6px 2px;border-radius:10px}
@@ -6430,7 +6431,7 @@ window.mtcShowAdmit=function(sid){
    +'<button type="button" class="adX" onclick="mtcHideAdmit()" aria-label="Close">&#10006;</button>'
    +'<div class="adHead"><div class="adBrand">'+(lg?'<img class="adLogo" alt="Mother Teresa" src="'+lg+'">':'')+'<div><div class="adSch">MOTHER TERESA CHILDREN SECONDARY SCHOOL</div><div class="adAdr">Vigyan Nagar, Kota (Raj.) &bull; Mob. No.: 9829871901</div></div></div>'
    +'<div class="adTitle">🎫 ADMIT CARD</div><div class="adSub">अर्धवार्षिक परीक्षा 2026-27 &bull; Half Yearly Examination</div></div>'
-   +'<div class="adWho">'+circ("ID",sid,"#e91e63","#ad1457")+circ("Roll No.",roll||"—","#2e7d32","#1b5e20")
+   +'<div class="adWho">'+circ("ID",sid,"#e91e63","#ad1457")+circ("Roll No.",roll||"—","#1565c0","#0d47a1")
    +'<div class="adInfo"><div class="adNm">'+esc(st[0])+'</div><div class="adLn">Class: <span>'+esc(st[1])+'</span></div>'
    +(g?'<div class="adLn">🕒 <span>'+esc(g.en)+'</span></div>':'')
    +(g?'<div class="adLn">📅 <span>15-10-2026 to 30-10-2026</span></div>':'<div class="adLn" style="color:#c62828">⏳ <span>Time Table अभी नहीं आया है</span></div>')+'</div></div>'
@@ -6568,7 +6569,7 @@ window.mtcShowResultCard=function(sid){
    +'<div class="rcHead"><div class="rcBrand">'+(lg?'<img class="rcLogo" alt="Mother Teresa" src="'+lg+'">':'')+'<div><div class="rcSch">MOTHER TERESA CHILDREN SECONDARY SCHOOL</div><div class="rcAdr">Vigyan Nagar, Kota (Raj.) &bull; Mob. No.: 9829871901</div></div></div>'
    +'<div class="rcTitle">🏆 RESULT CARD • परिणाम पत्रक</div><div class="rcSub">अर्धवार्षिक परीक्षा 2026-27 &bull; Half Yearly Examination</div></div>'
    +'<div class="rcWho">'+window.mtcPhotoHtml(sid)+'<div class="rcCirc" style="background:#e91e63;border-color:#ad1457"><small>ID</small><b>'+esc(sid)+'</b></div>'
-   +'<div class="rcCirc" style="background:#2e7d32;border-color:#1b5e20"><small>Roll No.</small><b>'+esc(roll||"—")+'</b></div>'
+   +'<div class="rcCirc" style="background:#1565c0;border-color:#0d47a1"><small>Roll No.</small><b>'+esc(roll||"—")+'</b></div>'
    +'<div class="rcInfo"><div class="rcNm">'+esc(st[0])+'</div><div class="rcLn">Class: <span>'+esc(st[1])+'</span></div><div class="rcLn">Session: <span>2026-27</span></div></div></div>'
    +'<div class="rcWrap"><table><colgroup><col style="width:9%"><col style="width:36%"><col style="width:15%"><col style="width:20%"><col style="width:20%"></colgroup>'
    +'<thead><tr><th>क्र.</th><th>विषय / Subject</th><th>पूर्णांक<br>Max</th><th>प्राप्तांक<br>Obtained</th><th>Grade</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
@@ -7358,3 +7359,47 @@ body.mtcC5 :is(#schoolChapterNotesBox,#secBody,#c5GrammarTopicResult) .nx-q .bla
   color:#d50000!important;font-weight:900!important;-webkit-text-fill-color:#d50000!important;text-shadow:none!important}
 div.end,p.end,.theEnd{background:#fff5f5!important;border:3px solid #d50000!important;border-radius:12px!important;text-align:center!important;padding:12px!important}
 </style>
+
+<style id="mtcFixV1">
+/* Admin / Staff pop-ups हमेशा सबसे ऊपर और Student-ID gate के ऊपर भी दिखें */
+html body .lstOv.open,html body.gateLocked .lstOv.open,html body.dolOpen .lstOv.open{display:flex!important;visibility:visible!important;z-index:2000000!important}
+html body.gateLocked>#mtcAdminLoginOv.open,html body.dolOpen>#mtcAdminLoginOv.open{display:flex!important;visibility:visible!important;z-index:2000000!important}
+html body.gateLocked>#mtcAdminDashOv.open,html body.dolOpen>#mtcAdminDashOv.open{display:flex!important;visibility:visible!important;z-index:2000000!important}
+html body.gateLocked>#mtcSchoolListOv.open,html body.dolOpen>#mtcSchoolListOv.open{display:flex!important;visibility:visible!important;z-index:2000000!important}
+html body #mtcListFab,html body.gateLocked #mtcListFab{display:none!important}
+html body.gateLocked>#portalLanding:not(.hidden){display:flex!important;visibility:visible!important}
+#mtcCkListBtn{display:block;width:100%;margin:8px 0 2px;padding:12px;border:0;border-radius:12px;color:#fff;font-weight:900;font-size:16px;background:linear-gradient(135deg,#00695c,#26a69a)}
+</style>
+<script id="mtcFixV1Js">
+(function(){
+/* 1) Student-ID gate की "बंद करें" दबाने पर खाली/पुरानी screen की जगह वापस Portal-चुनने वाली screen आए */
+var _cg=window.closeGate;
+window.closeGate=function(){
+  try{document.getElementById("idGate").classList.add("hiddenGate")}catch(e){}
+  try{
+    if(!(typeof gateUnlocked!=="undefined"&&gateUnlocked)){
+      var pl=document.getElementById("portalLanding");if(pl)pl.classList.remove("hidden");
+      try{window.scrollTo(0,0)}catch(e){}
+    }
+  }catch(e){}
+};
+/* 2) School ID List अब Staff Login के अंदर (Staff ID डालने के बाद वाली screen में) */
+function addListBtn(){
+  var box=document.getElementById("mtcCkBox");
+  if(!box||!box.classList.contains("t"))return;
+  if(box.querySelector("#mtcCkListBtn"))return;
+  var b=document.createElement("button");b.type="button";b.id="mtcCkListBtn";b.textContent="📋 School ID List";
+  b.onclick=function(e){e.stopPropagation();if(typeof window.mtcShowSchoolList==="function")window.mtcShowSchoolList()};
+  var act=box.querySelector(".ckAct");
+  if(act&&act.parentNode)act.parentNode.insertBefore(b,act);else box.appendChild(b);
+}
+setInterval(addListBtn,400);
+/* 3) Admin Login: हर बार नया बटन/गेट जुड़ने पर भी चले */
+document.addEventListener("click",function(e){
+  var t=e.target&&e.target.closest?e.target.closest(".mtcGateAdm button,.mtcAdmLoginCard button"):null;
+  if(t&&!document.querySelector("#mtcAdminLoginOv.open")){
+    setTimeout(function(){if(!document.querySelector("#mtcAdminLoginOv.open")&&typeof window.mtcAdminLoginOpen==="function")window.mtcAdminLoginOpen()},60);
+  }
+},true);
+})();
+</script>
