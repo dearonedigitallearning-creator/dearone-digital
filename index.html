@@ -6050,8 +6050,8 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 .rcCirc{flex:none;width:66px;height:66px;border-radius:50%;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:1000;text-align:center;border:4px solid;box-shadow:0 4px 10px #0004}
 .rcCirc small{font-size:12px;line-height:1.1;font-weight:1000}.rcCirc b{font-size:25px;line-height:1.1;font-weight:1000;-webkit-text-stroke:.7px #fff}
 .rcInfo{flex:1;min-width:0}
-.rcNm{font-size:25px;font-weight:1000;color:#c2185b;line-height:1.15;word-break:break-word;-webkit-text-stroke:.8px #c2185b}
-.rcLn{font-size:13px;font-weight:900;color:#0d47a1;margin-top:1px}.rcLn span{color:#d32f2f}
+.rcNm{font-size:22px;font-weight:1000;color:#c2185b;line-height:1.15;word-break:normal;overflow-wrap:normal;-webkit-text-stroke:.8px #c2185b}
+.rcLn{font-size:13px;font-weight:900;color:#0d47a1;margin-top:1px;white-space:nowrap}.rcLn span{color:#d32f2f}
 .rcWrap{padding:0 8px 2px}
 .rcBox table{width:100%;border-collapse:separate;border-spacing:2px;table-layout:fixed}
 .rcBox th{background:linear-gradient(135deg,#00897b,#1e7de9,#7b1fa2);color:#fff;font-size:11px;font-weight:1000;padding:4px 1px;border-radius:7px;line-height:1.15}
@@ -6580,7 +6580,7 @@ window.mtcShowResultCard=function(sid){
    +'<div class="rcSign"><span>Class Teacher</span><span>Exam In-charge</span><span>Principal</span></div>'
    +'<div class="rcBtns"><button type="button" class="rcDl" onclick="mtcRsDownload()">⬇️ Result Card Download</button><button type="button" class="rcCl" onclick="mtcHideResultCard()">&#10006; बंद करें</button></div>'
    +'<div id="mtcRsMsg"></div></div>';
-  o.innerHTML=h;o.classList.add("open");o.setAttribute("aria-hidden","false");o.scrollTop=0;
+  o.innerHTML=h;o.classList.add("open");o.setAttribute("aria-hidden","false");o.scrollTop=0;try{var nm=o.querySelector(".rcNm"),fs=22;while(nm&&nm.scrollWidth>nm.clientWidth+1&&fs>11){fs--;nm.style.fontSize=fs+"px"}}catch(e){}
 };
 window.mtcHideResultCard=function(){var o=$("mtcRes");if(o){o.classList.remove("open");o.setAttribute("aria-hidden","true")}try{ss.cancel()}catch(e){}};
 document.addEventListener("click",function(e){var o=$("mtcRes");if(o&&e.target===o)window.mtcHideResultCard()});
@@ -7403,3 +7403,49 @@ document.addEventListener("click",function(e){
 },true);
 })();
 </script>
+<script id="mtcSchoolCardOpensHub">
+(function(){
+var old=window.openSchoolFromLanding;
+window.openSchoolFromLanding=function(){
+  var id=window.__plId;
+  if(!id){if(typeof old==="function")return old.apply(this,arguments);return}
+  var cl=document.body.classList;
+  try{closePortalLanding()}catch(e){}
+  try{var w=document.getElementById("fullDOLWrap");if(w)w.style.display="none"}catch(e){}
+  cl.remove("dolOpen");document.body.style.overflow="";
+  cl.add("gateLocked","mtcSchoolChosen");
+  var h=document.getElementById("mtcHubId");
+  if(h){h.value=id;h.dispatchEvent(new Event("input",{bubbles:true}))}
+  try{window.scrollTo(0,0)}catch(e){}
+};
+})();
+</script>
+<style id="mtcOnlyCardsAfterId">
+#portalLanding.plIdOk #mtcStaffLandingCard,
+#portalLanding.plIdOk div:has(>.mtcTTLand),
+#portalLanding.plIdOk div:has(>.mtcAdLand),
+#portalLanding.plIdOk div:has(>.mtcRsLand),
+#portalLanding.plIdOk .mtcAdmLoginCard{display:none!important}
+</style>
+<script id="mtcOnlyCardsAfterIdJs">
+(function(){
+var f=window.plIdCheck;if(typeof f!=="function")return;
+window.plIdCheck=function(){
+  var r=f.apply(this,arguments);
+  var p=document.getElementById("portalLanding");
+  if(p)p.classList.toggle("plIdOk",!!window.__plId);
+  return r;
+};
+})();
+</script>
+<style id="mtcLandingFit">
+html{overflow-x:hidden!important;max-width:100%!important}
+body{overflow-x:hidden!important;max-width:100%!important}
+#portalLanding{left:0!important;right:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;overflow-x:hidden!important;overflow-y:auto!important;justify-content:center!important}
+#portalLanding .portalLandingInner{width:100%!important;max-width:880px!important;box-sizing:border-box!important;margin:0 auto!important;min-width:0!important}
+#portalLanding .portalLandingInner>*{max-width:100%!important;box-sizing:border-box!important}
+#portalLanding #plIdBox,#portalLanding #mtcStaffLandingCard{width:100%!important;max-width:520px!important;margin-left:auto!important;margin-right:auto!important}
+#portalLanding .plGrid{width:100%!important;min-width:0!important}
+#portalLanding .portalLandingCard{min-width:0!important;max-width:100%!important}
+</style>
+<style id="mtcDolShowFix">html body.dolOpen.gateLocked>#fullDOLWrap,html body.dolOpen>#fullDOLWrap{display:block!important;visibility:visible!important}</style>
