@@ -7449,3 +7449,83 @@ body{overflow-x:hidden!important;max-width:100%!important}
 #portalLanding .portalLandingCard{min-width:0!important;max-width:100%!important}
 </style>
 <style id="mtcDolShowFix">html body.dolOpen.gateLocked>#fullDOLWrap,html body.dolOpen>#fullDOLWrap{display:block!important;visibility:visible!important}</style>
+<style id="mtcPAListCss">
+#mtcPaFab{display:none;position:fixed;left:10px;bottom:132px;z-index:590000;border:0;border-radius:26px;padding:12px 16px;font-size:15px;font-weight:900;color:#fff;background:linear-gradient(135deg,#1565c0,#42a5f5);box-shadow:0 5px 16px #0005;cursor:pointer}
+html body #mtcPaFab.show,html body.gateLocked #mtcPaFab.show,html body.dolOpen #mtcPaFab.show{display:block!important;visibility:visible!important}
+#mtcPa{display:none;position:fixed;inset:0;z-index:600004;background:#000b;align-items:flex-start;justify-content:center;padding:8px;overflow:auto;box-sizing:border-box}
+html body #mtcPa.open,html body.gateLocked #mtcPa.open,html body.dolOpen #mtcPa.open{display:flex!important;visibility:visible!important}
+#mtcPa .pb{background:#fff;border-radius:18px;width:100%;max-width:520px;padding:14px;box-sizing:border-box;margin:auto}
+#mtcPa h3{margin:0 0 10px;font-size:18px;color:#0d47a1;text-align:center}
+#mtcPa select{width:100%;padding:11px;border:2px solid #90a4ae;border-radius:12px;font-size:15px;font-weight:700;margin-bottom:8px;box-sizing:border-box}
+#mtcPa .ps{text-align:center;font-weight:900;font-size:14px;margin:6px 0 10px}
+#mtcPa .ph{font-weight:900;font-size:15px;padding:8px 10px;border-radius:10px;margin:10px 0 6px;color:#fff}
+#mtcPa .ph.p{background:#2e7d32}#mtcPa .ph.a{background:#c62828}#mtcPa .ph.n{background:#757575}
+#mtcPa .pr{display:flex;gap:8px;align-items:center;padding:7px 8px;border-bottom:1px solid #e0e0e0;font-size:14px;font-weight:700}
+#mtcPa .pr .i{min-width:46px;color:#0d47a1}#mtcPa .pr .r{min-width:44px;color:#6a1b9a}#mtcPa .pr .n{flex:1;color:#222}
+#mtcPa .pe{color:#777;font-size:13px;padding:6px 8px}
+#mtcPa .px{width:100%;margin-top:12px;padding:12px;border:0;border-radius:12px;background:#757575;color:#fff;font-size:15px;font-weight:900}
+</style>
+<button type="button" id="mtcPaFab" onclick="mtcPaOpen()">📋 Present / Absent सूची</button>
+<div id="mtcPa" aria-hidden="true"><div class="pb">
+<h3>📋 School IDs — Present / Absent</h3>
+<select id="mtcPaCls"></select><select id="mtcPaDate"></select>
+<div class="ps" id="mtcPaSum"></div><div id="mtcPaList"></div>
+<button type="button" class="px" onclick="mtcPaClose()">✖ बंद करें</button>
+</div></div>
+<script id="mtcPAListJs">
+(function(){
+function $(i){return document.getElementById(i)}
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function cn(c){return parseInt(c,10)||0}
+function roll(k){var R=window.MTC_ROLL||{};return R[k]||"—"}
+function classes(){var o={};Object.keys(STUDENTS).forEach(function(k){var n=cn(STUDENTS[k][1]);if(n>=1&&n<=12&&/^\d{1,3}$/.test(k)&&STUDENTS[k][1]!=="Admin")o[STUDENTS[k][1]]=n});return Object.keys(o).sort(function(a,b){return o[a]-o[b]})}
+function studs(c){return Object.keys(STUDENTS).filter(function(k){return STUDENTS[k][1]===c&&/^\d{1,3}$/.test(k)}).sort(function(a,b){var ra=parseInt(roll(a),10)||9999,rb=parseInt(roll(b),10)||9999;return ra-rb||(+a)-(+b)})}
+function dkey(d){var p=d.split("-");return +p[2]*10000+ +p[1]*100+ +p[0]}
+function datesFor(c){var A=window.MTC_ATTENDANCE||{},o={};studs(c).forEach(function(k){var m=A[k];if(m)Object.keys(m).forEach(function(d){if(m[d]==="P"||m[d]==="A")o[d]=1})});return Object.keys(o).sort(function(a,b){return dkey(b)-dkey(a)})}
+function fillCls(){var cs=classes(),s=$("mtcPaCls"),prev=s.value;s.innerHTML=cs.map(function(c){return '<option value="'+esc(c)+'">Class '+esc(c)+'</option>'}).join("");if(prev&&cs.indexOf(prev)>=0)s.value=prev;else{for(var i=0;i<cs.length;i++){if(datesFor(cs[i]).length){s.value=cs[i];break}}}fillDates()}
+function fillDates(){var c=$("mtcPaCls").value,ds=datesFor(c),s=$("mtcPaDate");s.innerHTML=ds.length?ds.map(function(d){return '<option value="'+esc(d)+'">'+esc(d)+'</option>'}).join(""):'<option value="">⏳ अभी कोई उपस्थिति दर्ज नहीं है</option>'}
+function sec(cls,title,arr){var h='<div class="ph '+cls+'">'+title+' ('+arr.length+')</div>';if(!arr.length)return h+'<div class="pe">कोई नहीं</div>';return h+arr.map(function(k){return '<div class="pr"><span class="i">ID '+esc(k)+'</span><span class="r">Roll '+esc(roll(k))+'</span><span class="n">'+esc(STUDENTS[k][0])+'</span></div>'}).join("")}
+function render(){
+  var c=$("mtcPaCls").value,d=$("mtcPaDate").value,A=window.MTC_ATTENDANCE||{};
+  if(!d){$("mtcPaSum").textContent="";$("mtcPaList").innerHTML="";return}
+  var P=[],Ab=[],N=[];studs(c).forEach(function(k){var v=A[k]&&A[k][d];if(v==="P")P.push(k);else if(v==="A")Ab.push(k);else N.push(k)});
+  $("mtcPaSum").textContent="✅ Present: "+P.length+"   |   ❌ Absent: "+Ab.length+"   |   ⏳ बाकी: "+N.length;
+  $("mtcPaList").innerHTML=sec("a","❌ Absent",Ab)+sec("p","✅ Present",P)+(N.length?sec("n","⏳ दर्ज नहीं",N):"");
+}
+$("mtcPaCls").onchange=function(){fillDates();render()};
+$("mtcPaDate").onchange=render;
+window.mtcPaOpen=function(){fillCls();render();var o=$("mtcPa");o.classList.add("open");o.setAttribute("aria-hidden","false")};
+window.mtcPaClose=function(){var o=$("mtcPa");o.classList.remove("open");o.setAttribute("aria-hidden","true")};
+var prev=window.mtcStaffStart;
+window.mtcStaffStart=function(){var f=$("mtcPaFab");if(f)f.classList.add("show");return typeof prev==="function"?prev.apply(this,arguments):undefined};
+})();
+</script>
+<script id="mtcSpeakIdJs">
+(function(){
+var last="";
+function speak(id){
+  try{
+    var r=STUDENTS[id]||(typeof DOL_ONLY_USERS!=="undefined"&&DOL_ONLY_USERS[id]);if(!r)return;
+    var R=window.MTC_ROLL||{},ro=R[id];
+    var t=(ro&&ro!=="—"?"रोल नंबर "+ro+". ":"")+"नाम "+r[0]+".";
+    var ss=window.speechSynthesis;if(!ss)return;ss.cancel();
+    var u=new SpeechSynthesisUtterance(t);u.lang="hi-IN";u.rate=.9;ss.speak(u);
+  }catch(e){}
+}
+function show(id){
+  try{
+    var r=STUDENTS[id]||(typeof DOL_ONLY_USERS!=="undefined"&&DOL_ONLY_USERS[id]);if(!r)return;
+    var R=window.MTC_ROLL||{},ro=R[id];
+    var h='<div class="mtcSpkLine" style="margin:8px auto 2px;padding:10px 12px;border:2px solid #1565c0;border-radius:14px;background:#e3f2fd;color:#0d1b4c;font-weight:900;font-size:17px;line-height:1.5">🔊 '+(ro&&ro!=="—"?'रोल नंबर: <span style="color:#c2185b;font-size:22px">'+ro+'</span><br>':'')+'नाम: <span style="color:#c2185b;font-size:20px">'+String(r[0]).replace(/[<>&]/g,"")+'</span><br>ID: '+id+' • Class '+String(r[1]).replace(/[<>&]/g,"")+'</div>';
+    ["plIdMsg","tpMsg"].forEach(function(i){var m=document.getElementById(i);if(m&&!m.querySelector(".mtcSpkLine")&&m.innerHTML.indexOf("✅")>-1)m.insertAdjacentHTML("beforeend",h)});
+  }catch(e){}
+}
+function wrap(n){
+  var f=window[n];if(typeof f!=="function")return;
+  window[n]=function(){var r=f.apply(this,arguments);var id=window.__plId||"";
+    if(id)show(id);
+    if(id&&id!==last){last=id;speak(id)}else if(!id)last="";return r};
+}
+wrap("plIdCheck");wrap("tpCheck");
+})();
+</script>
