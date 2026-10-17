@@ -6557,6 +6557,7 @@ document.addEventListener("keydown",function(e){var o=$("mtcAdmit");if(o&&o.clas
 var RS_MAX=70,curRs="",rsTm=null;
 window.MTC_MARKS=window.MTC_MARKS||{};
 var RS_BG=["#fff3e0","#e3f2fd","#e8f5e9","#fce4ec","#f3e5f5","#e0f7fa","#fffde7","#efebe9"];
+HI["G.K. / Moral"]="सामान्य ज्ञान / नैतिक शिक्षा";
 function rsSubs(sid){
   var st=STU()[sid],g=grp(st[1]),rows=ROWS(),out=[];
   if(g&&rows){
@@ -6564,6 +6565,12 @@ function rsSubs(sid){
   }else{
     out=["Hindi","English","Maths","Science","S.St.",URDU_IDS.indexOf(String(sid))>=0?"Urdu":"Sanskrit"];
   }
+  /* G.K. + Moral = ek hi vishay (G.K. / Moral) */
+  var gi=out.indexOf("G.K."),mi=out.indexOf("Moral");
+  if(gi>=0&&mi>=0){out[gi]="G.K. / Moral";out.splice(mi,1)}
+  /* vishayon ka sahi kram */
+  var ORD=["Hindi","English","Maths","Science","EVS","Sanskrit","Urdu","S.St.","G.K.","G.K. / Moral","Computer","Drawing"];
+  out.sort(function(a,b){var x=ORD.indexOf(a),y=ORD.indexOf(b);return (x<0?99:x)-(y<0?99:y)});
   return out;
 }
 function rsGrade(p){
@@ -6585,7 +6592,7 @@ window.mtcRsAskGo=function(manual){
   var e=rsId(),m=$("mtcRsAskMsg");
   if(!e){if(manual){m.style.color="#c62828";m.textContent="❌ पहले Student ID डालें।"}return}
   if(!STU()[e]){if(manual){m.style.color="#c62828";m.textContent="❌ यह Student ID मान्य नहीं है।"}return}
-  if(!isStudent(e)||!(parseInt((STUDENTS[e]||[])[1],10)>=1)){m.style.color="#c62828";m.textContent="❌ इस ID के लिए Result Card उपलब्ध नहीं है।";return}
+  if(!isStudent(e)){m.style.color="#c62828";m.textContent="❌ इस ID के लिए Result Card उपलब्ध नहीं है।";return}
   window.mtcRsAskClose();window.mtcShowResultCard(e);
   try{var nm=STU()[e][0];speakText(nm+", आपका Result Card खुल गया है।",nm+", your Result Card is open.")}catch(x){}
 };
