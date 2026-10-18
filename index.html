@@ -1,4 +1,4 @@
-<!doctype html><html lang="hi"><head><script id="mtc-storage-shim">(function(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t')}catch(e){var m={};var mem={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};try{Object.defineProperty(window,'localStorage',{value:mem,configurable:true})}catch(e2){}}})();</script><script id="mtc-speech-shim">window.__mtcShimFn=function(){
+<!doctype html><html lang="hi"><head><meta name="robots" content="noindex, nofollow, noarchive"><script id="mtc-storage-shim">(function(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t')}catch(e){var m={};var mem={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};try{Object.defineProperty(window,'localStorage',{value:mem,configurable:true})}catch(e2){}}})();</script><script id="mtc-speech-shim">window.__mtcShimFn=function(){
  if(window.__mtcSpeechShim)return;
  var ss=window.speechSynthesis;if(!ss||!window.SpeechSynthesisUtterance)return;
  window.__mtcSpeechShim=1;
@@ -3111,8 +3111,13 @@ const firebaseConfig = {
   appId: "1:341986124082:web:b0f50ba218a76bacb8772b"
 };
 const CACHE_KEY = "mtc_students_cache_v1";
+/* Privacy: Firestore document me chahe jo bhi extra field ho (Aadhaar, phone, address...), sirf ye 5 field browser me aayengi/cache hongi. */
+const SAFE_FIELDS = ["studentId","studentName","studentClass","rollNo","portalName"];
+function cleanRow(r){ const o={}; if(!r || typeof r!=="object") return o; SAFE_FIELDS.forEach(function(k){ if(r[k]!==undefined && r[k]!==null) o[k]=String(r[k]).slice(0,120); }); return o; }
+function cleanRows(a){ return Array.isArray(a) ? a.map(cleanRow) : []; }
 function applyRows(rows){
   try{
+    rows = cleanRows(rows);
     if(typeof STUDENTS === "undefined" || !Array.isArray(rows)) return 0;
     let n = 0;
     window.__mtcFsRoll = window.__mtcFsRoll || {};
@@ -3133,12 +3138,12 @@ function applyRows(rows){
   }catch(e){ return 0; }
 }
 window.addEventListener("load", function(){ try{ var f=window.__mtcFsRoll||{}; if(window.MTC_ROLL) for(var k in f){ window.MTC_ROLL[k]=f[k]; } }catch(e){} });
-try{ applyRows(JSON.parse(localStorage.getItem(CACHE_KEY)||"[]")); }catch(e){}
+try{ const cached = cleanRows(JSON.parse(localStorage.getItem(CACHE_KEY)||"[]")); localStorage.setItem(CACHE_KEY, JSON.stringify(cached)); applyRows(cached); }catch(e){}
 (async function(){
   try{
     const db = getFirestore(initializeApp(firebaseConfig, "mtc-students"));
     const snap = await getDocs(collection(db, "students"));
-    const rows = []; snap.forEach(function(d){ rows.push(d.data()); });
+    const rows = []; snap.forEach(function(d){ rows.push(cleanRow(d.data())); });
     const n = applyRows(rows);
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify(rows)); }catch(e){}
     window.mtcFirestoreStatus = "ok:" + rows.length + " read, " + n + " applied";
