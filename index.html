@@ -338,6 +338,40 @@ window.openDOLFromLanding=function(){
 };
 })();
 </script>
+<script id="mtcNoticeAudio">
+(function(){
+var NOTICE="महत्वपूर्ण सूचना। प्रिय अभिभावक। कल दिनांक उन्नीस अक्टूबर दो हज़ार छब्बीस, सोमवार, दुर्गाष्टमी, तथा दिनांक बीस अक्टूबर दो हज़ार छब्बीस, मंगलवार, विजयदशमी के अवसर पर विद्यालय में अवकाश रहेगा। दिनांक इक्कीस अक्टूबर दो हज़ार छब्बीस, बुधवार को विद्यालय नियत समयानुसार संचालित रहेगा। प्रधानाचार्य, एम टी सी स्कूल।";
+var lastId="",tm=null;
+function say(queue){try{var ss=window.speechSynthesis;if(!ss)return;if(!queue)ss.cancel();
+ var u=new SpeechSynthesisUtterance(NOTICE);u.lang="hi-IN";u.rate=.85;u.pitch=1;u.volume=1;
+ var v=ss.getVoices?ss.getVoices():[];u.voice=v.find(function(x){return /^hi(-|_)?IN$/i.test(x.lang)})||v.find(function(x){return /^hi/i.test(x.lang)})||null;
+ ss.speak(u)}catch(e){}}
+window.mtcPlayNotice=function(){say(false)};
+function valid(v){try{return !!(STUDENTS[v]||(typeof DOL_ONLY_USERS!=="undefined"&&DOL_ONLY_USERS[v]))}catch(e){return false}}
+function mkBtn(id,afterId){var b=document.getElementById(id);if(b)return b;
+ var m=document.getElementById(afterId);if(!m)return null;
+ b=document.createElement("button");b.id=id;b.type="button";b.style.cssText="display:none;margin:6px auto 0;border:0;border-radius:22px;padding:8px 16px;font-size:15px;font-weight:900;color:#fff;background:linear-gradient(135deg,#c2185b,#ec407a)";
+ b.textContent="🔊 महत्वपूर्ण सूचना सुनें";b.onclick=function(e){e.stopPropagation();say(false)};
+ m.parentNode.insertBefore(b,m.nextSibling);return b}
+function fire(id,queue,delay){clearTimeout(tm);tm=setTimeout(function(){say(queue)},delay)}
+/* पहला पेज: Student ID डालते ही (नाम/रोल बोलने के बाद सूचना) */
+var old=window.plIdCheck;
+if(typeof old==="function"){window.plIdCheck=function(){var r=old.apply(this,arguments);
+ var b=mkBtn("mtcNoticeBtn","plIdMsg"),id=window.__plId||"";
+ if(b)b.style.display=id?"block":"none";
+ if(id&&id!==lastId){lastId=id;fire(id,true,900)}
+ if(!id){lastId="";clearTimeout(tm)}
+ return r}}
+/* Hub वाला पेज (अपना टेस्ट दें / My Books ...): ID डालते ही */
+document.addEventListener("input",function(ev){var t=ev.target;if(!t||t.id!=="mtcHubId")return;
+ var v=String(t.value||"").trim().replace(/\s+/g,"");
+ var b=mkBtn("mtcNoticeBtnHub","mtcHubMsg");
+ if(v&&valid(v)){if(b)b.style.display="block";if(v!==lastId){lastId=v;fire(v,false,700)}}
+ else{lastId="";clearTimeout(tm);if(b)b.style.display="none"}
+},true);
+try{if(window.speechSynthesis&&speechSynthesis.getVoices)speechSynthesis.getVoices()}catch(e){}
+})();
+</script>
 <script id="tpScript">
 (function(){
 function rec(v){try{return STUDENTS[v]||(typeof DOL_ONLY_USERS!=="undefined"&&DOL_ONLY_USERS[v])||null}catch(e){return null}}
