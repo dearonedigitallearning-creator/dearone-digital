@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin – बच्चों का डेटा</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1d2433;--mu:#5b6478;--pr:#1565c0;--ok:#2e7d32;--er:#c62828;--bd:#d9deea}
+@media (prefers-color-scheme:dark){:root{--bg:#10141c;--card:#1a2030;--tx:#e8ecf5;--mu:#9aa5bd;--pr:#64a7ff;--ok:#66bb6a;--er:#ef5350;--bd:#2c3550}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;font-size:16px;padding:12px;max-width:640px;margin:0 auto}
+h1{font-size:20px;margin:6px 0 10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+input,select{width:100%;padding:11px;font-size:16px;border:1.5px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);margin:4px 0 10px}
+label{font-size:13px;color:var(--mu);font-weight:700}
+button{font-size:16px;font-weight:800;border:0;border-radius:10px;padding:11px 14px;background:var(--pr);color:#fff}
+button.sec{background:var(--bd);color:var(--tx)}
+button.dng{background:var(--er)}
+button.sm{padding:7px 10px;font-size:14px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1}
+.msg{min-height:20px;font-size:14px;font-weight:700;margin:6px 0}
+.err{color:var(--er)}.good{color:var(--ok)}
+.item{display:flex;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}
+.item:last-child{border-bottom:0}
+.sid{font-weight:900;min-width:44px;color:var(--pr)}
+.nm{font-weight:800}.sub{font-size:13px;color:var(--mu)}
+.badge{display:inline-block;background:var(--er);color:#fff;border-radius:8px;padding:1px 7px;font-size:12px;font-weight:800;margin-left:4px}
+.uid{font-family:monospace;font-size:12px;word-break:break-all;background:var(--bg);border:1px dashed var(--bd);border-radius:8px;padding:8px;margin:6px 0}
+#modal{position:fixed;left:0;top:0;right:0;bottom:0;background:#0008;display:flex;align-items:flex-start;justify-content:center;padding:12px;overflow:auto;z-index:50}
+#modal[hidden],[hidden]{display:none!important}
+#modal .card{width:100%;max-width:440px;margin-top:20px}
+</style>
+</head>
+<body>
+<h1>🛠️ Admin – बच्चों का डेटा</h1>
+
+<section id="loginBox" class="card">
+  <label for="em">Email</label>
+  <input id="em" type="email" autocomplete="username" inputmode="email">
+  <label for="pw">Password</label>
+  <input id="pw" type="password" autocomplete="current-password">
+  <button id="loginBtn" type="button">🔐 लॉगिन</button>
+  <div id="loginMsg" class="msg"></div>
+</section>
+
+<section id="main" hidden>
+  <div class="card">
+    <div class="row"><div class="grow sub" id="who"></div><button class="sec sm" id="outBtn" type="button">लॉगआउट</button></div>
+    <div class="sub" style="margin-top:8px">आपकी UID (Rules में यही डालनी है):</div>
+    <div class="uid" id="uid"></div>
+    <button class="sec sm" id="copyUid" type="button">📋 UID कॉपी करें</button>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <button id="addBtn" type="button" class="grow">➕ नया बच्चा जोड़ें</button>
+      <button id="reloadBtn" type="button" class="sec">🔄</button>
+    </div>
+    <input id="q" type="search" placeholder="खोजें: नाम, ID या class" style="margin-top:12px">
+    <div id="status" class="msg"></div>
+    <div id="list"></div>
+  </div>
+</section>
+
+<div id="modal" hidden>
+  <div class="card">
+    <div id="mTitle" style="font-weight:900;font-size:18px;margin-bottom:8px"></div>
+    <label for="fId">Student ID (2 अंक, जैसे 45)</label>
+    <input id="fId" inputmode="numeric" maxlength="4" autocomplete="off">
+    <label for="fName">नाम</label>
+    <input id="fName" maxlength="60" autocomplete="off">
+    <label for="fClass">Class</label>
+    <input id="fClass" list="classList" maxlength="30" autocomplete="off">
+    <datalist id="classList"></datalist>
+    <label for="fRoll">Roll No (वैकल्पिक)</label>
+    <input id="fRoll" maxlength="10" inputmode="numeric" autocomplete="off">
+    <label for="fPortal">Portal नाम (पुराने बच्चों वाला ही रखें)</label>
+    <input id="fPortal" maxlength="120" autocomplete="off">
+    <div id="mMsg" class="msg"></div>
+    <div class="row">
+      <button id="saveBtn" type="button" class="grow">💾 सेव</button>
+      <button id="cancelBtn" type="button" class="sec">रद्द</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC-Zbdf8pcRvhXfnPnc0mZhqpG11iaF7K8",
+  authDomain: "mtc-school-portal.firebaseapp.com",
+  projectId: "mtc-school-portal",
+  storageBucket: "mtc-school-portal.firebasestorage.app",
+  messagingSenderId: "341986124082",
+  appId: "1:341986124082:web:b0f50ba218a76bacb8772b"
+};
+const app = initializeApp(firebaseConfig, "mtc-admin");
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const SAFE = ["studentId","studentName","studentClass","rollNo","portalName"];
+const $ = (id) => document.getElementById(id);
+let rows = [];        // {id, data}
+let editing = null;   // doc id when editing, null when adding
+
+function say(el, text, kind){ el.textContent = text || ""; el.className = "msg" + (kind ? " " + kind : ""); }
+function h(tag, cls, text){ const e = document.createElement(tag); if(cls) e.className = cls; if(text !== undefined) e.textContent = text; return e; }
+function friendly(e){
+  const c = (e && e.code) || "";
+  if(c.indexOf("permission-denied") >= 0) return "लिखने की अनुमति नहीं है। Rules में अपनी UID जोड़ी है या नहीं, जाँचें।";
+  if(c.indexOf("invalid-credential") >= 0 || c.indexOf("wrong-password") >= 0 || c.indexOf("user-not-found") >= 0 || c.indexOf("invalid-email") >= 0) return "Email या Password ग़लत है।";
+  if(c.indexOf("too-many-requests") >= 0) return "बहुत ज़्यादा कोशिशें। थोड़ी देर बाद फिर करें।";
+  if(c.indexOf("network") >= 0) return "इंटरनेट की समस्या है।";
+  if(c.indexOf("operation-not-allowed") >= 0) return "Firebase में Email/Password लॉगिन चालू नहीं है।";
+  return "गड़बड़ हुई: " + (c || (e && e.message) || e);
+}
+
+/* ---------- Login ---------- */
+$("loginBtn").onclick = async function(){
+  say($("loginMsg"), "जाँच रहे हैं…");
+  try{ await signInWithEmailAndPassword(auth, $("em").value.trim(), $("pw").value); say($("loginMsg"), ""); }
+  catch(e){ say($("loginMsg"), friendly(e), "err"); }
+};
+$("pw").addEventListener("keydown", function(ev){ if(ev.key === "Enter") $("loginBtn").click(); });
+$("outBtn").onclick = function(){ signOut(auth); };
+$("copyUid").onclick = async function(){
+  try{ await navigator.clipboard.writeText($("uid").textContent); $("copyUid").textContent = "✅ कॉपी हो गया"; }
+  catch(e){ $("copyUid").textContent = "UID को दबाकर खुद कॉपी करें"; }
+};
+
+onAuthStateChanged(auth, function(u){
+  $("loginBox").hidden = !!u;
+  $("main").hidden = !u;
+  if(u){ $("who").textContent = u.email || "लॉगिन है"; $("uid").textContent = u.uid; load(); }
+  else { rows = []; $("list").textContent = ""; $("pw").value = ""; }
+});
+
+/* ---------- Load + render ---------- */
+async function load(){
+  say($("status"), "डेटा आ रहा है…");
+  try{
+    const snap = await getDocs(collection(db, "students"));
+    rows = [];
+    snap.forEach(function(d){ rows.push({ id: d.id, data: d.data() }); });
+    rows.sort(function(a, b){
+      const ca = String(a.data.studentClass || ""), cb = String(b.data.studentClass || "");
+      if(ca !== cb) return ca.localeCompare(cb, "en", { numeric: true });
+      return String(a.data.studentId || a.id).localeCompare(String(b.data.studentId || b.id), "en", { numeric: true });
+    });
+    fillClassList();
+    render();
+  }catch(e){ say($("status"), friendly(e), "err"); }
+}
+$("reloadBtn").onclick = load;
+$("q").addEventListener("input", render);
+
+function extrasOf(data){ return Object.keys(data).filter(function(k){ return SAFE.indexOf(k) < 0; }); }
+
+function render(){
+  const q = $("q").value.trim().toLowerCase();
+  const list = $("list"); list.textContent = "";
+  let shown = 0, withExtra = 0;
+  rows.forEach(function(r){
+    const d = r.data, ex = extrasOf(d);
+    if(ex.length) withExtra++;
+    const hay = [d.studentId, d.studentName, d.studentClass, d.rollNo, r.id].join(" ").toLowerCase();
+    if(q && hay.indexOf(q) < 0) return;
+    shown++;
+    const it = h("div", "item");
+    it.appendChild(h("div", "sid", String(d.studentId || r.id)));
+    const mid = h("div", "grow");
+    const nm = h("div", "nm", String(d.studentName || "(नाम नहीं)"));
+    if(ex.length){ nm.appendChild(h("span", "badge", "⚠ extra: " + ex.join(", "))); }
+    mid.appendChild(nm);
+    mid.appendChild(h("div", "sub", "Class " + (d.studentClass || "-") + (d.rollNo ? " • Roll " + d.rollNo : "")));
+    it.appendChild(mid);
+    const eb = h("button", "sec sm", "✏️"); eb.onclick = function(){ openForm(r); };
+    it.appendChild(eb);
+    if(ex.length){
+      const cb = h("button", "dng sm", "🧹"); cb.title = "extra fields हटाएँ";
+      cb.onclick = function(){ cleanExtras(r); };
+      it.appendChild(cb);
+    }
+    const db_ = h("button", "dng sm", "🗑️"); db_.onclick = function(){ removeRow(r); };
+    it.appendChild(db_);
+    list.appendChild(it);
+  });
+  say($("status"), "कुल " + rows.length + " बच्चे" + (q ? " • दिख रहे: " + shown : "") + (withExtra ? " • ⚠ " + withExtra + " में extra field (🧹 से हटाएँ)" : ""), withExtra ? "err" : "");
+}
+
+function fillClassList(){
+  const set = {}; rows.forEach(function(r){ if(r.data.studentClass) set[String(r.data.studentClass)] = 1; });
+  const dl = $("classList"); dl.textContent = "";
+  Object.keys(set).sort(function(a, b){ return a.localeCompare(b, "en", { numeric: true }); }).forEach(function(c){ const o = document.createElement("option"); o.value = c; dl.appendChild(o); });
+}
+function commonPortal(){
+  const cnt = {}; let best = "", n = 0;
+  rows.forEach(function(r){ const p = r.data.portalName; if(p){ cnt[p] = (cnt[p] || 0) + 1; if(cnt[p] > n){ n = cnt[p]; best = String(p); } } });
+  return best;
+}
+
+/* ---------- Form ---------- */
+function openForm(r){
+  editing = r ? r.id : null;
+  $("mTitle").textContent = r ? "✏️ बच्चे की जानकारी बदलें" : "➕ नया बच्चा";
+  const d = r ? r.data : {};
+  $("fId").value = r ? String(d.studentId || r.id) : "";
+  $("fId").readOnly = !!r;
+  $("fName").value = d.studentName || "";
+  $("fClass").value = d.studentClass || "";
+  $("fRoll").value = d.rollNo || "";
+  $("fPortal").value = d.portalName || commonPortal();
+  say($("mMsg"), "");
+  $("modal").hidden = false;
+  setTimeout(function(){ try{ (r ? $("fName") : $("fId")).focus(); }catch(e){} }, 60);
+}
+$("addBtn").onclick = function(){ openForm(null); };
+$("cancelBtn").onclick = function(){ $("modal").hidden = true; };
+
+$("saveBtn").onclick = async function(){
+  const sid = $("fId").value.trim(), name = $("fName").value.trim(), cls = $("fClass").value.trim();
+  const roll = $("fRoll").value.trim(), portal = $("fPortal").value.trim();
+  if(!/^\d{2,4}$/.test(sid)) return say($("mMsg"), "ID सिर्फ अंकों में होनी चाहिए (2 अंक सही रहेंगे)।", "err");
+  if(!editing && !/^\d{2}$/.test(sid)) return say($("mMsg"), "नए बच्चे की ID 2 अंकों की रखें, तभी ऐप में दिखेगी।", "err");
+  if(!name || !cls) return say($("mMsg"), "नाम और Class भरना ज़रूरी है।", "err");
+  if(portal.indexOf("MOTHER TERESA") !== 0 && !confirm("Portal नाम \"MOTHER TERESA…\" से शुरू नहीं हो रहा, ऐप में यह बच्चा नहीं दिखेगा। फिर भी सेव करें?")) return;
+  if(!editing && rows.some(function(r){ return String(r.data.studentId || r.id) === sid; })) return say($("mMsg"), "यह ID पहले से मौजूद है।", "err");
+  const data = { studentId: sid, studentName: name, studentClass: cls, rollNo: roll, portalName: portal };
+  say($("mMsg"), "सेव हो रहा है…");
+  try{
+    if(editing) await updateDoc(doc(db, "students", editing), data);
+    else await setDoc(doc(db, "students", sid), data);
+    $("modal").hidden = true;
+    await load();
+  }catch(e){ say($("mMsg"), friendly(e), "err"); }
+};
+
+/* ---------- Delete / clean ---------- */
+async function removeRow(r){
+  const d = r.data;
+  if(!confirm("पक्का हटाना है?\n" + (d.studentId || r.id) + " – " + (d.studentName || "") + "\n(attendance का पुराना डेटा नहीं हटेगा)")) return;
+  try{ await deleteDoc(doc(db, "students", r.id)); await load(); }
+  catch(e){ say($("status"), friendly(e), "err"); }
+}
+async function cleanExtras(r){
+  const ex = extrasOf(r.data);
+  const bad = ex.filter(function(k){ return /[.\/\[\]*`~]/.test(k); });
+  if(bad.length) return alert("इन fields के नाम में खास चिह्न हैं, इन्हें Firebase console से हटाएँ: " + bad.join(", "));
+  if(!confirm((r.data.studentName || r.id) + " से ये extra fields हमेशा के लिए हटाएँ?\n" + ex.join(", ") + "\n\n(नाम, class, ID, roll, portal नहीं हटेंगे)")) return;
+  const upd = {}; ex.forEach(function(k){ upd[k] = deleteField(); });
+  try{ await updateDoc(doc(db, "students", r.id), upd); await load(); }
+  catch(e){ say($("status"), friendly(e), "err"); }
+}
+</script>
+</body>
+</html>
