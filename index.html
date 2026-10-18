@@ -5706,6 +5706,12 @@ S["9|sst3|4"]=window.mtcWs9({"t": "अर्थशास्त्र अध्�
 #mtcExamTT .ttSign{display:flex;justify-content:space-between;padding:10px 22px 4px;font-size:13px;font-weight:1000;color:#1a237e}
 #mtcExamTT .ttSign span{border-top:2px solid #1a237e;padding-top:3px;min-width:110px;text-align:center}
 #mtcExamTT .ttClose{display:block;width:calc(100% - 20px);margin:8px 10px 10px;padding:12px;border:0;border-radius:12px;background:#757575;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
+
+#mtcExamTT .ttHead{padding:5px 40px 2px!important}
+#mtcExamTT .ttSch{font-size:14.5px!important;font-weight:1000!important;-webkit-text-stroke:.6px #1a237e}
+#mtcExamTT .ttAdr{font-size:10px!important;color:#222!important;font-weight:1000!important;-webkit-text-stroke:.3px #222;margin-top:0!important}
+#mtcExamTT .ttTitle{font-size:14px!important;padding:4px 12px!important;margin-top:4px!important;font-weight:1000!important;-webkit-text-stroke:.6px #fff;letter-spacing:.5px}
+#mtcExamTT .ttHi{font-size:11.5px!important;font-weight:1000!important;-webkit-text-stroke:.4px #2e7d32;margin-top:2px!important}
 </style>
 <div id="mtcExamTT" aria-hidden="true"><div class="ttBox">
 <div class="ttFlag"><i style="background:#ff9933"></i><i style="background:#e8e8e8"></i><i style="background:#138808"></i></div>
@@ -5778,6 +5784,11 @@ document.addEventListener('click',function(e){var o=document.getElementById('mtc
 @keyframes mtcTTpulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,145,0,.75)}50%{transform:scale(1.03);box-shadow:0 0 0 12px rgba(255,145,0,0)}}
 #mtcExamTT .ttDl{display:block;width:calc(100% - 20px);margin:8px 10px 0;padding:13px;border:0;border-radius:12px;background:linear-gradient(135deg,#2e7d32,#00c853);color:#fff;font-size:17px;font-weight:1000;cursor:pointer}
 #mtcExamTT .ttHello{font-size:15px;font-weight:1000;color:#c2185b;margin-top:4px}
+.ttHello .ttWho{display:flex;gap:8px;justify-content:space-between;align-items:center;margin:4px 0 2px}.ttHello .ttMid{flex:1;min-width:0;text-align:center}
+.ttHello .ttB1,.ttHello .ttB2{flex:none;color:#fff;font-size:17px;font-weight:1000;line-height:1.15;text-align:center;padding:6px 12px;border-radius:16px;box-shadow:0 2px 6px #0003}
+.ttHello .ttB1{background:#e91e63}.ttHello .ttB2{background:#1565c0}
+.ttHello .ttNm{font-size:20px;font-weight:1000;color:#c2185b;line-height:1.2}
+.ttHello .ttCl{font-size:15px;font-weight:900;color:#0d47a1;margin-top:1px}
 #mtcTTAsk{display:none;position:fixed;inset:0;z-index:500001;background:#000b;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}
 #mtcTTAsk.open,html body.gateLocked #mtcTTAsk.open,html body.dolOpen #mtcTTAsk.open{display:flex!important;visibility:visible!important}
 #mtcTTAsk .bx{width:min(380px,100%);background:#fff;border-radius:20px;border:4px solid #ff1744;padding:18px;text-align:center;box-sizing:border-box;box-shadow:0 10px 35px #0006}
@@ -5819,7 +5830,10 @@ window.mtcTTAskGo=function(manual){
  }
  mtcTTAskClose();
  window.mtcShowExamTT();
- var h=$('mtcTTHello');if(h)h.textContent='🙏 '+r[0]+(r[1]&&r[1]!=='Admin'?' — Class '+r[1]:'');
+ var h=$('mtcTTHello');if(h){
+  var rl=(window.MTC_ROLL||{})[e]||'',q=function(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+  h.innerHTML='<div class="ttWho"><span class="ttB1">ID<br>'+q(e)+'</span><div class="ttMid"><div class="ttNm">🙏 '+q(r[0])+'</div>'+(r[1]&&r[1]!=='Admin'?'<div class="ttCl">Class: '+q(r[1])+'</div>':'')+'</div>'+(rl&&r[1]!=='Admin'?'<span class="ttB2">Roll No.<br>'+q(rl)+'</span>':'')+'</div>';
+ }
  if(r[1]!=='Admin'){
   var th=cn<=4?'सुबह साढ़े दस बजे से दोपहर एक बजे तक':'सुबह आठ बजे से साढ़े दस बजे तक',te=cn<=4?'10:30 AM to 1:00 PM':'8:00 AM to 10:30 AM';
   try{if(window.MTC_SPEAK)window.MTC_SPEAK(r[0]+', आपकी class '+r[1]+' है। आपका Half Yearly Time Table खुल गया है। परीक्षा का समय '+th+' है।',r[0]+', your class is '+r[1]+'. Your Half Yearly time table is open. The exam time is '+te+'.')}catch(x){}
@@ -6104,6 +6118,31 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 #mtcVoiceCard .vr{font-size:16px;font-weight:900;color:#1b5e20;line-height:1.45;margin:4px 0}
 #mtcVoiceCard .vr.t{color:#c62828}
 #mtcVoiceCard .vb{display:block;width:100%;margin-top:6px;padding:11px;border:0;border-radius:12px;background:linear-gradient(135deg,#1565c0,#6a1b9a);color:#fff;font-size:17px;font-weight:1000;cursor:pointer}
+
+/* ID left, Name+Class beech me, Roll No. right */
+#mtcAdmit .adWho{flex-wrap:nowrap!important;justify-content:space-between!important;align-items:center!important}
+#mtcAdmit .adWho>.adCirc:nth-child(1){order:1}
+#mtcAdmit .adWho>.adInfo{order:2;flex:1 1 auto!important;text-align:center!important;min-width:0}
+#mtcAdmit .adWho>.adCirc:nth-child(2){order:3}
+@media (max-width:430px){#mtcAdmit:not(.adA4) .adNm{font-size:21px!important}#mtcAdmit:not(.adA4) .adLn{font-size:12px!important}}
+/* chhota + bold header */
+#mtcAdmit:not(.adA4) .adHead{padding:3px 34px 0!important}
+#mtcAdmit:not(.adA4) .adLogo{width:34px!important;height:34px!important;border-width:2px!important}
+#mtcAdmit .adSch{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#1a237e!important;-webkit-text-stroke:.6px #1a237e;font-weight:1000!important}
+#mtcAdmit:not(.adA4) .adSch{font-size:13.5px!important}
+#mtcAdmit .adAdr{color:#222!important;font-weight:1000!important;-webkit-text-stroke:.3px #222}
+#mtcAdmit:not(.adA4) .adAdr{font-size:9.5px!important;margin-top:0!important}
+#mtcAdmit .adTitle{font-weight:1000!important;letter-spacing:1.5px!important;-webkit-text-stroke:1px #fff;text-shadow:0 1px 2px #0006}
+#mtcAdmit:not(.adA4) .adTitle{font-size:18px!important;padding:3px 18px!important;margin-top:3px!important}
+#mtcAdmit .adSub{font-weight:1000!important;-webkit-text-stroke:.4px #1a237e}
+#mtcAdmit:not(.adA4) .adSub{font-size:10.5px!important;margin-top:2px!important}
+#mtcAdmit.adA4 .adHead{padding:8px 20px 2px!important}
+#mtcAdmit.adA4 .adLogo{width:66px!important;height:66px!important}
+#mtcAdmit.adA4 .adSch{font-size:23px!important}
+#mtcAdmit.adA4 .adAdr{font-size:13px!important}
+#mtcAdmit.adA4 .adTitle{font-size:30px!important;padding:6px 30px!important;margin-top:6px!important}
+#mtcAdmit.adA4 .adSub{font-size:15px!important;margin-top:4px!important}
+#mtcAdmit.adA4 .adNm{font-size:36px!important}
 </style>
 <style id="mtc-res-style">
 #topResCardBtn{display:block;width:auto;margin:0 auto 10px;padding:14px 30px;border:0;border-radius:32px;background:linear-gradient(135deg,#00897b,#43a047 50%,#f9a825);color:#fff;font-size:22px;font-weight:900;box-shadow:0 6px 18px rgba(0,137,123,.5);cursor:pointer}
@@ -6500,12 +6539,25 @@ function scheduleHtml(sid,g){
     cls=c.mode==="Written"?"w":"o";
     var at=attOf(sid,r[0]),ac="at",al="";
     if(at==="P"){ac="at p";al="Present"}else if(at==="A"){ac="at a";al="Absent"}else if(done){al="—"}
-    h+='<td class="'+cls+'" style="color:'+subC(c.subs[0]||"")+'">'+(done?'<b class="adTick">✅</b> ':'')+esc(txt)+'</td><td class="'+ac+'">'+al+'</td><td class="sg"></td></tr>';
+    var sgImg="";
+    if(at){try{var AA=window.MTC_ATTENDANCE||{},sgd=AA._sig&&AA._sig[r[0]+"|"+STU()[sid][1]];
+      if(sgd&&/^data:image\//.test(sgd))sgImg='<img alt="Invigilator sign" src="'+sgd+'" style="display:block;margin:0 auto;max-width:100%;max-height:26px;height:auto">'}catch(e){}}
+    h+='<td class="'+cls+'" style="color:'+subC(c.subs[0]||"")+'">'+(done?'<b class="adTick">✅</b> ':'')+esc(txt)+'</td><td class="'+ac+'">'+al+'</td><td class="sg">'+sgImg+'</td></tr>';
   });
   return h+'</tbody></table></div>';
 }
 /* fee paid → Admit Card download allowed: 14 Saniya, 38 Radhika, 61 Misha Ved */
 var PAID={"14":1,"38":1,"61":1,"17":1,"13":1,"54":1,"16":1,"15":1,"50":1,"11":1,"57":1,"19":1,"44":1,"12":1,"64":1,"35":1,"18":1,"08":1,"51":1};
+/* online se attendance aane ke baad sirf table dobara banta hai (awaaz dobara nahi bajti) */
+window.mtcAdRefreshTable=function(sid){
+  try{
+    if(curAd!==String(sid))return;
+    var oo=$("mtcAdmit");if(!oo||!oo.classList.contains("open"))return;
+    var w=oo.querySelector(".adWrap"),st=STU()[sid];if(!w||!st)return;
+    var t=document.createElement("div");t.innerHTML=scheduleHtml(sid,grp(st[1]));
+    var nw=t.querySelector(".adWrap");if(nw)w.parentNode.replaceChild(nw,w);
+  }catch(e){}
+};
 function logoSrc(){try{return typeof SCHOOL_LOGO!=="undefined"?SCHOOL_LOGO:(($("logoImg")||{}).src||"")}catch(e){return ""}}
 window.mtcShowAdmit=function(sid){
   var st=STU()[sid],o=$("mtcAdmit");if(!st||!o)return;
@@ -7756,7 +7808,7 @@ var sh=window.mtcShowAdmit;
 window.mtcShowAdmit=function(sid){
   var r=typeof sh==="function"?sh.apply(this,arguments):undefined;
   cur=String(sid);decorate();
-  try{if(window.mtcFsPull)window.mtcFsPull().then(function(){save();if(cur===String(sid))decorate()}).catch(function(){})}catch(e){}
+  try{if(window.mtcFsPull)window.mtcFsPull().then(function(){save();if(cur===String(sid)){decorate();try{window.mtcAdRefreshTable&&window.mtcAdRefreshTable(sid)}catch(e){}}}).catch(function(){})}catch(e){}
   return r;
 };
 var cv,cx,drawing=false,dirty=false;
