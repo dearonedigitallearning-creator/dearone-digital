@@ -658,7 +658,7 @@ body:not(.gateLocked) #mtcHub .hubSecGrid{display:none}
 <div class="hubIdRow"><span class="hubLock">🔐</span><input id="mtcHubId" type="tel" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="अपनी Student ID डालें"></div>
 <div id="mtcHubMsg"></div>
 <div class="hubGrid"><button id="topTestBtn" onclick="openGateMode('test')"><span class="tIcon">🎯</span> अपना टेस्ट दें</button><button id="topNotesBtn" onclick="openGateMode('notes')"><span class="tIcon">📘</span> My Books खोलें</button><button id="topResBtn" onclick="openGateMode('result')"><span class="tIcon">📊</span> अपना Result देखें</button><button id="topTTBtn" type="button" onclick="mtcAskTT()"><span class="tIcon">📅</span> Exam Time Table</button><button id="topAdmitBtn" type="button" onclick="mtcAskAdmit()"><span class="tIcon">🎫</span> Admit Card</button><button id="topResCardBtn" type="button" onclick="mtcAskResultCard()"><span class="tIcon">🏆</span> Result Card</button></div>
-<div class="hubSecGrid"><button type="button" class="hubSec s1" data-sec="notes"><span class="si">📘</span><span class="st">MY BOOKS</span></button><button type="button" class="hubSec s2" data-sec="test"><span class="si">📝</span><span class="st">TEST दे</span></button><button type="button" class="hubSec s3" data-sec="half"><span class="si">📄</span><span class="st">Half Yearly Exam Result 2026-27</span></button><button type="button" class="hubSec s4" data-sec="merit"><span class="si">🏆</span><span class="st">Merit List</span></button><button type="button" class="hubSec s5" data-sec="result"><span class="si">📊</span><span class="st">Online Test पिछला Result देखे</span></button><button type="button" class="hubSec s6" data-sec="annual"><span class="si">🎓</span><span class="st">Annual Examination Result 2026-27</span></button></div>
+<div class="hubSecGrid"><button type="button" class="hubSec s1" data-sec="notes"><span class="si">📘</span><span class="st">MY BOOKS</span></button><button type="button" class="hubSec s2" data-sec="test"><span class="si">📝</span><span class="st">TEST दे</span></button><button type="button" class="hubSec s3" data-sec="half"><span class="si">📄</span><span class="st">Half Yearly Exam Result 2026-27</span></button><button type="button" class="hubSec s4" data-sec="merit"><span class="si">🏆</span><span class="st">Merit List</span></button><button type="button" class="hubSec s5" data-sec="result"><span class="si">📊</span><span class="st">Online Test पिछला Result देखे</span></button><button type="button" class="hubSec s6" data-sec="annual"><span class="si">🎓</span><span class="st">Annual Examination Result 2026-27</span></button><button type="button" class="hubTW" onclick="openTestWindowGuarded()"><span class="si">📝</span><span class="st">TEST WINDOW<small>Class 9 English • Beehive Tests</small></span></button><button type="button" class="hubTWAdm" onclick="mtcTWAdminOpen()">🔐 Admin: Test Window Lock / Unlock</button></div>
 <div class="hubAdminRow"><div id="mtcAdminSectionVisible" class="mtcAdminSection" style="display:block!important;visibility:visible!important;opacity:1!important"><h3>🛡️ Admin जाँच</h3><p>Locked Topic का Content जाँचने के लिए। Student का unlock नहीं खुलेगा और उसका timer नहीं बदलेगा।</p><button type="button" onclick="mtcOpenAdminCheck()">🔎 Admin जाँच खोलें</button></div><button id="mtcAdminCheckBtn" type="button" onclick="mtcOpenAdminCheck()">🔎 Admin जाँच</button><div id="mtcAdminCheckStatus">🔓 Admin जाँच चालू — Topic Content Preview Mode</div></div>
 <div id="mtcHubSwitch"><span>🎨 डिज़ाइन चुनें:</span><button type="button" data-d="1">1</button><button type="button" data-d="2">2</button><button type="button" data-d="3">3</button></div>
 </div>
@@ -1860,6 +1860,260 @@ function snExpl(t,subj,sec){const e=String(t.ex2||t.ex||'');if(e.length>70&&!/^L
  return hi?('“'+t.title+'” का अर्थ, परिभाषा और नियम ध्यान से समझें। हर नियम के 2–3 उदाहरण अपनी कॉपी में लिखें और सामान्य गलतियों से बचने का अभ्यास करें। फिर Worksheet हल करके अपने उत्तर Answer से मिलाएँ।'):('“'+t.title+'” is an important '+sec+' topic. First understand its meaning and main rule, then study the examples and note the common mistakes. Write 2–3 sentences of your own using this topic and check them with the worksheet answers.')}
 function snPoints(t,subj){const p=(t.points2||[]).filter(Boolean);if(p.length&&!/^(Understand the central|Notice important)/.test(p[0])||p.length>2)return p;const hi=/[\u0900-\u097F]/.test(String(subj+t.title));
  return hi?['“'+t.title+'” की परिभाषा / मुख्य नियम याद करें','पाठ के अनुसार सही उदाहरण देखें और लिखें','अभ्यास के बाद Worksheet के उत्तर जाँचें']:['Learn the meaning / main rule of “'+t.title+'”','Study the examples and write your own','Practise the worksheet and check the answers']}
+</script>
+<style id="mtc-testwindow-style">
+#mtcHub .hubTW{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;margin:2px 0 0;padding:8px 12px;border:0;border-radius:14px;color:#fff;font-weight:1000;font-size:17px;line-height:1.15;cursor:pointer;background:linear-gradient(135deg,#c2185b,#6a1b9a);box-shadow:0 3px 8px #0003;-webkit-text-stroke:.3px #fff}
+#mtcHub .hubTW .si{font-size:24px;display:inline-block}
+#mtcHub .hubTW small{display:block;font-size:11px;font-weight:800;opacity:.95;-webkit-text-stroke:0}
+#mtcTWWrap{display:none;position:fixed;inset:0;background:#fff;z-index:99998;overflow:hidden}
+body.twOpen>*:not(#mtcTWWrap){display:none!important}
+body.twOpen #mtcTWWrap{display:block!important}
+#mtcHub .hubTWAdm{grid-column:1/-1;width:100%;margin:2px 0 0;padding:7px;border:2px dashed #6a1b9a;border-radius:12px;background:#fff;color:#6a1b9a;font-size:13px;font-weight:900;cursor:pointer}
+#mtcTWLock{display:none;position:fixed;inset:0;z-index:600010;background:#000b;align-items:center;justify-content:center;padding:14px;box-sizing:border-box}
+#mtcTWLock.open,html body.gateLocked #mtcTWLock.open,html body.dolOpen #mtcTWLock.open{display:flex!important;visibility:visible!important}
+#mtcTWLock .lb{width:min(400px,100%);background:#fff;border:5px solid #6a1b9a;border-radius:20px;padding:18px;text-align:center;box-sizing:border-box;box-shadow:0 10px 35px #0008}
+#mtcTWLock h2{margin:0 0 8px;font-size:22px;color:#6a1b9a;font-weight:1000}
+#mtcTWLock p{margin:6px 0 10px;font-size:15px;font-weight:800;color:#333;line-height:1.4}
+#mtcTWLock input{width:100%;padding:12px;margin:6px 0;border:3px solid #9c27b0;border-radius:12px;font-size:18px;text-align:center;box-sizing:border-box}
+#mtcTWLock button{display:block;width:100%;margin:7px 0 0;padding:12px;border:0;border-radius:12px;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
+#mtcTWLock .stt{padding:10px;border-radius:12px;font-size:16px;font-weight:1000;margin:6px 0}
+#mtcTWLock .on{background:#e8f5e9;color:#1b5e20}#mtcTWLock .off{background:#ffebee;color:#c62828}
+#mtcTWLock #twMsg{min-height:20px;margin-top:8px;font-size:14px;font-weight:900}
+</style>
+<div id="mtcTWWrap"><div style="position:sticky;top:0;z-index:100000;background:linear-gradient(90deg,#c2185b,#6a1b9a,#1565c0);padding:8px;text-align:center"><button onclick="closeTestWindow()" style="background:#fff;color:#6a1b9a;font-weight:900;border-radius:20px;padding:8px 18px;border:0">⬅️ मुख्य पेज पर वापस जाएँ</button></div><iframe id="mtcTWFrame" style="display:block;width:100%;height:calc(100vh - 54px);border:0;background:#fff"></iframe></div>
+<script type="text/plain" id="mtcTestWinSrc">!doctype html>
+html lang="en">
+head>
+meta charset="utf-8">meta name="viewport" content="width=device-width,initial-scale=1">
+title>Test Window | Class 9 English Beehive/title>
+style>
+:root{--navy:#17324d;--pink:#e83e8c;--gold:#ffcf4a;--green:#13834a;--red:#c62828}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef8ff,#fff0f7);font-family:Arial,Helvetica,sans-serif;color:#17212b}
+header{background:linear-gradient(120deg,#17324d,#315c83);color:#fff;text-align:center;padding:22px 12px}header h1{margin:0;font-size:clamp(21px,4vw,31px);font-weight:900}header p{margin:6px 0;font-weight:bold}
+.wrap{max-width:850px;margin:18px auto;padding:0 12px}.card{background:#fff;border-radius:17px;padding:18px;margin:14px 0;box-shadow:0 6px 20px #17324d18;border:1px solid #dbe7f2}
+h2{color:var(--navy);margin-top:0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.lesson{padding:17px;border:2px solid #d7e5f0;border-radius:14px;background:#fff;cursor:pointer;text-align:left;font-size:16px}.lesson:hover{border-color:var(--pink)}
+.lesson strong{display:block;color:var(--pink);font-size:18px;margin-bottom:7px}
+input[type=text]{width:100%;padding:13px;border:2px solid #b9cad9;border-radius:10px;font-size:17px;margin:8px 0 12px}
+button{border:0;border-radius:10px;padding:12px 17px;font-size:16px;font-weight:800;cursor:pointer}.primary{background:var(--gold);color:var(--navy)}.dark{background:var(--navy);color:white}.hidden{display:none!important}.muted{color:#5b6874;font-size:13px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.timer{background:#fff0f0;color:#b71c1c;border-radius:10px;padding:9px 12px;font-weight:900;font-size:18px}
+.bar{height:9px;background:#e5ebf1;border-radius:99px;overflow:hidden;margin:12px 0 18px}.bar div{height:100%;background:var(--gold);width:0}
+.qtitle{color:var(--pink);font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.option{display:flex;align-items:flex-start;gap:11px;padding:13px;margin:9px 0;border:2px solid #e0e7ed;border-radius:12px;cursor:pointer;color:#111;font-weight:600;line-height:1.35}
+.option input{width:auto;margin:2px 0 0;accent-color:var(--navy)}.option.correct{border-color:var(--green);background:#e9f8ef}.option.wrong{border-color:var(--red);background:#fff0f0}.option.locked{cursor:not-allowed}
+.feedback{font-weight:900;font-size:17px;margin:14px 0}.good{color:var(--green)}.bad{color:var(--red)}
+.warning{padding:12px;border-radius:10px;background:#fff6d9;color:#604b00;font-size:14px}.autoNote{font-weight:bold;color:#37536e;margin:10px 0}
+#resultScore{font-size:30px;color:var(--green);font-weight:900}footer{text-align:center;padding:20px;color:#697581;font-size:12px}
+/style>/head>
+body>
+header>h1>MOTHER TERESA CHILDREN SECONDARY SCHOOL/h1>p>VIGYAN NAGAR, KOTA (RAJ.)/p>p style="color:#ffcf4a;font-size:22px">TEST WINDOW/p>p>Class 9 English • Beehive • Online Tests/p>/header>
+main class="wrap">
+section class="card" id="choose">h2>Choose Your Test/h2>div class="grid">
+button class="lesson" onclick="chooseLesson('l1')">strong>LESSON 1/strong>The Fun They Hadsmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marks/small>/button>
+button class="lesson" onclick="chooseLesson('l2')">strong>LESSON 2/strong>The Sound of Musicsmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marks/small>/button>
+button class="lesson" onclick="chooseLesson('l3')">strong>LESSON 3/strong>The Little Girlsmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marks/small>/button>
+/div>/section>
+section class="card hidden" id="login">h2 id="loginTitle">Student Login/h2>label for="studentId">b>Enter Student ID (21–30)/b>/label>input id="studentId" type="text" inputmode="numeric" maxlength="4" placeholder="Enter ID 21 to 30">
+button class="primary" onclick="startTest()">START TEST/button> button class="dark" onclick="backToLessons()">Back to Test Window/button>p id="loginMsg" class="feedback" role="status">/p>
+div class="warning">One-time rule is saved in this browser for each ID and lesson. To enforce it across different phones or browsers and securely store results, connect a shared database with server-side validation./div>/section>
+section class="card hidden" id="test">div class="row">b id="who">/b>span class="timer">⏱ span id="timer">15:00/span>/span>b>Question span id="qnum">1/span> / 30/b>button id="audioBtn" type="button" class="dark" style="padding:6px 10px;font-size:13px" onclick="toggleAudio()">🔊 Audio ON/button>/div>
+div class="bar">div id="barFill">/div>/div>div id="questionArea">/div>
+div class="row" style="margin-top:18px">
+button class="dark" id="prev" onclick="step(-1)">← Previous/button>
+span id="answeredCount" class="muted">Answered: 0 / 30/span>
+button class="primary" id="next" onclick="step(1)">Next →/button>
+/div>
+div class="row" style="margin-top:14px">
+span id="submitHint" class="muted">Submit will appear after all 30 questions are answered./span>
+button id="submitTest" class="hidden" style="background:#13834a;color:#fff;font-weight:900" onclick="finishTest(false)">✓ SUBMIT TEST/button>
+/div>
+p class="autoNote" id="autoNote">Choose an answer: checking is instant; the next question appears automatically after 8 seconds./p>
+p class="muted">उत्तर चुनने के बाद उत्तर लॉक रहेगा। अगला प्रश्न 8 सेकंड बाद अपने-आप खुलेगा या Next बटन से तुरंत जा सकते हैं। सभी 30 प्रश्नों के उत्तर देने पर आखिरी प्रश्न पर हरे रंग का Submit बटन दिखाई देगा।/p>/section>
+section class="card hidden" id="result">h2>Test Result/h2>p id="resultWho">/p>div id="resultScore">/div>p id="percent">/p>p id="remark">/p>div id="review">/div>button class="primary" onclick="window.print()">Print Result/button>button class="dark" onclick="location.reload()">Back to Test Window/button>/section>
+/main>footer>Class 9 English • Beehive • Test Window/footer>
+script>
+const BANK={"l1": [["Who is the author of “The Fun They Had”?", ["R. K. Narayan", "Isaac Asimov", "Ruskin Bond", "H. G. Wells"], 1], ["On what date did Margie write in her diary about the old book?", ["17 May 2157", "17 May 2057", "17 June 2157", "17 May 2025"], 0], ["How old was Margie?", ["Eleven", "Twelve", "Thirteen", "Ten"], 3], ["How old was Tommy?", ["Ten", "Eleven", "Twelve", "Thirteen"], 2], ["Where did Tommy find the old book?", ["In the school library", "In the attic", "In the garden", "At a bookshop"], 1], ["What was unusual about the book Tommy found?", ["It had moving pictures", "Its pages were blank", "Its words stayed still on the pages", "It spoke aloud"], 2], ["What kind of school did Margie attend?", ["A village school", "A school in a large building", "A school at home with a mechanical teacher", "A boarding school"], 2], ["Where did Margie do her schoolwork?", ["In a classroom", "In her bedroom", "In a library", "In a playground"], 1], ["What did the mechanical teacher display lessons on?", ["A television screen", "A printed page", "A blackboard", "A projector wall"], 0], ["What subject was Margie learning when the story begins?", ["History", "Geography", "Arithmetic", "English"], 2], ["Why was Margie doing badly in geography?", ["She disliked the teacher", "The geography sector was geared too fast", "She had not studied", "The book was missing"], 1], ["Who repaired the mechanical teacher?", ["The County Inspector", "Tommy’s father", "The school principal", "Margie’s mother"], 0], ["What did the County Inspector do to help Margie?", ["Replaced her with a human teacher", "Slowed the geography sector to an average level", "Cancelled her lessons", "Gave her a printed book"], 1], ["What did the County Inspector say about Margie’s overall progress?", ["She was far behind", "She was doing perfectly", "She was doing well for her age", "She should stop studying"], 2], ["Where was the old book’s school located?", ["Inside a house", "In a school building", "On a spaceship", "Underground"], 1], ["What did Tommy say about the old kind of teachers?", ["They were robots", "They were human beings", "They were computers", "They were television actors"], 1], ["How did children in the old schools learn together?", ["They studied alone at home", "They sat together in a classroom", "They watched the same screen silently", "They learned only by radio"], 1], ["Why did Margie find the idea of a school building strange?", ["She had never seen a building", "She was used to studying at home", "She thought buildings were unsafe", "She had moved recently"], 1], ["What did Margie dislike most about her school?", ["The schoolroom was too large", "She had to learn with many children", "The mechanical teacher kept giving her tests", "She had no books"], 2], ["What did Margie’s mother believe about lessons?", ["Each child should learn at home", "Children should be taught at the proper time", "Tests should be removed", "Teachers should never give homework"], 1], ["What did the old book contain?", ["Only pictures", "Stories and printed words", "Computer instructions", "Maps only"], 1], ["Why did Tommy call the old book a waste?", ["It was too expensive", "The words did not move or change", "It was written in code", "It had no cover"], 1], ["What happened to the words in a printed book when readers turned back to a page?", ["They disappeared", "They changed", "They stayed the same", "They were read aloud automatically"], 2], ["What did Margie think about children going to school together?", ["It sounded boring", "It sounded fun", "It sounded impossible and frightening", "It sounded unfair"], 1], ["What was the main difference between the old school and Margie’s school?", ["Old schools had no lessons", "Old schools used human teachers and classrooms", "Old schools taught only history", "Old schools had no students"], 1], ["Which device taught Margie every day?", ["A human tutor", "A mechanical teacher", "A talking dictionary", "A robot dog"], 1], ["What did the County Inspector bring with him?", ["A new book", "A box of tools", "A school uniform", "A computer game"], 1], ["Why did Margie’s mother send her to the schoolroom at a fixed time?", ["To meet Tommy", "Because children had to study at regular hours", "To repair the teacher", "To read the old book"], 1], ["What does the title “The Fun They Had” mainly refer to?", ["The fun Margie had with her machine", "The fun children in the past had learning together", "Tommy’s fun finding the book", "A holiday from school"], 1], ["At the end, what was Margie imagining?", ["A school without lessons", "Children from the old days laughing and learning together", "Becoming a County Inspector", "Throwing away all books"], 1]], "l2": [["Who wrote “The Sound of Music”?", ["Deborah Cowley", "Isaac Asimov", "Ruskin Bond", "A. P. J. Abdul Kalam"], 0], ["What is the first part of “The Sound of Music” mainly about?", ["A famous painter", "Evelyn Glennie, a percussionist", "A mountaineer", "A scientist"], 1], ["What happened to Evelyn Glennie’s hearing as she grew older?", ["It became unusually sharp", "She gradually lost it", "She lost her eyesight", "It never changed"], 1], ["At what age was Evelyn’s hearing problem first noticed?", ["Around eight", "Around eleven", "Around sixteen", "Around twenty"], 1], ["Who encouraged Evelyn to pursue music?", ["Her school principal", "Percussionist Ron Forbes", "Her brother", "Bismillah Khan"], 1], ["What did Ron Forbes help Evelyn learn to do?", ["Read lips only", "Feel music through different parts of her body", "Play only the piano", "Avoid musical instruments"], 1], ["How did Evelyn sense the higher notes of music?", ["Through vibrations in the upper part of her body", "By watching a clock", "By reading subtitles", "Through a hearing aid alone"], 0], ["Which instrument family did Evelyn become especially known for playing?", ["Percussion", "Brass", "Woodwind", "String"], 0], ["Which prestigious music school did Evelyn attend in London?", ["Royal Academy of Music", "Oxford School of Art", "Royal Ballet School", "National Film School"], 0], ["How did Evelyn perform at the Royal Academy of Music?", ["She was asked to leave", "She won top awards and excelled", "She refused to practise", "She studied only singing"], 1], ["What message does Evelyn’s story convey?", ["Disability always prevents success", "Determination and hard work can overcome challenges", "Music is only for hearing people", "Success depends only on luck"], 1], ["How did Evelyn help other people after becoming successful?", ["She stopped performing", "She gave concerts and helped young musicians", "She became a doctor", "She taught only online"], 1], ["What does Evelyn’s story suggest about listening to music?", ["Music can be felt in the body", "Music must be heard through ears only", "Music has no rhythm", "Only singers understand music"], 0], ["Who is the subject of the second part of the lesson?", ["Evelyn Glennie", "Bismillah Khan", "Ron Forbes", "Deborah Cowley"], 1], ["Which instrument did Bismillah Khan play?", ["Sitar", "Tabla", "Shehnai", "Flute"], 2], ["The shehnai is traditionally associated with which kind of occasion?", ["Weddings and auspicious ceremonies", "Only funerals", "Sports competitions", "School examinations"], 0], ["Where was Bismillah Khan born?", ["Delhi", "Dumraon in Bihar", "Mumbai", "Chennai"], 1], ["What was Bismillah Khan’s childhood name?", ["Amiruddin", "Evelyn", "Ronald", "Ali Akbar"], 0], ["Who in Bismillah Khan’s family was a shehnai player?", ["His father only", "His maternal uncle Ali Bux", "His younger sister", "His grandfather’s friend"], 1], ["Where did Bismillah Khan practise the shehnai in Varanasi?", ["At the Taj Mahal", "At temples and on the banks of the Ganga", "In a railway station", "In a cinema hall"], 1], ["Which river was especially important in Bismillah Khan’s life and music?", ["Yamuna", "Ganga", "Narmada", "Godavari"], 1], ["Which event made the shehnai prominent on the national stage in independent India?", ["His performance on 15 August 1947", "A cricket final", "A film premiere", "A school concert"], 0], ["Where did Bismillah Khan perform on India’s first Independence Day?", ["Red Fort", "India Gate", "Gateway of India", "Qutub Minar"], 0], ["Which award did Bismillah Khan receive in 2001?", ["Bharat Ratna", "Padma Shri only", "Nobel Prize", "Arjuna Award"], 0], ["What did Bismillah Khan feel deeply attached to?", ["Only foreign countries", "India, Varanasi and the Ganga", "Leaving music behind", "Living far from all people"], 1], ["Why did Bismillah Khan refuse to settle permanently in the United States?", ["He disliked all travel", "He could not imagine leaving India and Varanasi", "He wanted to stop playing", "He was afraid of instruments"], 1], ["What did Bismillah Khan help establish through his performances?", ["The shehnai as a classical concert instrument", "The guitar as a wedding instrument", "The piano as a temple instrument", "The drum as a national anthem"], 0], ["What quality is shared by Evelyn Glennie and Bismillah Khan?", ["They gave up when challenged", "Dedication to music and sustained practice", "They played the same instrument", "They never performed publicly"], 1], ["Which statement about Evelyn Glennie is correct?", ["She became a successful musician despite profound hearing loss", "She was a shehnai player from Bihar", "She wrote the lesson", "She learned music only from Bismillah Khan"], 0], ["What is a central theme of “The Sound of Music”?", ["Music can inspire, unite and overcome barriers", "Music is useful only at ceremonies", "Fame is more important than practice", "Only one instrument matters"], 0]], "l3": [["Who is the author of “The Little Girl”?", ["Katherine Mansfield", "Isaac Asimov", "Ruskin Bond", "A. J. Cronin"], 0], ["What is the name of the little girl in the story?", ["Margie", "Kezzia", "Evelyn", "Alice"], 1], ["How did Kezia feel about her father?", ["She was very comfortable with him", "She was afraid of him", "She never noticed him", "She thought he was funny"], 1], ["Why did Kezia stutter while speaking to her father?", ["She was always sleepy", "She was frightened and nervous around him", "She did not know English", "She wanted to make him angry"], 1], ["What did Kezia’s father usually do after returning from work?", ["Played games with Kezia", "Read the newspaper and rested", "Cooked dinner", "Went to the park"], 1], ["What did Kezia’s grandmother encourage her to do?", ["Avoid her father forever", "Get to know her father better", "Stop going to school", "Hide in her room"], 1], ["What did Kezia make for her father’s birthday?", ["A painting", "A pin-cushion", "A book", "A paper boat"], 1], ["What did Kezia use to stuff the pin-cushion?", ["Cotton wool", "Her father’s important speech papers", "Old clothes", "Dry leaves"], 1], ["Why was Kezia punished by her father?", ["She broke a window", "She tore up his important papers", "She refused dinner", "She lost his shoes"], 1], ["How did Kezia’s father punish her?", ["He sent her to school", "He hit her hands with a ruler", "He took away her books", "He made her clean the garden"], 1], ["Who were the Macdonalds?", ["Kezia’s neighbours", "Her school teachers", "Her cousins in another city", "Her father’s employers"], 0], ["What did Kezia observe about Mr Macdonald and his children?", ["He never spoke to them", "He played and laughed with them", "He made them work all day", "He was always angry"], 1], ["How did the Macdonald family affect Kezia’s view of fathers?", ["She realised all fathers were cruel", "She saw that a father could be playful and affectionate", "She decided fathers were unnecessary", "She stopped thinking about her own father"], 1], ["What happened one night when Kezia’s mother was in hospital?", ["Kezia went to school", "Kezia had a nightmare", "The family moved house", "Her father went away"], 1], ["What did Kezia dream about?", ["A beautiful garden", "A butcher with a knife and a big smile", "A school examination", "A storm at sea"], 1], ["Who comforted Kezia after her nightmare?", ["Her grandmother", "Her father", "Mr Macdonald", "Her teacher"], 1], ["Where did Kezia’s father take her when she was frightened?", ["To the garden", "Into his bed", "To the hospital", "To the kitchen"], 1], ["What did Kezia notice about her father as he held her?", ["He was cold and distant", "He was warm and comforting", "He was angry with her", "He was about to leave"], 1], ["Why was Kezia’s father often tired?", ["He played sports all day", "He worked hard at the office", "He travelled for fun", "He did not like sleeping"], 1], ["What did Kezia finally understand about her father?", ["He did not care for her", "He loved her but did not express it easily", "He wanted her to leave home", "He disliked all children"], 1], ["What is the main contrast between Kezia’s father and Mr Macdonald?", ["One is rich and one is poor", "Kezia’s father is strict while Mr Macdonald is playful with his children", "One lives in a city and one in a village", "One has a job and one does not"], 1], ["Why did Kezia find it difficult to speak freely to her father?", ["He was always away at sea", "His stern manner frightened her", "She could not understand his words", "He never came home"], 1], ["What does the story show about children’s understanding of adults?", ["Children always understand adults perfectly", "Children may misunderstand adults’ feelings", "Adults never love children", "Children should never ask questions"], 1], ["Which quality does Kezia’s father show when she has a nightmare?", ["Kindness and care", "Indifference", "Jealousy", "Dishonesty"], 0], ["What was Kezia’s relationship with her grandmother like?", ["Her grandmother helped and supported her", "Her grandmother was afraid of her", "They never spoke", "Her grandmother punished her daily"], 0], ["Why did Kezia tear the papers into pieces?", ["She wanted to make a toy", "She needed paper to fill the pin-cushion", "She was angry at her father", "She was cleaning the room"], 1], ["What did Kezia think of her father before he comforted her?", ["He was a frightening figure", "He was her best playmate", "He was a stranger", "He was always cheerful"], 0], ["What changed Kezia’s feelings towards her father?", ["A school prize", "His comfort and warmth during her nightmare", "A letter from a friend", "A visit to the park"], 1], ["What does the title “The Little Girl” focus on?", ["A young girl’s feelings and changing understanding of her father", "A girl’s school competition", "A family holiday", "A child’s journey to another country"], 0], ["Which is the best message of the story?", ["Strict parents never love their children", "Understanding and affection can exist even when adults seem strict", "Children should fear everyone", "Love is shown only through gifts"], 1]]};
+const NAMES={l1:"Lesson 1: The Fun They Had",l2:"Lesson 2: The Sound of Music",l3:"Lesson 3: The Little Girl"};
+let lesson=null,student="",pos=0,answers=[],locked=[],finished=false,timeLeft=900,timerHandle=null,autoHandle=null;
+function hide(id){document.getElementById(id).classList.add('hidden')}function show(id){document.getElementById(id).classList.remove('hidden')}
+function storageKey(){return 'mtc_test_submitted_'+student+'_'+lesson}
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+var audioOn=true;
+function sayTW(parts){try{if(!audioOn)return;var ss=window.speechSynthesis;if(!ss)return;ss.cancel();var vs=ss.getVoices?ss.getVoices():[];
+ parts.forEach(function(p){var u=new SpeechSynthesisUtterance(p[0]);u.lang=p[1];u.rate=.9;u.volume=1;
+  var v=vs.find(function(x){return String(x.lang).replace('_','-')===p[1]})||vs.find(function(x){return String(x.lang).slice(0,2)===p[1].slice(0,2)});if(v)u.voice=v;ss.speak(u)})}catch(e){}}
+function stopTW(){try{window.speechSynthesis.cancel()}catch(e){}}
+function toggleAudio(){audioOn=!audioOn;var b=document.getElementById('audioBtn');if(b)b.textContent=audioOn?'🔊 Audio ON':'🔇 Audio OFF';if(!audioOn)stopTW()}
+function speakFeedback(ok,q){
+ if(ok)sayTW([['सही जवाब! शाबाश।','hi-IN']]);
+ else sayTW([['गलत जवाब। सही उत्तर है','hi-IN'],[String.fromCharCode(65+q[2])+'. '+q[1][q[2]],'en-IN']])}
+window.__TW_NAMES=/*TW_NAMES*/{};
+function nm(id){var o=(window.__TW_NAMES||{})[id];return o?o[0]:''}
+function info(id){var o=(window.__TW_NAMES||{})[id];if(!o)return '';return 'Class '+(o[1]||'9')+(o[2]?' • Roll No. '+o[2]:'')}
+function chooseLesson(id){lesson=id;hide('choose');show('login');document.getElementById('loginTitle').textContent=NAMES[id]+' — Student Login';document.getElementById('loginMsg').textContent='';document.getElementById('studentId').value=''}
+function backToLessons(){hide('login');show('choose')}
+function startTest(){
+ const id=document.getElementById('studentId').value.trim(),msg=document.getElementById('loginMsg');
+ if(!/^(2[1-9]|30)$/.test(id)){msg.className='feedback bad';msg.textContent='Invalid ID. Enter an ID from 21 to 30.';return}
+ student=id;
+ if(lsGet(storageKey())){msg.className='feedback bad';msg.textContent='This ID has already submitted this lesson in this browser. Retake is locked.';return}
+ pos=0;answers=Array(30).fill(null);locked=Array(30).fill(false);finished=false;timeLeft=900;
+ document.getElementById('who').textContent=(nm(student)?nm(student)+' — ':'')+'ID '+student+' • '+NAMES[lesson];
+ hide('login');show('test');render();updateTimer();clearInterval(timerHandle);timerHandle=setInterval(tick,1000)
+}
+function updateTimer(){let m=Math.floor(timeLeft/60),s=timeLeft%60;document.getElementById('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function tick(){if(finished)return;timeLeft--;updateTimer();if(timeLeft=0){clearInterval(timerHandle);finishTest(true)}}
+function render(){
+ clearTimeout(autoHandle);
+ const q=BANK[lesson][pos],area=document.getElementById('questionArea');
+ document.getElementById('qnum').textContent=pos+1;document.getElementById('barFill').style.width=((pos+1)/30*100)+'%';
+ document.getElementById('answeredCount').textContent='Answered: '+answers.filter(v=>v!==null).length+' / 30';area.innerHTML='';
+ const title=document.createElement('div');title.className='qtitle';title.textContent='Q'+(pos+1)+'. '+q[0];area.appendChild(title);
+ q[1].forEach((option,i)=>{
+  const label=document.createElement('label');label.className='option'+(locked[pos]?' locked':'');
+  const radio=document.createElement('input');radio.type='radio';radio.name='answer';radio.checked=answers[pos]===i;radio.disabled=locked[pos];
+  const span=document.createElement('span');span.textContent=String.fromCharCode(65+i)+'. '+option;label.appendChild(radio);label.appendChild(span);
+  if(locked[pos]&&i===q[2])label.classList.add('correct');if(locked[pos]&&answers[pos]===i&&i!==q[2])label.classList.add('wrong');
+  label.addEventListener('click',e=>{if(locked[pos]){e.preventDefault();return}chooseAnswer(i)});area.appendChild(label)
+ });
+ const note=document.getElementById('autoNote');
+ if(locked[pos]){
+  const fb=document.createElement('div');fb.className='feedback '+(answers[pos]===q[2]?'good':'bad');
+  fb.textContent=answers[pos]===q[2]?'✅ Correct Answer!':'❌ Incorrect. Correct answer: '+String.fromCharCode(65+q[2])+'. '+q[1][q[2]];area.appendChild(fb);
+  note.textContent=pos===29?'Last question reached. Submit when all 30 questions have been answered.':'Next question will open automatically in 8 seconds, or use Next.';
+  autoHandle=setTimeout(()=>{if(finished)return;if(pos29){stopTW();pos++;render()}},8000)
+ }else{note.textContent='Choose an answer: instant checking begins immediately; after selecting, the next question opens in 8 seconds.'}
+ document.getElementById('prev').disabled=pos===0;
+ document.getElementById('next').disabled=pos===29;
+ const allAnswered=answers.every(v=>v!==null);
+ const submit=document.getElementById('submitTest');
+ submit.classList.toggle('hidden',!(pos===29 && allAnswered));
+ document.getElementById('submitHint').textContent=allAnswered
+   ? (pos===29?'All 30 questions answered. You can submit your test now.':'All 30 answered — go to Question 30 to submit.')
+   : 'Submit will appear on Question 30 after all 30 questions are answered.';
+}
+function chooseAnswer(i){if(locked[pos]||finished)return;answers[pos]=i;locked[pos]=true;render();var q=BANK[lesson][pos];speakFeedback(i===q[2],q)}
+function step(n){if(finished)return;stopTW();clearTimeout(autoHandle);pos=Math.max(0,Math.min(29,pos+n));render()}
+function finishTest(timeExpired){
+ if(finished)return;finished=true;clearInterval(timerHandle);clearTimeout(autoHandle);
+ let score=0;BANK[lesson].forEach((q,i)=>{if(answers[i]===q[2])score++});
+ try{localStorage.setItem(storageKey(),JSON.stringify({score,answers,submittedAt:new Date().toISOString(),lesson}))}catch(e){}
+ hide('test');show('result');document.getElementById('resultWho').textContent=(nm(student)?nm(student)+' — ':'')+'Student ID: '+student+' • Class 9 English • '+NAMES[lesson]+(timeExpired?' • Time expired':'');
+ document.getElementById('resultScore').textContent='Score: '+score+' / 30';
+ sayTW([['टेस्ट पूरा हुआ। आपने तीस में से '+score+' अंक प्राप्त किए।','hi-IN']]);
+ const pct=Math.round(score/30*100);document.getElementById('percent').textContent='Percentage: '+pct+'%';
+ document.getElementById('remark').textContent=timeExpired?'Time is over. Your test has been submitted automatically.':pct>=80?'Excellent work! Keep it up.':pct>=60?'Good effort! Revise the lesson again.':'Keep practising and revise the lesson carefully.';
+ const review=document.getElementById('review');review.innerHTML='h3 style="color:#17324d">Answer Review/h3>';
+ BANK[lesson].forEach((q,i)=>{const p=document.createElement('p');const your=answers[i]===null?'Not answered':String.fromCharCode(65+answers[i])+'. '+q[1][answers[i]];
+ p.innerHTML='b style="color:#e83e8c">Q'+(i+1)+'. '+esc(q[0])+'/b>br>span style="color:#111">Your answer: '+esc(your)+'/span>br>span style="color:#13834a;font-weight:bold">Correct: '+String.fromCharCode(65+q[2])+'. '+esc(q[1][q[2]])+'/span>';review.appendChild(p)})
+}
+function esc(s){return String(s).replace(/[&>"']/g,c=>({'&':'&amp;','':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+(function(){var inp=document.getElementById('studentId');if(!inp)return;
+ function upd(){var v=inp.value.trim().replace(/\D/g,'');if(inp.value!==v)inp.value=v;var m=document.getElementById('loginMsg');
+  if(!v){m.textContent='';return}
+  if(/^(2[1-9]|30)$/.test(v)){var n=nm(v);m.className='feedback good';m.textContent=n?('✅ '+n+(info(v)?' — '+info(v):'')):('✅ ID '+v)}
+  else if(v.length>=2){m.className='feedback bad';m.textContent='Invalid ID. Enter an ID from 21 to 30.'}
+  else{m.textContent=''}}
+ inp.addEventListener('input',upd);
+ inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();startTest()}})})();
+/script>/body>/html></script>
+<script id="mtc-testwindow-script">
+(function(){
+var wasLocked=false,LKEY="mtc_tw_open_v1",PWH="ac4c8e9867776e5909e2ed257a850642230962adba12e34121f05ce03642ae8f",isAdm=false;
+function $(i){return document.getElementById(i)}
+function localOpen(){try{return localStorage.getItem(LKEY)==="1"}catch(e){return false}}
+function setLocal(v){try{localStorage.setItem(LKEY,v?"1":"0")}catch(e){}}
+function canOpen(){return !!window.__mtcStaffName||isAdm}
+/* ---- Test Window kholna ---- */
+window.openTestWindow=function(){
+  var w=$("mtcTWWrap"),f=$("mtcTWFrame");if(!w||!f)return;
+  if(!f.hasAttribute("srcdoc")){
+    if(!window.__mtcTWTxt)window.__mtcTWTxt=$("mtcTestWinSrc").textContent.split("\uE000").join("<");
+    var map={};
+    try{for(var k=21;k<=30;k++){var r=STUDENTS[String(k)];if(r)map[k]=[r[0],r[1],(window.MTC_ROLL||{})[String(k)]||""]}}catch(e){}
+    f.srcdoc=window.__mtcTWTxt.replace("/*TW_NAMES*/{}",JSON.stringify(map).replace(/</g,"\\u003c"));
+  }
+  var b=document.body;wasLocked=b.classList.contains("gateLocked");
+  b.classList.remove("gateLocked");b.classList.add("twOpen");b.style.overflow="hidden";
+  w.style.display="block";
+};
+window.closeTestWindow=function(){
+  var w=$("mtcTWWrap"),f=$("mtcTWFrame"),b=document.body;
+  try{window.speechSynthesis.cancel()}catch(e){}
+  if(w)w.style.display="none";
+  b.classList.remove("twOpen");b.style.overflow="";
+  if(wasLocked)b.classList.add("gateLocked");
+  try{f.removeAttribute("srcdoc");f.src="about:blank"}catch(e){}
+  try{window.scrollTo(0,0)}catch(e){}
+};
+/* ---- Lock (Admin password) ---- */
+function ov(){var o=$("mtcTWLock");if(o)return o;o=document.createElement("div");o.id="mtcTWLock";document.body.appendChild(o);return o}
+function show(h){var o=ov();o.innerHTML='<div class="lb">'+h+'</div>';o.classList.add("open")}
+function hide(){var o=$("mtcTWLock");if(o)o.classList.remove("open")}
+function msg(t,ok){var m=$("twMsg");if(m){m.style.color=ok?"#1b5e20":"#c62828";m.textContent=t}}
+function fetchState(cb){
+  var done=false;function fin(v){if(done)return;done=true;cb(v)}
+  try{
+    if(typeof window.mtcFsPullCol!=="function"){fin(localOpen());return}
+    window.mtcFsPullCol("settings").then(function(list){
+      var o=null;(list||[]).forEach(function(d){if(d&&d.key==="test-window")o=d});
+      var v=!!(o&&o.open===true);setLocal(v);fin(v);
+    }).catch(function(){fin(localOpen())});
+    setTimeout(function(){fin(localOpen())},9000);
+  }catch(e){fin(localOpen())}
+}
+window.openTestWindowGuarded=function(){
+  if(canOpen()){window.openTestWindow();return}
+  show('<h2>⏳ जाँच रहे हैं…</h2><p>Test Window की स्थिति देख रहे हैं।</p>');
+  fetchState(function(open){
+    if(open){hide();window.openTestWindow()}
+    else show('<h2>🔒 TEST WINDOW बंद है</h2><p>यह Test अभी सिर्फ़ Teacher और Admin के लिए खुला है।<br>Admin के खोलने पर आप Test दे सकेंगे।</p>'
+      +'<button style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="mtcTWRetry()">🔄 दोबारा जाँचें</button>'
+      +'<button style="background:linear-gradient(135deg,#6a1b9a,#9c27b0)" onclick="mtcTWAdminOpen()">🔐 Admin</button>'
+      +'<button style="background:#c62828" onclick="mtcTWHide()">✖ बंद करें</button>');
+  });
+};
+window.mtcTWRetry=function(){window.openTestWindowGuarded()};
+window.mtcTWHide=function(){hide()};
+window.mtcTWAdminOpen=function(){
+  if(isAdm){panel();return}
+  show('<h2>🔐 Admin Password</h2><p>Test Window को Students के लिए खोलने या बंद करने के लिए Admin Password डालें।</p>'
+    +'<input id="twPw" type="password" placeholder="Admin Password" autocomplete="off">'
+    +'<button style="background:linear-gradient(135deg,#6a1b9a,#9c27b0)" onclick="mtcTWAdminGo()">🔓 Login</button>'
+    +'<button style="background:#c62828" onclick="mtcTWHide()">✖ बंद करें</button><div id="twMsg"></div>');
+  setTimeout(function(){var i=$("twPw");if(i){i.focus();i.addEventListener("keydown",function(e){if(e.key==="Enter")window.mtcTWAdminGo()})}},80);
+};
+window.mtcTWAdminGo=function(){
+  var p=String(($("twPw")||{}).value||"").trim(),ok=false;
+  try{ok=(typeof __sh==="function"&&__sh(p)===PWH)}catch(e){}
+  if(!ok){msg("❌ Password सही नहीं है।",false);var i=$("twPw");if(i)i.value="";return}
+  isAdm=true;panel();
+};
+function panel(){
+  show('<h2>🔐 Admin — Test Window</h2><p>स्थिति जाँच रहे हैं…</p>');
+  fetchState(function(open){
+    show('<h2>🔐 Admin — Test Window</h2>'
+      +'<div class="stt '+(open?'on':'off')+'">'+(open?'🟢 अभी Students के लिए खुला है':'🔴 अभी Students के लिए बंद है')+'</div>'
+      +(open?'<button style="background:#c62828" onclick="mtcTWSet(false)">🔒 Students के लिए बंद करें</button>'
+            :'<button style="background:linear-gradient(135deg,#1b5e20,#43a047)" onclick="mtcTWSet(true)">🔓 Students के लिए खोलें</button>')
+      +'<button style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="mtcTWView()">▶ अभी Test Window देखें</button>'
+      +'<button style="background:#616161" onclick="mtcTWHide()">✖ बंद करें</button><div id="twMsg"></div>');
+  });
+}
+window.mtcTWView=function(){hide();window.openTestWindow()};
+window.mtcTWSet=function(v){
+  if(!isAdm)return;
+  setLocal(v);
+  var base=v?"✅ Students के लिए खोल दिया गया।":"✅ Students के लिए बंद कर दिया गया।";
+  try{
+    var p=window.mtcFsQueue&&window.mtcFsQueue("settings","test-window",{key:"test-window",open:v,at:new Date().toISOString(),by:"Admin"});
+    if(p&&p.then){p.then(function(res){
+      panel();setTimeout(function(){msg(res&&res.left===0?base+" ☁️ सभी फोन पर लागू।":base+" ☁️ Internet नहीं मिला — जुड़ते ही बाकी फोन पर लागू होगा।",res&&res.left===0)},60);
+    });return}
+  }catch(e){}
+  panel();setTimeout(function(){msg(base,true)},60);
+};
+})();
 </script>
 <div id="fullDOLWrap" style="display:none;position:fixed;inset:0;background:#fff;z-index:99999;overflow:auto"><div style="position:sticky;top:0;z-index:100000;background:linear-gradient(90deg,#e91e63,#7b1fa2,#1565c0);padding:8px;text-align:center"><button onclick="closeFullDOL()" style="background:#fff;color:#7b1fa2;font-weight:900;border-radius:20px;padding:8px 18px">⬅️ मुख्य पेज पर वापस जाएँ</button></div><iframe id="fullDOLFrame" style="display:block;width:100%;height:calc(100vh - 54px);border:0;background:#fff"></iframe></div>
 <script type="text/plain" id="mtcDolSrc">!doctype html>html lang="hi">head>script id="mtc-speech-shim">window.__mtcShimFn=function(){
@@ -7967,7 +8221,7 @@ window.mtcStaffStart=function(n){
 })();
 </script>
 <style id="mtc-marks-style">
-#mtcMkFab{display:none;position:fixed;left:10px;bottom:132px;z-index:590000;border:0;border-radius:26px;padding:12px 16px;font-size:15px;font-weight:900;color:#fff;background:linear-gradient(135deg,#e65100,#f9a825);box-shadow:0 5px 16px #0005;cursor:pointer}
+#mtcMkFab{display:none;position:fixed;left:10px;bottom:186px;z-index:590000;border:2px solid #fff;border-radius:26px;padding:12px 18px;font-size:16px;font-weight:1000;color:#fff;background:linear-gradient(135deg,#1b5e20,#2e7d32,#43a047);-webkit-text-stroke:.5px #fff;text-shadow:0 1px 2px #0006;box-shadow:0 5px 16px #0006;cursor:pointer}
 #mtcMkFab.show,html body.gateLocked #mtcMkFab.show,html body.dolOpen #mtcMkFab.show{display:block!important;visibility:visible!important}
 #mtcMk{display:none;position:fixed;inset:0;z-index:600004;background:#000b;align-items:flex-start;justify-content:center;padding:8px;overflow:auto;box-sizing:border-box}
 #mtcMk.open,html body.gateLocked #mtcMk.open,html body.dolOpen #mtcMk.open{display:flex!important;visibility:visible!important}
@@ -8232,7 +8486,7 @@ window.mtcMkAllClose=function(){var o=$("mtcMkAll");o.classList.remove("open");o
 window.mtcMkAllCard=function(k){window.mtcMkAllClose();try{window.mtcShowResultCard(k)}catch(e){}};
 var prevS=window.mtcStaffStart;
 window.mtcStaffStart=function(n){
-  staff=String(n||"");var f=$("mtcMkFab");if(f)f.classList.add("show");
+  staff=String(n||"");window.__mtcStaffName=staff;var f=$("mtcMkFab");if(f)f.classList.add("show");
   var r=typeof prevS==="function"?prevS.apply(this,arguments):undefined;
   if(wantOpen){wantOpen=false;setTimeout(window.mtcMkOpen,80)}
   return r;
