@@ -7486,6 +7486,25 @@ function rsSubs(sid){
   out.sort(function(a,b){var x=ORD.indexOf(a),y=ORD.indexOf(b);return (x<0?99:x)-(y<0?99:y)});
   return out;
 }
+window.mtcRsSubs=rsSubs;
+/* Class rank: tabhi dikhta hai jab Class ke sabhi bachchon ke sabhi vishayon ke Marks bhar chuke hon */
+function rsRank(sid){
+  try{
+    var cls=STU()[sid][1],ids=Object.keys(STU()).filter(function(k){return STU()[k][1]===cls&&/^\d{1,3}$/.test(k)&&isStudent(k)}),tot={};
+    for(var i=0;i<ids.length;i++){
+      var k=ids[i],subs=rsSubs(k),Mk=window.MTC_MARKS[k]||{},t=0;
+      for(var j=0;j<subs.length;j++){
+        var v=Mk[subs[j]];if(v===undefined||v===null||v==="")return null;
+        if(String(v).toUpperCase()==="AB")continue;
+        var f=parseFloat(v);if(isNaN(f))return null;t+=f;
+      }
+      tot[k]=t;
+    }
+    if(tot[sid]===undefined)return null;
+    var r=1;ids.forEach(function(k){if(tot[k]>tot[sid])r++});
+    return {rank:r,n:ids.length};
+  }catch(e){return null}
+}
 function rsGrade(p){
   if(p>=95)return {t:"Excellent ⭐",c:"#2e7d32"};
   if(p>=90)return {t:"Excellent",c:"#2e7d32"};
@@ -7516,18 +7535,21 @@ window.mtcShowResultCard=function(sid){
   var st=STU()[sid],o=$("mtcRes");if(!st||!o)return;
   curRs=sid;
   var roll=ROLL()[sid]||"",subs=rsSubs(sid),M=window.MTC_MARKS[sid]||{},lg=logoSrc();
-  var n=subs.length,tot=0,got=0,all=true,rows="";
+  var n=subs.length,tot=0,got=0,all=true,rows="",fail=false,filled=0;
   subs.forEach(function(sb,i){
     var v=M[sb],has=v!==undefined&&v!==null&&v!=="";
-    var num=has&&!isNaN(parseFloat(v))&&isFinite(v);
-    if(num){got+=parseFloat(v)}else all=false;
-    var gd=num?rsGrade(parseFloat(v)/RS_MAX*100):null;
+    var ab=has&&String(v).toUpperCase()==="AB";
+    var num=has&&!ab&&!isNaN(parseFloat(v))&&isFinite(v);
+    if(num){got+=parseFloat(v);filled++;if(parseFloat(v)<RS_MAX*0.33)fail=true}else if(ab){filled++;fail=true}else all=false;
+    var gd=num?rsGrade(parseFloat(v)/RS_MAX*100):(ab?{t:"Absent",c:"#c62828"}:null);
     rows+='<tr style="height:'+(100/n).toFixed(3)+'%"><td class="rn">'+(i+1)+'</td>'
      +'<td class="rs" style="color:'+subC(sb)+';background:'+RS_BG[i%RS_BG.length]+'">'+esc(sb)+(HI[sb]?' <small>('+esc(HI[sb])+')</small>':'')+'</td>'
      +'<td class="rm">'+RS_MAX+'</td><td class="ro">'+(has?esc(v):'')+'</td>'
      +'<td class="rg"'+(gd?' style="color:'+gd.c+'"':'')+'>'+(gd?esc(gd.t):'')+'</td></tr>';
   });
   var maxT=n*RS_MAX,pct=(all&&maxT)?got/maxT*100:null,gT=pct!==null?rsGrade(pct):null;
+  var rk=all?rsRank(sid):null;
+  var rem=all?(fail?"अधिक मेहनत की आवश्यकता है — कमज़ोर विषयों पर ध्यान दें।":(pct>=90?"उत्कृष्ट प्रदर्शन! ऐसे ही मेहनत करते रहें।":(pct>=80?"बहुत अच्छा प्रदर्शन। शाबाश!":(pct>=50?"अच्छा प्रदर्शन। और मेहनत करें।":"अधिक मेहनत करें।")))):"";
   function tile(lab,val,bg){return '<div style="background:'+bg+'">'+lab+'<b>'+(val===""?"&nbsp;":val)+'</b></div>'}
   var h='<div class="rcBox"><div class="rcFlag"><i style="background:#ff9933"></i><i style="background:#f5f5f5"></i><i style="background:#138808"></i></div>'
    +'<button type="button" class="rcX" onclick="mtcHideResultCard()" aria-label="Close">&#10006;</button>'
@@ -7539,9 +7561,9 @@ window.mtcShowResultCard=function(sid){
    +'<div class="rcWrap"><table><colgroup><col style="width:9%"><col style="width:36%"><col style="width:15%"><col style="width:20%"><col style="width:20%"></colgroup>'
    +'<thead><tr><th>क्र.</th><th>विषय / Subject</th><th>पूर्णांक<br>Max</th><th>प्राप्तांक<br>Obtained</th><th>Grade</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
    +'<div class="rcSum">'+tile("कुल पूर्णांक<br>Total Marks",maxT,"#1565c0")+tile("कुल प्राप्तांक<br>Obtained",all?got:"","#2e7d32")+tile("प्रतिशत<br>Percentage",pct!==null?pct.toFixed(1)+"%":"","#e65100")
-   +tile("Grade",gT?esc(gT.t):"","#7b1fa2")+tile("Rank<br>श्रेणी स्थान","","#c2185b")+tile("परिणाम<br>Result","","#00838f")+'</div>'
-   +'<div class="rcRem">टिप्पणी / Remark:</div>'
-   +'<div class="rcNote">प्रत्येक विषय 70 अंक का है • अंक परीक्षा परिणाम घोषित होने पर भरे जाएँगे</div>'
+   +tile("Grade",gT?esc(gT.t):"","#7b1fa2")+tile("Rank<br>श्रेणी स्थान",rk?(rk.rank+" / "+rk.n):"","#c2185b")+tile("परिणाम<br>Result",all?(fail?"अनुत्तीर्ण":"उत्तीर्ण"):"",all?(fail?"#c62828":"#00838f"):"#00838f")+'</div>'
+   +'<div class="rcRem">टिप्पणी / Remark: '+(rem?'<span style="color:#1b5e20">'+rem+'</span>':'')+'</div>'
+   +'<div class="rcNote">'+(all?'प्रत्येक विषय 70 अंक का है • सभी विषयों के अंक भरे जा चुके हैं ✅':(filled?'प्रत्येक विषय 70 अंक का है • '+filled+' / '+n+' विषयों के अंक भरे गए हैं, बाकी जल्द भरे जाएँगे':'प्रत्येक विषय 70 अंक का है • अंक परीक्षा परिणाम घोषित होने पर भरे जाएँगे'))+'</div>'
    +'<div class="rcSign"><span>Class Teacher</span><span>Exam In-charge</span><span>Principal</span></div>'
    +'<div class="rcBtns"><button type="button" class="rcDl" onclick="mtcRsDownload()">⬇️ Result Card Download</button><button type="button" class="rcCl" onclick="mtcHideResultCard()">&#10006; बंद करें</button></div>'
    +'<div id="mtcRsMsg"></div></div>';
@@ -7944,6 +7966,292 @@ window.mtcStaffStart=function(n){
 };
 })();
 </script>
+<style id="mtc-marks-style">
+#mtcMkFab{display:none;position:fixed;left:10px;bottom:132px;z-index:590000;border:0;border-radius:26px;padding:12px 16px;font-size:15px;font-weight:900;color:#fff;background:linear-gradient(135deg,#e65100,#f9a825);box-shadow:0 5px 16px #0005;cursor:pointer}
+#mtcMkFab.show,html body.gateLocked #mtcMkFab.show,html body.dolOpen #mtcMkFab.show{display:block!important;visibility:visible!important}
+#mtcMk{display:none;position:fixed;inset:0;z-index:600004;background:#000b;align-items:flex-start;justify-content:center;padding:8px;overflow:auto;box-sizing:border-box}
+#mtcMk.open,html body.gateLocked #mtcMk.open,html body.dolOpen #mtcMk.open{display:flex!important;visibility:visible!important}
+#mtcMk .mb{width:min(520px,100%);margin:auto 0;background:linear-gradient(160deg,#fff3e0,#fffde7);border:5px solid #e65100;border-radius:18px;padding:12px;box-sizing:border-box;box-shadow:0 10px 35px #0007;font-family:inherit}
+#mtcMk h3{margin:0 0 2px;font-size:20px;color:#e65100;text-align:center;font-weight:1000}
+#mtcMk .ms{text-align:center;font-size:13px;font-weight:800;color:#555;margin-bottom:8px}
+#mtcMk select{width:100%;padding:10px;margin:4px 0;border:3px solid #ef6c00;border-radius:12px;font-size:16px;font-weight:800;box-sizing:border-box;background:#fff}
+#mtcMk .msum{margin:8px 0;padding:6px 8px;border-radius:10px;background:#fff;border:2px solid #ffcc80;font-size:14px;font-weight:900;text-align:center;color:#bf360c}
+#mtcMk .mkRow{display:flex;align-items:center;gap:6px;margin:4px 0;padding:6px 8px;border-radius:12px;background:#fff;border:2px solid #ffe0b2}
+#mtcMk .mkRow .rn{flex:none;min-width:36px;text-align:center;font-weight:1000;color:#fff;background:#1565c0;border-radius:8px;padding:3px 4px;font-size:13px}
+#mtcMk .mkRow .nm{flex:1;min-width:0;font-weight:900;color:#c2185b;font-size:15px;line-height:1.15;word-break:break-word}
+#mtcMk .mkIn{flex:none;width:70px;height:38px;border:2px solid #9e9e9e;border-radius:10px;font-size:18px;font-weight:1000;text-align:center;color:#1b5e20;box-sizing:border-box;padding:0}
+#mtcMk .mkIn.bad{border-color:#c62828;background:#ffebee;color:#c62828}
+#mtcMk .mkIn:disabled{background:#eee}
+#mtcMk .mkAb{flex:none;width:44px;height:38px;border:2px solid #9e9e9e;border-radius:10px;background:#fafafa;color:#616161;font-size:14px;font-weight:1000;cursor:pointer;padding:0}
+#mtcMk .mkAb.on{background:#c62828;color:#fff;border-color:#b71c1c}
+#mtcMk .mst{margin:8px 0;padding:8px;border-radius:12px;background:#fff;border:2px solid #ffb74d;font-size:13px;font-weight:800;color:#3e2723}
+#mtcMk .mst b{display:block;margin-bottom:4px;color:#e65100;font-size:14px}
+#mtcMk .mst span{display:inline-block;margin:2px 3px 2px 0;padding:3px 8px;border-radius:12px;font-size:12px;font-weight:900}
+#mtcMk .mst .ok{background:#c8e6c9;color:#1b5e20}
+#mtcMk .mst .wip{background:#ffe0b2;color:#bf360c}
+#mtcMk .mbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#mtcMk .mbtns button{flex:1;padding:12px;border:0;border-radius:12px;color:#fff;font-size:15px;font-weight:900;cursor:pointer}
+#mtcMk #mtcMkMsg{min-height:20px;margin-top:6px;text-align:center;font-weight:900;font-size:14px}
+</style>
+<button type="button" id="mtcMkFab" onclick="mtcMkOpen()">📊 Marks भरें</button>
+<div id="mtcMk" aria-hidden="true"><div class="mb">
+<h3>📊 परीक्षा के Marks भरें (70 में से)</h3>
+<div class="ms" id="mtcMkWho"></div>
+<select id="mtcMkCls" onchange="mtcMkPick('c')"></select>
+<select id="mtcMkSub" onchange="mtcMkPick('s')"></select>
+<div class="msum" id="mtcMkSum"></div>
+<div id="mtcMkList"></div>
+<div class="mst" id="mtcMkSt"></div>
+<div class="mbtns">
+<button type="button" style="background:linear-gradient(135deg,#e65100,#f9a825);flex-basis:100%" onclick="mtcMkSave()">💾 Marks Save करें</button>
+<button type="button" style="background:linear-gradient(135deg,#1565c0,#42a5f5);flex-basis:100%" onclick="mtcMkAll()">📋 पूरी Class का Result एक साथ देखें</button>
+<button type="button" style="background:#c62828;flex-basis:100%" onclick="mtcMkClose()">✖ बंद करें</button>
+</div>
+<div id="mtcMkMsg"></div>
+</div></div>
+<style id="mtc-marks-all-style">
+#mtcMkAll{display:none;position:fixed;inset:0;z-index:600005;background:#000b;align-items:flex-start;justify-content:center;padding:6px;overflow:auto;box-sizing:border-box}
+#mtcMkAll.open,html body.gateLocked #mtcMkAll.open,html body.dolOpen #mtcMkAll.open{display:flex!important;visibility:visible!important}
+#mtcMkAll .kb{width:min(980px,100%);margin:auto 0;background:#fff;border:5px solid #1565c0;border-radius:16px;padding:10px;box-sizing:border-box;box-shadow:0 10px 35px #0007}
+#mtcMkAll h3{margin:0 0 4px;font-size:19px;color:#1565c0;text-align:center;font-weight:1000}
+#mtcMkAll .kn{margin:4px 0;padding:6px 8px;border-radius:10px;background:#e3f2fd;color:#0d47a1;font-size:13px;font-weight:900;text-align:center}
+#mtcMkAll .kw{overflow-x:auto;border:2px solid #90caf9;border-radius:10px}
+#mtcMkAll table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
+#mtcMkAll th{background:#1565c0;color:#fff;padding:5px 4px;font-size:11px;font-weight:900;white-space:nowrap}
+#mtcMkAll td{border-top:1px solid #bbdefb;padding:5px 4px;text-align:center;font-weight:800;color:#222}
+#mtcMkAll td.n{text-align:left;color:#c2185b;font-weight:1000;cursor:pointer;text-decoration:underline;min-width:110px}
+#mtcMkAll td.e{background:#fff8e1;color:#bbb}
+#mtcMkAll td.f{color:#c62828;background:#ffebee}
+#mtcMkAll td.p{color:#1b5e20}
+#mtcMkAll .kc{width:100%;margin-top:8px;padding:12px;border:0;border-radius:12px;background:#c62828;color:#fff;font-size:15px;font-weight:900}
+</style>
+<div id="mtcMkAll" aria-hidden="true"><div class="kb"><h3 id="mtcMkAllT"></h3><div class="kn" id="mtcMkAllN"></div><div class="kw" id="mtcMkAllW"></div><button type="button" class="kc" onclick="mtcMkAllClose()">✖ बंद करें</button></div></div>
+<script id="mtc-marks-script">
+(function(){
+"use strict";
+var KEY="mtc_marks_v1",MAXM=70,staff="",cls="",sub="",draft={},dirty=false,wantOpen=false,shown="";
+/* Kaun Teacher kaun se vishay ke Marks bhar sakta hai (naye Teacher/vishay yahin jodein) */
+var TEACHER_SUBJECTS={
+  "M.S. Pathan Sir":["EVS","Hindi"],
+  "O.P. Verma Sir":["English","Computer"],
+  "Mukesh Sir":["Science"],
+  "Sameer Sir":["S.St."]
+};
+function mySubs(){return TEACHER_SUBJECTS[staff]||[]}
+function allowed(sb){return !!sb&&mySubs().indexOf(sb)>=0}
+function $(i){return document.getElementById(i)}
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var M=window.MTC_MARKS=window.MTC_MARKS||{},BY=window.MTC_MARKS_BY=window.MTC_MARKS_BY||{};
+function okv(v){if(v==="AB")return true;if(v===""||v===null||v===undefined)return false;var n=parseFloat(v);return isFinite(v)&&!isNaN(n)&&n>=0&&n<=MAXM}
+function norm(v){return v==="AB"?"AB":parseFloat(v)}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify({m:M,by:BY}));return true}catch(e){return false}}
+function mergeLocal(m,by){
+  if(m&&typeof m==="object")Object.keys(m).forEach(function(k){var r=m[k];if(!r||typeof r!=="object")return;M[k]=M[k]||{};Object.keys(r).forEach(function(sb){if(okv(r[sb]))M[k][sb]=norm(r[sb])})});
+  if(by&&typeof by==="object")Object.keys(by).forEach(function(k){BY[k]=by[k]});
+}
+try{var o0=JSON.parse(localStorage.getItem(KEY)||"{}");mergeLocal(o0.m,o0.by)}catch(e){}
+var PRE={"Nursery":.1,"LKG":.2,"HKG":.3};
+function cn(c){return parseInt(c,10)||0}
+function classes(){
+  var o={};Object.keys(STUDENTS).forEach(function(k){var n=PRE[STUDENTS[k][1]]||cn(STUDENTS[k][1]);if(n>0&&n<=10&&/^\d{1,3}$/.test(k)&&STUDENTS[k][1]!=="Admin")o[STUDENTS[k][1]]=n});
+  return Object.keys(o).sort(function(a,b){return o[a]-o[b]});
+}
+function students(c){
+  var R=window.MTC_ROLL||{};
+  return Object.keys(STUDENTS).filter(function(k){return STUDENTS[k][1]===c&&/^\d{1,3}$/.test(k)}).sort(function(a,b){
+    var ra=parseInt(R[a],10)||9999,rb=parseInt(R[b],10)||9999;return ra-rb||(+a)-(+b)});
+}
+var ORD=["Hindi","English","Maths","Science","EVS","Sanskrit","Urdu","S.St.","G.K.","G.K. / Moral","Computer","Drawing"];
+function subsOf(k){try{if(typeof window.mtcRsSubs==="function")return window.mtcRsSubs(k)}catch(e){}return ["Hindi","English","Maths","Science","S.St."]}
+function classSubs(c){
+  var out=[];students(c).forEach(function(k){subsOf(k).forEach(function(s){if(out.indexOf(s)<0)out.push(s)})});
+  out.sort(function(a,b){var x=ORD.indexOf(a),y=ORD.indexOf(b);return (x<0?99:x)-(y<0?99:y)});return out;
+}
+function curStudents(){return students(cls).filter(function(k){return subsOf(k).indexOf(sub)>=0})}
+function loadDraft(){draft={};curStudents().forEach(function(k){var v=M[k]&&M[k][sub];if(v!==undefined&&v!==null)draft[k]=String(v)});dirty=false}
+function msg(t,ok){var m=$("mtcMkMsg");if(m){m.style.color=ok?"#1b5e20":"#c62828";m.textContent=t}}
+function sum(){
+  var ks=curStudents(),f=0,ab=0,bad=0;
+  ks.forEach(function(k){var v=draft[k]||"";if(v==="AB"){ab++}else if(v!==""){if(okv(v))f++;else bad++}});
+  $("mtcMkSum").textContent="✅ भरे: "+(f+ab)+" / "+ks.length+"   |   🅰️ AB: "+ab+"   |   ⏳ बाकी: "+(ks.length-f-ab-bad)+(bad?"   |   ⚠️ गलत: "+bad:"");
+}
+function status(){
+  var subs=classSubs(cls),h="",all=true,st=students(cls);
+  subs.forEach(function(sb){
+    var ks=st.filter(function(k){return subsOf(k).indexOf(sb)>=0}),f=ks.filter(function(k){var v=M[k]&&M[k][sb];return v!==undefined&&v!==null&&v!==""}).length;
+    var done=f===ks.length&&ks.length>0;if(!done)all=false;
+    h+='<span class="'+(done?"ok":"wip")+'">'+(done?"✓ ":"")+esc(sb)+" "+f+"/"+ks.length+"</span>";
+  });
+  var by=BY[cls+"|"+sub];
+  $("mtcMkSt").innerHTML="<b>📋 Class "+esc(cls)+" — Result की स्थिति</b>"+h+"<div style=\"margin-top:6px\">"+(all&&subs.length?"✅ सभी विषयों के Marks भर गए — पूरी Class के Result Card तैयार हैं।":"⏳ सभी विषय पूरे होते ही Result Card अपने-आप पूरा तैयार हो जाएगा।")+"</div>"
+   +(by&&by.staff?"<div style=\"margin-top:4px;color:#1565c0\">✍️ "+esc(sub)+" के Marks पिछली बार: "+esc(by.staff)+"</div>":"");
+}
+function render(){
+  var R=window.MTC_ROLL||{},ks=curStudents(),h="";
+  ks.forEach(function(k){
+    var v=draft[k]||"",ab=v==="AB",bad=v!==""&&!ab&&!okv(v);
+    h+='<div class="mkRow"><span class="rn">'+esc(R[k]||k)+'</span><span class="nm">'+esc(STUDENTS[k][0])+'</span>'
+     +'<input class="mkIn'+(bad?" bad":"")+'" id="mkIn_'+k+'" type="text" inputmode="decimal" maxlength="5" placeholder="/70" value="'+(ab?"":esc(v))+'"'+(ab?" disabled":"")+' oninput="mtcMkType(\''+k+'\',this)" onkeydown="mtcMkKey(event,\''+k+'\')">'
+     +'<button type="button" class="mkAb'+(ab?" on":"")+'" onclick="mtcMkAb(\''+k+'\')">AB</button></div>';
+  });
+  $("mtcMkList").innerHTML=h||'<div style="text-align:center;font-weight:900;color:#c62828">'+(sub?"इस विषय के लिए कोई विद्यार्थी नहीं है।":(mySubs().length?"इस Class में आपका कोई विषय नहीं है — ऊपर दूसरी Class चुनें।":"आपके विषय अभी तय नहीं हैं — Marks भरने के लिए Admin से संपर्क करें।"))+'</div>';
+  sum();status();
+}
+function fillSelects(){
+  var cs=classes(),sc=$("mtcMkCls");
+  sc.innerHTML=cs.map(function(c){return '<option value="'+esc(c)+'">Class '+esc(c)+'</option>'}).join("");
+  if(cls&&cs.indexOf(cls)>=0)sc.value=cls;cls=sc.value;fillSubs();
+}
+function fillSubs(){
+  var ss=classSubs(cls).filter(allowed),sb=$("mtcMkSub");
+  sb.innerHTML=ss.length?ss.map(function(s){return '<option value="'+esc(s)+'">'+esc(s)+'</option>'}).join(""):'<option value="">— इस Class में आपका कोई विषय नहीं —</option>';
+  if(sub&&ss.indexOf(sub)>=0)sb.value=sub;sub=ss.length?sb.value:"";
+}
+window.mtcMkPick=function(w){
+  if(dirty&&!confirm("इस विषय के भरे हुए Marks अभी Save नहीं हुए हैं। बिना Save किए आगे बढ़ें?")){$("mtcMkCls").value=cls;$("mtcMkSub").value=sub;return}
+  if(w==="c"){cls=$("mtcMkCls").value;fillSubs()}else{sub=$("mtcMkSub").value}
+  loadDraft();render();msg("",true);
+};
+window.mtcMkType=function(k,el){
+  var v=String(el.value||"").replace(/[^0-9.]/g,"");
+  var p=v.indexOf(".");if(p>=0)v=v.slice(0,p+1)+v.slice(p+1).replace(/\./g,"");
+  if(v!==el.value)el.value=v;
+  draft[k]=v;dirty=true;
+  el.className="mkIn"+((v!==""&&!okv(v))?" bad":"");sum();msg("",true);
+};
+window.mtcMkKey=function(ev,k){
+  if(ev.key!=="Enter")return;ev.preventDefault();
+  var ks=curStudents(),i=ks.indexOf(k),n=$("mkIn_"+ks[i+1]);
+  if(n&&!n.disabled)n.focus();else if(ev.target&&ev.target.blur)ev.target.blur();
+};
+window.mtcMkAb=function(k){draft[k]=(draft[k]==="AB")?"":"AB";dirty=true;render();msg("",true)};
+window.mtcMkSave=function(){
+  if(!staff){msg("❌ पहले Staff Login करें।",false);return}
+  if(!allowed(sub)){msg("⛔ यह विषय आपके लिए तय नहीं है। आप सिर्फ़ अपने विषय के Marks भर सकते हैं।",false);return}
+  var ks=curStudents(),bad=0;
+  ks.forEach(function(k){var v=draft[k]||"";if(v!==""&&!okv(v))bad++});
+  if(bad){msg("⚠️ "+bad+" विद्यार्थी के Marks गलत हैं (0 से "+MAXM+" के बीच भरें या AB लिखें)।",false);return}
+  var map={},at=new Date().toISOString(),cnt=0;
+  ks.forEach(function(k){
+    var v=draft[k]||"";
+    if(v===""){if(M[k]&&M[k][sub]!==undefined)delete M[k][sub];return}
+    M[k]=M[k]||{};M[k][sub]=norm(v);map[k]=norm(v);cnt++;
+  });
+  BY[cls+"|"+sub]={staff:staff,at:at};
+  var ok=persist();dirty=false;render();
+  if(!ok){msg("⚠️ Save नहीं हो पाया — Browser storage बंद है।",false);return}
+  var base="✅ "+sub+" के "+cnt+" विद्यार्थियों के Marks Save हो गए ("+staff+")।";
+  msg(base,true);
+  try{
+    var id=(cls+"_"+sub).replace(/[\/\s]+/g,"_");
+    var p=window.mtcFsQueue&&window.mtcFsQueue("marks",id,{cls:cls,subject:sub,staff:staff,at:at,marks:map,max:MAXM});
+    if(p&&p.then)p.then(function(res){
+      if(res&&res.left===0)msg(base+" ☁️ Online भी Save हो गए।",true);
+      else msg(base+" ☁️ Internet नहीं मिला — जुड़ते ही अपने-आप चला जाएगा।",false);
+    });
+  }catch(e){}
+};
+/* Firestore se Marks lana (dusre teachers ke bhare hue) */
+function mergeDocs(list){
+  var ch=false;
+  (list||[]).forEach(function(d){
+    if(!d||!d.cls||!d.subject||!d.marks||typeof d.marks!=="object")return;
+    var lb=BY[d.cls+"|"+d.subject];if(lb&&lb.at&&d.at&&String(lb.at)>String(d.at))return;
+    students(d.cls).forEach(function(k){
+      if(subsOf(k).indexOf(d.subject)<0)return;
+      var v=d.marks[k];
+      if(v!==undefined&&okv(v)){M[k]=M[k]||{};if(M[k][d.subject]!==norm(v)){M[k][d.subject]=norm(v);ch=true}}
+      else if(M[k]&&M[k][d.subject]!==undefined){delete M[k][d.subject];ch=true}
+    });
+    if(d.staff){var o=BY[d.cls+"|"+d.subject];if(!o||o.staff!==d.staff||o.at!==d.at){BY[d.cls+"|"+d.subject]={staff:d.staff,at:d.at||""};ch=true}}
+  });
+  if(ch)persist();
+  return ch;
+}
+function pullMarks(){
+  if(typeof window.mtcFsPullCol!=="function")return Promise.resolve(false);
+  return window.mtcFsPullCol("marks").then(mergeDocs).catch(function(){return false});
+}
+window.mtcMkOpen=function(){
+  if(!staff){wantOpen=true;try{mtcOpenStaff()}catch(e){}return}
+  $("mtcMkWho").textContent="👨‍🏫 Teacher: "+staff+(mySubs().length?" • आपके विषय: "+mySubs().join(", "):" • विषय अभी तय नहीं");
+  fillSelects();loadDraft();render();msg("",true);
+  var o=$("mtcMk");o.classList.add("open");o.setAttribute("aria-hidden","false");
+  pullMarks().then(function(ch){
+    if(!ch||!o.classList.contains("open"))return;
+    if(!dirty){loadDraft();render()}else status();
+  });
+};
+window.mtcMkClose=function(){
+  if(dirty&&!confirm("Marks अभी Save नहीं हुए हैं। बिना Save किए बंद करें?"))return;
+  dirty=false;var o=$("mtcMk");o.classList.remove("open");o.setAttribute("aria-hidden","true");
+};
+/* Staff: poori Class ka Result ek saath */
+function abbr(sb){return sb.replace("G.K. / Moral","GK/Moral").replace("Computer","Comp.").replace("Drawing","Draw.").replace("English","Eng.").replace("Science","Sci.").replace("Sanskrit","Sans.")}
+function classTable(c){
+  var subs=classSubs(c),ids=students(c),R=window.MTC_ROLL||{},rows=[],all=ids.length>0;
+  ids.forEach(function(k){
+    var mine=subsOf(k),tot=0,fail=false,done=true,cells=[];
+    subs.forEach(function(sb){
+      if(mine.indexOf(sb)<0){cells.push({t:"",c:"e"});return}
+      var v=M[k]&&M[k][sb];
+      if(v===undefined||v===null||v===""){cells.push({t:"–",c:"e"});done=false;return}
+      if(String(v).toUpperCase()==="AB"){cells.push({t:"AB",c:"f"});fail=true;return}
+      var f=parseFloat(v);tot+=f;if(f<MAXM*0.33){fail=true;cells.push({t:String(v),c:"f"})}else cells.push({t:String(v),c:""});
+    });
+    if(!done)all=false;
+    rows.push({k:k,roll:R[k]||k,name:STUDENTS[k][0],cells:cells,tot:tot,max:mine.length*MAXM,done:done,fail:fail});
+  });
+  rows.forEach(function(r){
+    r.rank=null;
+    if(all){var x=1;rows.forEach(function(o){if(o.tot>r.tot)x++});r.rank=x}
+  });
+  return {subs:subs,rows:rows,all:all};
+}
+function showAll(){
+  var t=classTable(cls),h="<table><thead><tr><th>Roll</th><th>Name</th>";
+  t.subs.forEach(function(sb){h+="<th>"+esc(abbr(sb))+"</th>"});
+  h+="<th>Total</th><th>%</th><th>Rank</th><th>Result</th></tr></thead><tbody>";
+  t.rows.forEach(function(r){
+    h+="<tr><td>"+esc(r.roll)+"</td><td class=\"n\" onclick=\"mtcMkAllCard('"+r.k+"')\">"+esc(r.name)+"</td>";
+    r.cells.forEach(function(c){h+="<td class=\""+c.c+"\">"+esc(c.t)+"</td>"});
+    h+="<td>"+(r.done?r.tot:"–")+"</td><td>"+(r.done&&r.max?(r.tot/r.max*100).toFixed(1):"–")+"</td><td>"+(r.rank?r.rank+"/"+t.rows.length:"–")+"</td>"
+      +"<td class=\""+(r.done?(r.fail?"f":"p"):"e")+"\">"+(r.done?(r.fail?"अनुत्तीर्ण":"उत्तीर्ण"):"–")+"</td></tr>";
+  });
+  h+="</tbody></table>";
+  $("mtcMkAllT").textContent="📋 Class "+cls+" — पूरा Result";
+  $("mtcMkAllN").textContent=t.all?"✅ सभी विषयों के Marks भर गए — Rank तैयार है। नाम दबाकर उसका Result Card खोलें।":"⏳ जिन विषयों के Marks बाकी हैं वहाँ – दिख रहा है। सब भरते ही Rank अपने-आप आ जाएगा।";
+  $("mtcMkAllW").innerHTML=h;
+}
+window.mtcMkAll=function(){
+  if(!cls)return;showAll();
+  var o=$("mtcMkAll");o.classList.add("open");o.setAttribute("aria-hidden","false");
+  pullMarks().then(function(ch){if(ch&&o.classList.contains("open"))showAll()});
+};
+window.mtcMkAllClose=function(){var o=$("mtcMkAll");o.classList.remove("open");o.setAttribute("aria-hidden","true")};
+window.mtcMkAllCard=function(k){window.mtcMkAllClose();try{window.mtcShowResultCard(k)}catch(e){}};
+var prevS=window.mtcStaffStart;
+window.mtcStaffStart=function(n){
+  staff=String(n||"");var f=$("mtcMkFab");if(f)f.classList.add("show");
+  var r=typeof prevS==="function"?prevS.apply(this,arguments):undefined;
+  if(wantOpen){wantOpen=false;setTimeout(window.mtcMkOpen,80)}
+  return r;
+};
+/* Result Card khulte hi online se Marks laakar card dobara taiyar karo */
+var rcOrig=window.mtcShowResultCard;
+if(typeof rcOrig==="function"){
+  window.mtcShowResultCard=function(sid){
+    shown=String(sid);var r=rcOrig.apply(this,arguments);
+    pullMarks().then(function(ch){
+      var o=$("mtcRes");
+      if(ch&&shown===String(sid)&&o&&o.classList.contains("open"))rcOrig.call(window,sid);
+    });
+    return r;
+  };
+}
+})();
+</script>
+
 
 <!-- MTC Firestore save: उपस्थिति (attendance) और test results Firestore में भेजता है। Internet न हो तो phone/browser में रुककर बाद में अपने-आप जाता है। -->
 <script id="mtc-firestore-save">
@@ -8054,6 +8362,11 @@ if(typeof window.mtcAttOpen==="function"){
 window.addEventListener("online",function(){flush()});
 window.mtcFsQueue=function(col,id,data){enqueue({col:col,id:id,v:Date.now(),data:data});return flush()};
 window.mtcFsPull=function(){return pull()};
+window.mtcFsPullCol=function(col){
+  return db().then(function(x){
+    return withTimeout(x.fs.getDocs(x.fs.collection(x.db,col)),15000).then(function(snap){var a=[];snap.forEach(function(d){a.push(d.data())});return a});
+  });
+};
 setTimeout(function(){flush()},3000);
 })();
 </script>
