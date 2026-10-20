@@ -8349,12 +8349,12 @@ var KEY="mtc_marks_v1",MAXM=70,staff="",cls="",sub="",draft={},dirty=false,wantO
 var TEACHER_RULES={
   /* हर teacher: कौन सी Class (नंबर, Nursery/LKG/HKG = 0) और कौन से विषय। s=सिर्फ़ ये विषय, x=ये छोड़कर बाकी सब */
   "O.P. Verma Sir":[{c:[3,10],s:["English"]},{c:[3,8],s:["Computer"]}],
-  "Rajesh Sir":[{c:[5,10],s:["Maths"]}],
+  "Rajesh Sir":[{c:[6,10],s:["Maths"]}],
   "Mukesh Sir":[{c:[6,10],s:["Science"]}],
   "Jitendra Malav Sir":[{c:[6,10],s:["Sanskrit","Hindi"]}],
   "Khushnuma Madam":[{c:[1,2]}],
   "Kavita Madam":[{c:[3,3],x:["English","Computer"]}],
-  "Sameer Sir":[{c:[6,10],s:["S.St."]}],
+  "Sameer Sir":[{c:[6,10],s:["Urdu","S.St."]}],
   "Yashima Madam":[{c:[4,5],x:["English","Computer"]}],
   "M.S. Pathan Sir":[{c:[0,10],s:["EVS","Hindi"]}]
 };
@@ -9430,5 +9430,319 @@ D.forEach(function(p){M[p.id]=build(p)});
   function sched(){clearTimeout(t);t=setTimeout(run,80)}
   try{new MutationObserver(sched).observe(document.documentElement,{childList:true,subtree:true})}catch(e){}
   document.addEventListener('DOMContentLoaded',sched);sched();
+})();
+</script>
+<!-- ===== MTC v2 patch: staff colours • 4-digit ID • ID↔Roll check • pink theme ===== -->
+<style id="mtc-v2-style">
+/* ---- 1) Staff icons: Female = Pink (मोटे/बड़े), Male = केसरिया (bold/बड़े) ---- */
+#mtcStaffBox .stfCell{min-height:62px!important;gap:9px!important;padding:8px 9px!important}
+#mtcStaffBox .stfEm,#mtcStaffIdEm{display:inline-flex!important;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;font-size:32px!important;line-height:1;flex:0 0 50px;border:3px solid #fff;box-shadow:0 3px 8px #0004}
+#mtcStaffBox .stfTxt b{font-size:19px!important;font-weight:1000!important;-webkit-text-stroke:.7px currentColor;letter-spacing:.1px}
+#mtcStaffBox .stfTxt i{font-size:13px!important;font-weight:1000!important}
+#mtcStaffBox .stfCell.stfF{border-color:#e91e63!important;background:linear-gradient(135deg,#fce4ec,#f8bbd0)!important}
+#mtcStaffBox .stfCell.stfF .stfEm,#mtcStaffIdEm.stfF{background:linear-gradient(135deg,#ff4081,#c2185b);filter:drop-shadow(0 0 2px #ff80ab)}
+#mtcStaffBox .stfCell.stfF .stfTxt b{color:#d81b60!important}
+#mtcStaffBox .stfCell.stfF .stfTxt i{color:#ad1457!important}
+#mtcStaffBox .stfCell.stfM{border-color:#ff9933!important;background:linear-gradient(135deg,#fff3e0,#ffe0b2)!important}
+#mtcStaffBox .stfCell.stfM .stfEm,#mtcStaffIdEm.stfM{background:linear-gradient(135deg,#ffb347,#ff7a00);filter:drop-shadow(0 0 2px #ffcc80)}
+#mtcStaffBox .stfCell.stfM .stfTxt b{color:#e65c00!important}
+#mtcStaffBox .stfCell.stfM .stfTxt i{color:#bf360c!important}
+#mtcStaffIdEm{width:74px;height:74px;font-size:46px!important;flex-basis:74px;margin:0 auto}
+#mtcStaffIdNm.stfF{color:#d81b60!important;-webkit-text-stroke:.7px #d81b60}
+#mtcStaffIdNm.stfM{color:#e65c00!important;-webkit-text-stroke:.7px #e65c00}
+
+/* ---- 2) Pink theme: ID Lists / Present-Absent / Marks / उपस्थिति / Student Profiles ---- */
+.lstBox h2,#mtcPa h3,#mtcAtt h3,#mtcMk h3,#mtcProfOv h2,#mtcProfViewOv h2{color:#c2185b!important}
+.lstBox{border:3px solid #ec407a}
+.lstT th{background:linear-gradient(135deg,#ad1457,#ec407a)!important;color:#fff!important}
+.lstT tr:nth-child(even){background:#fce4ec!important}
+.lstT td{border-color:#f8bbd0!important}
+.lstN{color:#c2185b!important}
+.admGrid button{background:linear-gradient(135deg,#ad1457,#ec407a)!important}
+#mtcListFab,#mtcMkFab,#mtcPaFab,#mtcAttFab,#mtcProfBtn,#mtcCkListBtn,#mtcIdRollBtn,#mtcIdRollBtn2{background:linear-gradient(135deg,#ad1457,#ec407a,#f48fb1)!important;color:#fff!important;border:2px solid #fff!important;box-shadow:0 5px 16px #ad145788!important}
+#mtcPa .pb,#mtcAtt .ab,#mtcMk .mb,#mtcProfOv>div,#mtcProfViewOv>div{border:3px solid #ec407a}
+#mtcPa .px,.pfX,.lstX{background:linear-gradient(135deg,#ad1457,#ec407a)!important;color:#fff!important}
+.pfRow .a,.pfRow .d,.pfLn span:first-child{color:#c2185b!important}
+.pfRow:active{background:#fce4ec!important}
+.pfCard{border-color:#ec407a!important;background:#fff5f9!important}
+#mtcPa .pr .i,#mtcPa .pr .r{color:#c2185b!important}
+#mtcAtt .abtns button,#mtcMk .mbtns button{background:linear-gradient(135deg,#ad1457,#ec407a)!important}
+
+/* ---- 3) ID ↔ Roll lookup + new-ID notice ---- */
+.mtcIdRollBox{margin:6px 0 10px;padding:10px;border:2px solid #ec407a;border-radius:14px;background:#fff5f9}
+.mtcIdRollBox h4{margin:0 0 6px;text-align:center;color:#c2185b;font-size:16px}
+.mtcIdRollBox .rw{display:flex;gap:6px;margin:6px 0}
+.mtcIdRollBox input{flex:1;min-width:0;padding:10px;border:2px solid #ec407a;border-radius:10px;font-size:16px;text-align:center;box-sizing:border-box}
+.mtcIdRollBox button{border:0;border-radius:10px;padding:10px 8px;color:#fff;font-weight:900;font-size:13px;background:linear-gradient(135deg,#ad1457,#ec407a)}
+.mtcIdRollBox .out{min-height:20px;margin-top:6px;font-weight:800;font-size:14px;line-height:1.5;text-align:center;color:#333}
+.mtcIdRollBox .out .k{display:inline-block;margin:2px 3px;padding:3px 10px;border-radius:12px;background:#ad1457;color:#fff}
+.mtcIdNote{margin:8px 0;padding:10px 12px;border-radius:12px;background:#fce4ec;border:2px solid #ec407a;color:#880e4f;font-weight:800;font-size:14px;line-height:1.5;text-align:left}
+#mtcIdRollOv{display:none;position:fixed;inset:0;z-index:2000020;background:#000b;align-items:flex-start;justify-content:center;padding:8px;overflow:auto;box-sizing:border-box}
+#mtcIdRollOv.open{display:flex!important}
+#mtcIdRollOv .bx{width:min(520px,100%);background:#fff;border:3px solid #ec407a;border-radius:16px;padding:14px;margin:auto 0;box-sizing:border-box}
+#mtcIdRollOv .bx h2{margin:0 0 8px;text-align:center;color:#c2185b;font-size:20px}
+#mtcIdRollOv .bx .cl{width:100%;margin-top:8px;padding:11px;border:0;border-radius:10px;color:#fff;font-weight:900;background:linear-gradient(135deg,#ad1457,#ec407a)}
+#mtcIdRollBtn2{display:block;width:100%;margin:8px 0;padding:13px;border-radius:12px;font-weight:900;font-size:16px}
+</style>
+
+<script id="mtc-v2-script">
+(function(){
+"use strict";
+/* ============ A) 4-अंकों की ID: 1 + (2-अंकों की ID) + 2 ============ */
+function stuObj(){try{return STUDENTS}catch(e){return {}}}
+function dolObj(){try{return DOL_ONLY_USERS}catch(e){return {}}}
+function has(o,k){return Object.prototype.hasOwnProperty.call(o,k)}
+function newIdOf(base){return "1"+base+"2"}
+/* 4 अंक की नई ID -> असली (2 अंक) ID.  पहले से मौजूद 4-अंकों की ID (जैसे DOL 1101/1102/1201) को नहीं छेड़ते */
+function canon(raw){
+  var s=String(raw==null?"":raw).trim().replace(/\s+/g,"");
+  if(/^1\d{2}2$/.test(s)&&!has(stuObj(),s)&&!has(dolObj(),s)){
+    var b=s.slice(1,3);
+    if(has(stuObj(),b)&&b.length===2)return b;
+  }
+  return s;
+}
+window.mtcCanonId=canon;window.mtcNewIdOf=newIdOf;
+
+var STU_INPUTS=/^(plStudentId|gateStudentId|mtcHubId|myResultId|tpStudentId|sid|notesIdInput|mtcTTAskId|mtcRsAskId|mtcAdAskId|mtcCode_.+)$/;
+var desc=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value");
+function hook(el){
+  if(el.__mtcV2||!el.id||!STU_INPUTS.test(el.id))return;
+  el.__mtcV2=true;
+  try{
+    Object.defineProperty(el,"value",{configurable:true,
+      get:function(){return canon(desc.get.call(this))},
+      set:function(v){desc.set.call(this,v)}});
+  }catch(e){}
+}
+function scanInputs(){document.querySelectorAll("input").forEach(hook)}
+
+/* ============ B) Staff icons: gender class लगाना ============ */
+function tagStaff(){
+  document.querySelectorAll("#mtcStaffBox .stfCell").forEach(function(c){
+    if(c.__t)return;c.__t=1;
+    var n=(c.querySelector(".stfTxt b")||{}).textContent||"";
+    c.classList.add(/Madam|मैडम/i.test(n)?"stfF":"stfM");
+  });
+  var nm=document.getElementById("mtcStaffIdNm"),em=document.getElementById("mtcStaffIdEm");
+  if(nm&&em){var f=/Madam|मैडम/i.test(nm.textContent||"");
+    [nm,em].forEach(function(x){x.classList.toggle("stfF",f);x.classList.toggle("stfM",!f&&!!(nm.textContent||"").trim())});}
+}
+
+/* ============ C) ID के बारे में audio + लिखित सूचना ============ */
+var lastSpoken="";
+function hiVoice(){try{var v=(speechSynthesis.getVoices()||[]);return v.find(function(x){return /^hi(-|_)?IN$/i.test(x.lang)})||v.find(function(x){return /^hi/i.test(x.lang)})||null}catch(e){return null}}
+function idMsg(name){return name+", आपकी ID में आगे 1 व पीछे 2 लगाकर चार अंकों की ID बनाई जाएगी! अतः जब भी आपकी ID काम न करे तो ID से पहले 1 व बाद में 2 लगाकर ओपन कर लें! ये परिवर्तन आपकी ID को सुरक्षित (secure) करने का एक प्रयास है!"}
+function speakIdMsg(name){
+  try{var ss=window.speechSynthesis;if(!ss)return;
+    var u=new SpeechSynthesisUtterance(idMsg(name));u.lang="hi-IN";u.rate=.88;u.volume=1;
+    var v=hiVoice();if(v)u.voice=v;ss.speak(u);}catch(e){}
+}
+var noteTimer=null;
+function onStuInput(ev){
+  var t=ev.target;if(!t||!t.id||!STU_INPUTS.test(t.id)||/^mtcCode_/.test(t.id))return;
+  clearTimeout(noteTimer);
+  var raw=String(desc.get.call(t)||"").trim().replace(/\s+/g,"");
+  var host=t.parentNode,old=host&&host.querySelector(".mtcIdNote[data-for='"+t.id+"']");
+  /* सिर्फ़ तब, जब विद्यार्थी ने पुरानी 2-अंकों की ID डाली */
+  if(!/^\d{2}$/.test(raw)||!has(stuObj(),raw)){if(old)old.remove();if(!raw)lastSpoken="";return}
+  var rec=stuObj()[raw],name=(rec&&rec[0])||"विद्यार्थी";
+  if(old)old.remove();
+  var d=document.createElement("div");d.className="mtcIdNote";d.setAttribute("data-for",t.id);
+  d.innerHTML="🔐 <b>"+name.replace(/</g,"&lt;")+"</b>, आपकी ID में आगे <b>1</b> व पीछे <b>2</b> लगाकर चार अंकों की ID बनाई जाएगी: <b style='color:#ad1457;font-size:17px'>"+newIdOf(raw)+"</b><br>जब भी आपकी ID काम न करे तो ID से पहले 1 व बाद में 2 लगाकर ओपन कर लें। यह परिवर्तन आपकी ID को secure करने का एक प्रयास है।";
+  t.insertAdjacentElement("afterend",d);
+  if(lastSpoken!==raw){lastSpoken=raw;noteTimer=setTimeout(function(){speakIdMsg(name)},1800)}
+}
+document.addEventListener("input",onStuInput,true);
+
+/* ============ D) ID ↔ Roll No. जाँच (Staff / Admin के लिए) ============ */
+function rollMap(){var R={};try{var m=window.MTC_ROLL||{};Object.keys(m).forEach(function(k){if(m[k])R[k]=String(m[k])})}catch(e){}return R}
+function esc(x){return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function badge(a,b){return '<span class="k">'+esc(a)+": "+esc(b)+"</span>"}
+function card(k){
+  var r=stuObj()[k]||dolObj()[k]||["",""],R=rollMap(),h="<div><b>"+esc(r[0])+"</b> • Class "+esc(r[1])+"</div>";
+  h+=badge("ID",k);
+  if(/^\d{2}$/.test(k))h+=badge("नई 4-अंकों की ID",newIdOf(k));
+  h+=badge("Roll No.",R[k]||"उपलब्ध नहीं");
+  return h;
+}
+window.mtcLookId=function(){
+  var i=document.getElementById("mtcLkId"),o=document.getElementById("mtcLkOut");if(!i||!o)return;
+  var k=canon(i.value);
+  if(!k){o.innerHTML="❌ पहले ID डालें।";return}
+  if(!has(stuObj(),k)&&!has(dolObj(),k)){o.innerHTML="❌ यह ID मान्य नहीं है।";return}
+  o.innerHTML=card(k);
+};
+window.mtcLookRoll=function(){
+  var i=document.getElementById("mtcLkRoll"),o=document.getElementById("mtcLkOut");if(!i||!o)return;
+  var v=String(i.value||"").trim();if(!v){o.innerHTML="❌ पहले Roll No. डालें।";return}
+  var R=rollMap(),hit=Object.keys(R).filter(function(k){return R[k]===v});
+  if(!hit.length){o.innerHTML="❌ यह Roll No. किसी विद्यार्थी से नहीं जुड़ा है।";return}
+  o.innerHTML=hit.map(card).join("<hr style='border:0;border-top:1px dashed #ec407a'>");
+};
+function lookupHtml(){
+  return '<div class="mtcIdRollBox"><h4>🔎 ID ↔ Roll No. जाँच</h4>'
+   +'<div class="rw"><input id="mtcLkId" inputmode="numeric" maxlength="4" placeholder="Student ID (2 या 4 अंक)"><button type="button" onclick="mtcLookId()">ID → Roll</button></div>'
+   +'<div class="rw"><input id="mtcLkRoll" inputmode="numeric" maxlength="6" placeholder="Roll No."><button type="button" onclick="mtcLookRoll()">Roll → ID</button></div>'
+   +'<div class="out" id="mtcLkOut"></div></div>';
+}
+window.mtcIdRollOpen=function(){
+  var o=document.getElementById("mtcIdRollOv");
+  if(!o){o=document.createElement("div");o.id="mtcIdRollOv";document.body.appendChild(o);o.onclick=function(e){if(e.target===o)o.classList.remove("open")}}
+  o.innerHTML='<div class="bx"><h2>🔎 ID ↔ Roll No.</h2>'+lookupHtml()+'<button type="button" class="cl" onclick="document.getElementById(\'mtcIdRollOv\').classList.remove(\'open\')">✖ बंद करें</button></div>';
+  o.classList.add("open");
+  ["mtcLkId","mtcLkRoll"].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener("keydown",function(ev){if(ev.key==="Enter")(id==="mtcLkId"?mtcLookId:mtcLookRoll)()})});
+};
+
+/* School ID List overlay में: नई-ID कॉलम + जाँच box */
+function enhanceList(){
+  var o=document.getElementById("mtcSchoolListOv");
+  if(o&&o.classList.contains("open")&&!o.__v2){
+    var t=o.querySelector(".lstT");
+    if(t){o.__v2=1;
+      var hr=t.querySelector("thead tr");if(hr){var th=document.createElement("th");th.textContent="नई ID";hr.insertBefore(th,hr.children[3])}
+      t.querySelectorAll("tbody tr").forEach(function(tr){var id=(tr.children[2]||{}).textContent||"";var td=document.createElement("td");td.innerHTML="<b style='color:#ad1457'>"+(/^\d{2}$/.test(id.trim())?newIdOf(id.trim()):"—")+"</b>";tr.insertBefore(td,tr.children[3])});
+      var h=o.querySelector(".lstBox h2");if(h)h.insertAdjacentHTML("afterend",lookupHtml());
+    }
+  }
+  if(o&&!o.classList.contains("open"))o.__v2=0;
+  /* Admin dashboard में बटन */
+  var ad=document.getElementById("mtcAdminDashOv");
+  if(ad&&ad.classList.contains("open")){
+    var bx=ad.querySelector(".lstBox");
+    if(bx&&!bx.querySelector("#mtcIdRollBtn2")){
+      var b=document.createElement("button");b.type="button";b.id="mtcIdRollBtn2";b.textContent="🔎 ID ↔ Roll No. जाँच";b.onclick=function(){window.mtcIdRollOpen()};
+      var x=bx.querySelector("button.lstX");bx.insertBefore(b,x);
+    }
+  }
+  /* Staff Login के बाद वाले box में बटन */
+  var ck=document.getElementById("mtcCkBox");
+  if(ck&&ck.classList.contains("t")&&!ck.querySelector("#mtcIdRollBtn")){
+    var b2=document.createElement("button");b2.type="button";b2.id="mtcIdRollBtn";b2.textContent="🔎 ID ↔ Roll No. जाँच";
+    b2.style.cssText="display:block;width:100%;margin:6px 0;padding:12px;border-radius:12px;font-weight:900;font-size:15px";
+    b2.onclick=function(e){e.stopPropagation();window.mtcIdRollOpen()};
+    var l=ck.querySelector("#mtcCkListBtn");if(l&&l.parentNode)l.parentNode.insertBefore(b2,l.nextSibling);else ck.appendChild(b2);
+  }
+}
+
+function tick(){try{scanInputs();tagStaff();enhanceList()}catch(e){}}
+document.addEventListener("DOMContentLoaded",tick);window.addEventListener("load",tick);
+setInterval(tick,700);tick();
+try{if(window.speechSynthesis&&speechSynthesis.getVoices)speechSynthesis.getVoices()}catch(e){}
+})();
+</script>
+
+
+<style id="mtc-green-pink-style">
+/* ===== चार बटन: हरे, मोटे, बड़े ===== */
+#mtcListFab,#mtcMkFab,#mtcPaFab,#mtcAttFab{
+ left:10px!important;width:auto!important;min-width:250px;text-align:center;
+ padding:16px 26px!important;border-radius:32px!important;
+ font-size:21px!important;font-weight:1000!important;color:#fff!important;
+ -webkit-text-stroke:.6px #fff;text-shadow:0 2px 3px #0008;
+ background:linear-gradient(135deg,#1b5e20,#2e7d32,#43a047)!important;
+ border:3px solid #fff!important;box-shadow:0 6px 18px #1b5e20aa!important;cursor:pointer}
+#mtcListFab{bottom:12px!important}
+#mtcAttFab{bottom:92px!important}
+#mtcPaFab{bottom:172px!important}
+#mtcMkFab{bottom:252px!important}
+/* तीन बटन: सफेद बैकग्राउंड, हरे अक्षर */
+#mtcMkFab,#mtcPaFab,#mtcAttFab{background:#fff!important;color:#1b5e20!important;-webkit-text-stroke:.6px #1b5e20!important;text-shadow:none!important;border:4px solid #2e7d32!important;box-shadow:0 6px 18px #1b5e2088!important}
+/* ===== Staff सूची: सफेद बैकग्राउंड, Female = गुलाबी, Male = हरा, मोटा व बड़ा ===== */
+#mtcStaffBox .stfCell{background:#fff!important;border-width:4px!important;min-height:64px!important;padding:8px 9px!important}
+#mtcStaffBox .stfCell .stfEm{font-size:30px!important}
+#mtcStaffBox .stfCell .stfTxt b{font-size:20px!important;font-weight:1000!important;-webkit-text-stroke:.5px currentColor}
+#mtcStaffBox .stfCell .stfTxt i{font-size:13px!important}
+#mtcStaffBox .stfCell.stfF{border-color:#e91e63!important}
+#mtcStaffBox .stfCell.stfF .stfTxt b{color:#d81b60!important}
+#mtcStaffBox .stfCell.stfM{border-color:#2e7d32!important}
+#mtcStaffBox .stfCell.stfM .stfTxt b{color:#1b8a2a!important}
+</style>
+<script id="mtc-staff-tag-script">
+(function(){
+function tag(){document.querySelectorAll("#mtcStaffGrid .stfCell").forEach(function(c){c.classList.add(/Madam/i.test(c.textContent||"")?"stfF":"stfM")})}
+tag();setInterval(tag,1500);
+})();
+</script>
+
+<style id="mtc-admin-log-style">
+#mtcMkLog{display:none;position:fixed;inset:0;z-index:700000;background:#000b;align-items:flex-start;justify-content:center;padding:6px;overflow:auto;box-sizing:border-box}
+#mtcMkLog.open{display:flex}
+#mtcMkLog .lb{width:min(760px,100%);margin:auto 0;background:#fff;border:5px solid #2e7d32;border-radius:16px;padding:10px;box-sizing:border-box;box-shadow:0 10px 35px #0007}
+#mtcMkLog h3{margin:0 0 6px;text-align:center;color:#1b5e20;font-size:19px;font-weight:1000}
+#mtcMkLog select,#mtcMkLog .rf{width:100%;box-sizing:border-box;margin:4px 0;padding:10px;border-radius:10px;font-size:15px;font-weight:800}
+#mtcMkLog select{border:2px solid #2e7d32}
+#mtcMkLog .rf{border:0;background:linear-gradient(135deg,#1b5e20,#43a047);color:#fff;font-weight:1000}
+#mtcMkLog .ln{margin:6px 0;padding:6px;border-radius:10px;background:#e8f5e9;color:#1b5e20;font-size:13px;font-weight:900;text-align:center}
+#mtcMkLog .lw{overflow-x:auto;border:2px solid #a5d6a7;border-radius:10px}
+#mtcMkLog table{border-collapse:collapse;width:100%;min-width:520px;font-size:13px}
+#mtcMkLog th{background:#2e7d32;color:#fff;padding:6px 4px;font-size:12px;white-space:nowrap}
+#mtcMkLog td{border-top:1px solid #c8e6c9;padding:6px 4px;text-align:center;font-weight:800;color:#222}
+#mtcMkLog td.s{color:#c2185b;font-weight:1000}
+#mtcMkLog .lc{width:100%;margin-top:8px;padding:12px;border:0;border-radius:12px;background:#c62828;color:#fff;font-size:15px;font-weight:900}
+</style>
+<div id="mtcMkLog" aria-hidden="true"><div class="lb"><h3>🕘 किसने कब Marks भरे (सिर्फ़ Admin)</h3>
+<select id="mtcMkLogCls"><option value="">सभी Class</option></select>
+<button type="button" class="rf" id="mtcMkLogRf">🔄 Firestore से ताज़ा करें</button>
+<div class="ln" id="mtcMkLogN"></div><div class="lw" id="mtcMkLogW"></div>
+<button type="button" class="lc" id="mtcMkLogX">✖ बंद करें</button></div></div>
+<script id="mtc-admin-mklog-script">
+(function(){
+"use strict";
+var admin=false,rows=[];
+function $(i){return document.getElementById(i)}
+function esc(x){return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function fmt(iso){
+  try{var d=new Date(iso);if(isNaN(d))return "—";
+    return d.toLocaleString("en-IN",{timeZone:"Asia/Kolkata",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:true})}catch(e){return "—"}
+}
+function render(){
+  var cf=$("mtcMkLogCls").value,list=rows.filter(function(r){return !cf||String(r.cls)===cf});
+  var h='<table><thead><tr><th>#</th><th>Class</th><th>विषय</th><th>किसने भरा</th><th>कब भरा</th><th>विद्यार्थी</th></tr></thead><tbody>';
+  list.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td><td>'+esc(r.cls)+'</td><td>'+esc(r.subject)+'</td><td class="s">'+esc(r.staff||"—")+'</td><td>'+esc(fmt(r.at))+'</td><td>'+esc(r.n)+'</td></tr>';
+  });
+  if(!list.length)h+='<tr><td colspan="6" style="padding:14px;color:#888">अभी कोई Marks रिकॉर्ड नहीं मिला।</td></tr>';
+  $("mtcMkLogW").innerHTML=h+'</tbody></table>';
+  $("mtcMkLogN").textContent="कुल रिकॉर्ड: "+list.length+" (हर Class-विषय का सबसे नया Save दिखता है)";
+}
+function load(){
+  $("mtcMkLogN").textContent="⏳ Firestore से रिकॉर्ड आ रहे हैं…";
+  if(typeof window.mtcFsPullCol!=="function"){$("mtcMkLogN").textContent="❌ Firestore उपलब्ध नहीं है।";return}
+  window.mtcFsPullCol("marks").then(function(a){
+    rows=(a||[]).filter(function(d){return d&&d.cls&&d.subject}).map(function(d){
+      return {cls:d.cls,subject:d.subject,staff:d.staff,at:d.at,n:d.marks?Object.keys(d.marks).length:0};
+    }).sort(function(x,y){return String(y.at||"").localeCompare(String(x.at||""))});
+    var sel=$("mtcMkLogCls"),cur=sel.value,cs={};rows.forEach(function(r){cs[r.cls]=1});
+    sel.innerHTML='<option value="">सभी Class</option>'+Object.keys(cs).sort(function(a,b){return (parseInt(a,10)||0)-(parseInt(b,10)||0)}).map(function(c){return '<option value="'+esc(c)+'">Class '+esc(c)+'</option>'}).join("");
+    sel.value=cur;render();
+  }).catch(function(){$("mtcMkLogN").textContent="❌ Internet/Firestore नहीं मिला। थोड़ी देर बाद फिर कोशिश करें।"});
+}
+window.mtcMkLogOpen=function(){
+  if(!admin){alert("यह स्क्रीन सिर्फ़ Admin के लिए है।");return}
+  $("mtcMkLog").classList.add("open");load();
+};
+$("mtcMkLogCls").onchange=render;$("mtcMkLogRf").onclick=load;
+$("mtcMkLogX").onclick=function(){$("mtcMkLog").classList.remove("open")};
+/* Admin MTC Dashboard खुलने पर (सही Password के बाद ही) बटन जोड़ें */
+function hook(){
+  var f=window.mtcAdminDash;if(typeof f!=="function"||f.__mk)return;
+  var w=function(kind){
+    var r=f.apply(this,arguments);
+    if(kind==="mtc"){
+      admin=true;
+      var box=document.querySelector("#mtcAdminDashOv .lstBox");
+      if(box&&!box.querySelector(".mkLogBtn")){
+        var b=document.createElement("button");b.type="button";b.className="admBtn mkLogBtn";
+        b.style.background="linear-gradient(135deg,#1b5e20,#43a047)";b.textContent="🕘 किसने कब Marks भरे";
+        b.onclick=function(){var o=$("mtcAdminDashOv");if(o)o.classList.remove("open");mtcMkLogOpen()};
+        var x=box.querySelector(".lstX");box.insertBefore(b,x);
+      }
+    }
+    return r;
+  };
+  w.__mk=1;window.mtcAdminDash=w;
+}
+hook();setInterval(hook,1000);
 })();
 </script>
