@@ -1,4 +1,20 @@
-<!doctype html><html lang="hi"><head><meta name="robots" content="noindex, nofollow, noarchive"><script id="mtc-storage-shim">(function(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t')}catch(e){var m={};var mem={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};try{Object.defineProperty(window,'localStorage',{value:mem,configurable:true})}catch(e2){}}})();</script><script id="mtc-speech-shim">window.__mtcShimFn=function(){
+<!doctype html><html lang="hi"><head>
+<script id="mtc-id-speech-fix">
+/* बोलते समय "ID" को "आई डी" पढ़वाने के लिए (स्क्रीन का लिखा हुआ टेक्स्ट नहीं बदलता) */
+(function(){
+var O=window.SpeechSynthesisUtterance;if(!O||O.__idfix)return;
+function fix(t){
+  t=String(t==null?"":t);
+  var hi=/[\u0900-\u097F]/.test(t),r=hi?"आई डी":"I D";
+  return t.replace(/\bI\.\s?D\.?(?=\W|$)/g,r).replace(/\bIDs?\b/g,r).replace(/आईडी|आइडी|आई\.डी\./g,"आई डी");
+}
+var N=function(t){return arguments.length?new O(fix(t)):new O()};
+N.prototype=O.prototype;N.__idfix=1;window.SpeechSynthesisUtterance=N;
+try{var d=Object.getOwnPropertyDescriptor(O.prototype,"text");
+if(d&&d.set)Object.defineProperty(O.prototype,"text",{get:d.get,set:function(v){d.set.call(this,fix(v))},configurable:true});}catch(e){}
+})();
+</script>
+<meta name="robots" content="noindex, nofollow, noarchive"><script id="mtc-storage-shim">(function(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t')}catch(e){var m={};var mem={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};try{Object.defineProperty(window,'localStorage',{value:mem,configurable:true})}catch(e2){}}})();</script><script id="mtc-speech-shim">window.__mtcShimFn=function(){
  if(window.__mtcSpeechShim)return;
  var ss=window.speechSynthesis;if(!ss||!window.SpeechSynthesisUtterance)return;
  window.__mtcSpeechShim=1;
