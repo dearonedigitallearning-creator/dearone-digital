@@ -19,9 +19,15 @@ if(d&&d.set)Object.defineProperty(O.prototype,"text",{get:d.get,set:function(v){
  var ss=window.speechSynthesis;if(!ss||!window.SpeechSynthesisUtterance)return;
  window.__mtcSpeechShim=1;
  var oSpeak=ss.speak.bind(ss),oCancel=ss.cancel.bind(ss);
- var gen=0,pend=[],queue=[],timer=0,tries=0;
+ var gen=0,pend=[],queue=[],timer=0,tries=0,running=false,cancelT=0,lastK='',lastKAt=0,lastT='',lastTAt=0;
  function fix(s){s=String(s==null?'':s);
-  s=s.replace(/MAYANK\s*MALAV/gi,'मयंक मालव').replace(/LAXMI\s*MEGHWAL/gi,'लक्ष्मी मेघवाल').replace(/DEAR\s*ONE\s*DIGITAL\s*LEARNING/g,'डियर वन डिजिटल लर्निंग');
+  s=s.replace(/MAYANK\s*MALAV/gi,'मयंक मालव').replace(/LAXMI\s*MEGHWAL/gi,'लक्ष्मी मेघवाल').replace(/ZAINAB\s*ANSARI/gi,'ज़ैनब अंसारी').replace(/PAWAN\s*KUMAR\s*MEGHWAL/gi,'पवन कुमार मेघवाल').replace(/DEAR\s*ONE\s*DIGITAL\s*LEARNING/g,'डियर वन डिजिटल लर्निंग');
+  return s;}
+ /* विद्यार्थी का नाम-वाला greeting पहचानने की key (एक ही नाम दोबारा न बोले) */
+ function gkey(t){t=String(t||'');var m=t.match(/^\s*आप\s+(.+?)\s+(?:हैं|हो)(?=[\s।.,!?]|$)/)||t.match(/^\s*([^,।!?\n]{2,40}),\s*आपको हमारे/);
+  return m?m[1].replace(/\s+/g,' ').trim().toLowerCase():''}
+ function doCancel(){clearTimeout(timer);pend=[];queue=[];gen++;running=false;oCancel()}
+ function _unused(s){
   return s;}
  function split(s){var out=[],parts=s.replace(/([।.!?\n])\s*/g,'$1\u0001').split('\u0001');var cur='';
   parts.forEach(function(p){if(!p)return;if((cur+p).length>140&&cur){out.push(cur);cur=p}else cur+=(cur?' ':'')+p});
@@ -29,12 +35,12 @@ if(d&&d.set)Object.defineProperty(O.prototype,"text",{get:d.get,set:function(v){
  function voiceFor(lang){var v=ss.getVoices?ss.getVoices():[];
   return v.find(function(x){return x.lang&&x.lang.replace('_','-').toLowerCase()===String(lang||'hi-IN').toLowerCase()})||v.find(function(x){return /^hi/i.test(x.lang)})||null}
  var keep=window.__mtcKeep=window.__mtcKeep||[];
- function next(g){if(g!==gen||!queue.length)return;var q=queue.shift();
+ function next(g){if(g!==gen)return;if(!queue.length){running=false;return}var q=queue.shift();
   var u=new window.SpeechSynthesisUtterance(q.text);u.lang=q.o.lang||'hi-IN';
   u.rate=Math.max(.85,Math.min(1,q.o.rate||.9));u.pitch=q.o.pitch||1;u.volume=q.o.volume==null?1:q.o.volume;
   var v=q.o.voice||voiceFor(u.lang);if(v)u.voice=v;
   var fired=false,started=false;
-  var done=function(){if(fired)return;fired=true;if(g!==gen)return;if(!queue.length&&q.last&&typeof q.o.onend==='function'){try{q.o.onend()}catch(e){}}setTimeout(function(){next(g)},40)};
+  var done=function(){if(fired)return;fired=true;if(g!==gen)return;if(q.last&&typeof q.o.onend==='function'){try{q.o.onend()}catch(e){}}setTimeout(function(){next(g)},40)};
   u.onstart=function(){started=true};
   u.onend=done;u.onerror=done;
   keep.push(u);if(keep.length>12)keep.shift();
@@ -48,12 +54,20 @@ if(d&&d.set)Object.defineProperty(O.prototype,"text",{get:d.get,set:function(v){
   setTimeout(done,Math.min(20000,Math.max(4000,q.text.length*140)))}
  function flush(){var vs=ss.getVoices?ss.getVoices():[];
   if(!vs.length&&tries<8){tries++;timer=setTimeout(flush,150);return}
-  tries=0;var g=++gen;queue=[];
-  pend.forEach(function(o){var ps=split(fix(o.text));ps.forEach(function(p,i){queue.push({text:p,o:o,last:i===ps.length-1})})});
-  pend=[];oCancel();setTimeout(function(){next(g)},120)}
- ss.speak=function(u){if(!u)return;pend.push({text:u.text,lang:u.lang,rate:u.rate,pitch:u.pitch,volume:u.volume,voice:u.voice,onend:u.onend});
+  tries=0;var add=[];
+  pend.forEach(function(o){var ps=split(fix(o.text));ps.forEach(function(p,i){add.push({text:p,o:o,last:i===ps.length-1})})});
+  pend=[];if(!add.length)return;
+  if(running){queue=queue.concat(add);return}
+  var g=++gen;queue=add;running=true;oCancel();setTimeout(function(){next(g)},120)}
+ ss.speak=function(u){if(!u)return;
+  var tx=fix(u.text),k=gkey(tx),now=Date.now();
+  /* वही नाम/वही बात 10 सेकंड के अंदर दोबारा आए तो छोड़ दो, और उससे पहले हुआ cancel() भी रद्द करो */
+  if((k&&k===lastK&&now-lastKAt<10000)||(tx&&tx===lastT&&now-lastTAt<4000)){if(cancelT){clearTimeout(cancelT);cancelT=0}return}
+  if(cancelT){clearTimeout(cancelT);cancelT=0;doCancel()}
+  if(k){lastK=k;lastKAt=now}lastT=tx;lastTAt=now;
+  pend.push({text:u.text,lang:u.lang,rate:u.rate,pitch:u.pitch,volume:u.volume,voice:u.voice,onend:u.onend});
   clearTimeout(timer);timer=setTimeout(flush,160)};
- ss.cancel=function(){clearTimeout(timer);pend=[];queue=[];gen++;oCancel()};
+ ss.cancel=function(){clearTimeout(cancelT);cancelT=setTimeout(function(){cancelT=0;doCancel()},0)};
  window.__mtcInjectShim=function(h){var s='<script>('+window.__mtcShimFn.toString()+')()<'+'/script>';
   return /<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,function(m){return m+s}):s+h};
 };window.__mtcShimFn();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
@@ -10310,7 +10324,7 @@ D.forEach(function(p){M[p.id]=build(p)});
 .pfRow:active{background:#fce4ec!important}
 .pfCard{border-color:#ec407a!important;background:#fff5f9!important}
 #mtcPa .pr .i,#mtcPa .pr .r{color:#c2185b!important}
-#mtcAtt .abtns button,#mtcMk .mbtns button{background:linear-gradient(135deg,#ad1457,#ec407a)!important}
+#mtcAtt .abtns button,#mtcMk .mbtns button{background:linear-gradient(135deg,#6a1b9a,#9c27b0)!important}
 
 /* ---- 3) ID ↔ Roll lookup + new-ID notice ---- */
 .mtcIdRollBox{margin:6px 0 10px;padding:10px;border:2px solid #ec407a;border-radius:14px;background:#fff5f9}
@@ -10959,9 +10973,13 @@ setInterval(adminHook,700);
 <style id="mtc-dock-style">
 #mtcDock{display:none;position:fixed;left:10px;bottom:12px;z-index:590000}
 #mtcDock.has,html body.gateLocked #mtcDock.has,html body.dolOpen #mtcDock.has{display:block!important;visibility:visible!important}
-#mtcDockToggle{width:54px;height:54px;border-radius:50%;border:3px solid #fff;background:linear-gradient(135deg,#1b5e20,#43a047);color:#fff;font-size:24px;box-shadow:0 5px 16px #0006;cursor:pointer;padding:0}
-#mtcDockPanel{display:none;position:absolute;left:0;bottom:64px;width:min(250px,78vw);max-height:calc(100vh - 110px);overflow-y:auto;flex-direction:column;gap:8px;padding:8px;background:#ffffffee;border:2px solid #2e7d32;border-radius:18px;box-shadow:0 8px 24px #0006}
+#mtcDockToggle{width:54px;height:54px;border-radius:50%;border:3px solid #fff;background:linear-gradient(135deg,#4a148c,#8e24aa);color:#fff;font-size:24px;box-shadow:0 5px 16px #0006;cursor:pointer;padding:0}
+#mtcDockPanel{display:none;position:absolute;left:0;bottom:64px;width:min(250px,78vw);max-height:calc(100vh - 110px);overflow-y:auto;flex-direction:column;gap:8px;padding:8px;background:#ffffffee;border:2px solid #7b1fa2;border-radius:18px;box-shadow:0 8px 24px #0006}
 #mtcDock.open #mtcDockPanel{display:flex}
+/* ---- Purple theme: dock toggle + अंदर के सभी बटन ---- */
+html body #mtcDockToggle{background:linear-gradient(135deg,#4a148c,#8e24aa)!important}
+html body #mtcDockPanel{border-color:#7b1fa2!important}
+html body #mtcDockPanel>button{background:#fff!important;color:#6a1b9a!important;-webkit-text-stroke-color:#6a1b9a!important;border-color:#7b1fa2!important;box-shadow:0 4px 12px #6a1b9a66!important}
 #mtcDockPanel>button{position:static!important;left:auto!important;bottom:auto!important;width:100%!important;min-width:0!important;margin:0!important;padding:10px 12px!important;font-size:15px!important;border-radius:16px!important;border-width:2px!important;-webkit-text-stroke:0!important;box-sizing:border-box;text-align:center}
 </style>
 <script>
