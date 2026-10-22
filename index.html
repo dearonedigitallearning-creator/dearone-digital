@@ -10201,6 +10201,7 @@ html body #mtcPa.open,html body.gateLocked #mtcPa.open,html body.dolOpen #mtcPa.
 <h3>📋 School IDs — Present / Absent</h3>
 <select id="mtcPaCls"></select><select id="mtcPaDate"></select>
 <div class="ps" id="mtcPaSum"></div><div id="mtcPaBy" style="display:none;margin:0 0 8px;padding:8px;border-radius:10px;background:#e8f5e9;color:#1b5e20;font-weight:800;font-size:14px"></div><div id="mtcPaList"></div>
+<button type="button" class="px" style="background:#1565c0" onclick="mtcPaRefresh()">🔄 Online से ताज़ा करें</button>
 <button type="button" class="px" onclick="mtcPaClose()">✖ बंद करें</button>
 </div></div>
 <script id="mtcPAListJs">
@@ -10226,10 +10227,22 @@ function render(){
 }
 $("mtcPaCls").onchange=function(){fillDates();render()};
 $("mtcPaDate").onchange=render;
-window.mtcPaOpen=function(){fillCls();render();var o=$("mtcPa");o.classList.add("open");o.setAttribute("aria-hidden","false")};
+function hasOpt(s,v){for(var i=0;i<s.options.length;i++)if(s.options[i].value===v)return true;return false}
+function refreshKeep(){var c=$("mtcPaCls").value,d=$("mtcPaDate").value;fillCls();if(c&&hasOpt($("mtcPaCls"),c)){$("mtcPaCls").value=c;fillDates()}if(d&&hasOpt($("mtcPaDate"),d))$("mtcPaDate").value=d;render()}
+/* FIX: pehle yeh list sirf isi phone ka data dikhati thi; ab Online (Firestore) se dusre Teachers ki upasthiti bhi laati hai */
+function syncOnline(){
+  if(typeof window.mtcFsPull!=="function")return;
+  var s=$("mtcPaSum");if(s)s.textContent="⏳ Online से उपस्थिति लाई जा रही है…";
+  Promise.race([window.mtcFsPull().then(function(){return 1},function(){return -1}),new Promise(function(r){setTimeout(function(){r(-2)},16000)})]).then(function(r){
+    refreshKeep();
+    var m=$("mtcPaSum");if(m){if(r<0)m.textContent=(m.textContent||"")+"  ⚠️ Internet/Online data नहीं मिला";else m.textContent=(m.textContent||"")+"  ☁️ Online से ताज़ा"}
+  });
+}
+window.mtcPaRefresh=syncOnline;
+window.mtcPaOpen=function(){fillCls();render();var o=$("mtcPa");o.classList.add("open");o.setAttribute("aria-hidden","false");syncOnline()};
 window.mtcPaClose=function(){var o=$("mtcPa");o.classList.remove("open");o.setAttribute("aria-hidden","true")};
 var prev=window.mtcStaffStart;
-window.mtcStaffStart=function(){var f=$("mtcPaFab");if(f)f.classList.add("show");return typeof prev==="function"?prev.apply(this,arguments):undefined};
+window.mtcStaffStart=function(){var f=$("mtcPaFab");if(f)f.classList.add("show");setTimeout(function(){try{if(typeof window.mtcFsPull==="function")window.mtcFsPull().catch(function(){})}catch(e){}},1500);return typeof prev==="function"?prev.apply(this,arguments):undefined};
 })();
 </script>
 <script id="mtcSpeakIdJs">
