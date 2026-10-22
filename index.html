@@ -293,6 +293,7 @@ body{background:#e8f1ff!important}
 <div class="plBrand">
       <div class="plBrandName">MOTHER TERESA CHILDREN SECONDARY SCHOOL</div>
       <div class="plBrandSub">VIGYAN NAGAR, KOTA (RAJ.) &bull; Session 2026-27</div>
+      <div id="mtcBuildStamp" style="margin-top:6px;font-size:11px;font-weight:700;opacity:.75;color:#fff">Version: 22-Oct-2026 &bull; 3:00 PM</div>
     </div>
     <div class="portalLandingTitle">🌈 अपना Learning Portal चुनें</div>
     <div class="plGrid" id="plGridBox" style="display:none">
@@ -5613,7 +5614,7 @@ window.MTC_B9_L5="<style>\n.nx{font-weight:800}\n.nxRoot{font-size:18px;font-wei
  };
  var prevSpecial=window.getSpecialNotesSubject;
  window.getSpecialNotesSubject=function(id,subjectName){
-  var st=window.STUDENTS&&window.STUDENTS[id];
+  var _S=(typeof STUDENTS!=='undefined'?STUDENTS:window.STUDENTS);var st=_S&&_S[id];
   if(st&&(st[1]==='9th'||st[1]==='10th')){
    if(subjectName==='English')return enIndex(st[1]);
    if(subjectName==='हिन्दी')return hiIndex(st[1],'text');
@@ -10608,6 +10609,26 @@ D.forEach(function(p){M[p.id]=build(p)});
 #mtcIdRollBtn2{display:block;width:100%;margin:8px 0;padding:13px;border-radius:12px;font-weight:900;font-size:16px}
 </style>
 
+<script id="mtc-pol12-fix">
+(function(){
+function load(){
+ try{
+  var S=window.MTC_SSTDATA=window.MTC_SSTDATA||{};
+  var map={"pol9_1":"9|sst2|1","pol9_2":"9|sst2|2","pol1":"10|sst2|1","pol2":"10|sst2|2"};
+  [window.MTC_C9_POL,window.MTC_C10_POL].forEach(function(src){
+   if(!src)return;
+   var d=new DOMParser().parseFromString('<div id="r">'+src+'</div>','text/html');
+   [].forEach.call(d.querySelectorAll('details[data-lock-key]'),function(dt){
+    var key=map[dt.getAttribute('data-lock-key')];if(!key)return;
+    var sm=dt.querySelector('summary');if(sm)sm.remove();
+    if(!S[key]||String(S[key]).length<50)S[key]='<div class="noteBody">'+dt.innerHTML+'</div>';
+   });
+  });
+ }catch(e){console.log('pol12',e)}
+}
+load();document.addEventListener('DOMContentLoaded',load);window.addEventListener('load',load);
+})();
+</script>
 <script id="mtc-v2-script">
 (function(){
 "use strict";
@@ -10676,7 +10697,7 @@ function onStuInput(ev){
   t.insertAdjacentElement("afterend",d);
   if(lastSpoken!==raw){lastSpoken=raw;noteTimer=setTimeout(function(){speakIdMsg(name)},1800)}
 }
-document.addEventListener("input",onStuInput,true);
+/* नई-ID वाला audio व लिखित संदेश हटा दिया गया (ID बदलने की सुविधा चालू है) */
 
 /* ============ D) ID ↔ Roll No. जाँच (Staff / Admin के लिए) ============ */
 function rollMap(){var R={};try{var m=window.MTC_ROLL||{};Object.keys(m).forEach(function(k){if(m[k])R[k]=String(m[k])})}catch(e){}return R}
