@@ -9247,6 +9247,14 @@ function sum(){
   ks.forEach(function(k){if(marks[k]==="P")p++;else if(marks[k]==="A")a++});
   $("mtcAttSum").textContent="✅ Present: "+p+"   |   ❌ Absent: "+a+"   |   ⏳ बाकी: "+(ks.length-p-a);
 }
+/* FIX: online data aane par unsaved P/A na mite - sirf dusre Teacher ke locked bachhon ko update karo */
+window.mtcAttRefresh=function(){
+  var c=$("mtcAttCls").value,d=$("mtcAttDate").value;if(!d){render();return}
+  students(c).forEach(function(k){
+    if(lockedByOther(k,d)){var v=base[k]&&base[k][d];if(v==="P"||v==="A")marks[k]=v;else delete marks[k]}
+  });
+  render();
+};
 window.mtcAttPick=function(){if(this&&this.id==="mtcAttCls")fillDates();load();render();msg("",true)};
 $("mtcAttCls").onchange=function(){fillDates();load();render();msg("",true)};
 $("mtcAttDate").onchange=function(){load();render();msg("",true)};
@@ -9755,7 +9763,7 @@ function pull(){
         });
       });
       try{localStorage.setItem(AK,JSON.stringify(base))}catch(e){}
-      var s=$("mtcAttDate");if(s&&typeof s.onchange==="function")s.onchange();
+      try{if(typeof window.mtcAttRefresh==="function")window.mtcAttRefresh()}catch(e){}
       return n;
     });
   });
