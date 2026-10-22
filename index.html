@@ -8282,7 +8282,7 @@ window.MTC_DAYLOCK={info:info,isLocked:isLocked};
 @media print{#mtcRes,#mtcRsAsk{display:none!important}}
 </style>
 <div id="mtcRsAsk" aria-hidden="true"><div class="bx"><div style="font-size:42px">&#127942;</div><h3>Result Card</h3>
-<div style="font-size:14px;font-weight:700;color:#555">अपनी Student ID डालें — सही ID डालते ही Result Card खुल जाएगा।</div>
+<div style="font-size:14px;font-weight:700;color:#555">🔒 Result Card केवल Admin खोल सकता है। Student ID डालें, फिर Admin Password दो बार डालना होगा।</div>
 <input id="mtcRsAskId" type="tel" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Student ID">
 <button type="button" style="background:linear-gradient(135deg,#00897b,#43a047)" onclick="mtcRsAskGo(true)">&#127942; Result Card खोलें</button>
 <button type="button" style="background:#757575" onclick="mtcRsAskClose()">&#10006; बंद करें</button>
@@ -8616,6 +8616,8 @@ function scheduleHtml(sid,g){
     if(at==="P"){ac="at p";al="Present"}else if(at==="A"){ac="at a";al="Absent"}else if(done){al="—"}
     var sgImg="";
     if(at){try{var AA=window.MTC_ATTENDANCE||{},sgd=AA._sig&&AA._sig[r[0]+"|"+STU()[sid][1]];
+       var ow=AA._st&&AA._st[r[0]]&&AA._st[r[0]][sid],ts=AA._tsig&&AA._tsig[r[0]+"|"+STU()[sid][1]];
+       if(ow&&ts&&ts[ow]&&ts[ow].sig)sgd=ts[ow].sig;
       if(sgd&&/^data:image\//.test(sgd))sgImg='<img alt="Invigilator sign" src="'+sgd+'" style="display:block;margin:0 auto;max-width:100%;max-height:26px;height:auto">'}catch(e){}}
     h+='<td class="'+cls+'" style="color:'+subC(c.subs[0]||"")+'">'+(done?'<b class="adTick">✅</b> ':'')+esc(txt)+'</td><td class="'+ac+'">'+al+'</td><td class="sg">'+sgImg+'</td></tr>';
   });
@@ -9129,6 +9131,10 @@ body.mtcCkOn #mtcOccasion,body.mtcCkOn #mtcVoiceCard,body.mtcCkOn #schoolSection
 #mtcAtt .arow button{flex:none;width:44px;height:38px;border:2px solid #9e9e9e;border-radius:10px;background:#fafafa;color:#616161;font-size:16px;font-weight:1000;cursor:pointer;padding:0}
 #mtcAtt .arow button.p.on{background:#2e7d32;color:#fff;border-color:#1b5e20}
 #mtcAtt .arow button.a.on{background:#c62828;color:#fff;border-color:#8e0000}
+#mtcAtt .arow.lk{background:#fff3e0;border-color:#ffb74d}
+#mtcAtt .arow.lk button{opacity:.55;cursor:not-allowed}
+#mtcAtt .arow .nm small.ow{display:block;font-size:11px;font-weight:900;color:#e65100}
+#mtcAtt .arow .nm small.ow.me{color:#2e7d32}
 #mtcAtt .abtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 #mtcAtt .abtns button{flex:1 1 45%;padding:11px 6px;border:0;border-radius:12px;color:#fff;font-size:15px;font-weight:900;cursor:pointer}
 #mtcAtt textarea{width:100%;height:90px;margin-top:6px;border:2px solid #00897b;border-radius:10px;padding:6px;box-sizing:border-box;font-size:12px;display:none}
@@ -9167,6 +9173,8 @@ function merge(dst,src){
   Object.keys(src).forEach(function(k){
     if(!src[k]||typeof src[k]!=="object")return;
     if(k==="_by"){dst._by=Object.assign(dst._by||{},src._by);return}
+    if(k==="_st"){dst._st=dst._st||{};Object.keys(src._st).forEach(function(d){dst._st[d]=Object.assign(dst._st[d]||{},src._st[d])});return}
+    if(k==="_tsig"){dst._tsig=dst._tsig||{};Object.keys(src._tsig).forEach(function(q){dst._tsig[q]=Object.assign(dst._tsig[q]||{},src._tsig[q])});return}
     dst[k]=Object.assign(dst[k]||{},src[k]);n++;
   });
   return n;
@@ -9210,6 +9218,14 @@ function fillDates(){
   var n=new Date(),t=("0"+n.getDate()).slice(-2)+"-"+("0"+(n.getMonth()+1)).slice(-2)+"-"+n.getFullYear();
   if(ds.some(function(d){return d[0]===t}))sd.value=t;
 }
+/* जिस Teacher ने किसी विद्यार्थी की उपस्थिति लगाई, वही उसका Owner है; दूसरा Teacher उसे बदल नहीं सकता */
+function ownerOf(k,d){
+  var o=base._st&&base._st[d]&&base._st[d][k];if(o)return o;
+  if(base[k]&&(base[k][d]==="P"||base[k][d]==="A")){var c=STUDENTS[k]&&STUDENTS[k][1];return (base._by&&base._by[d+"|"+c])||""}
+  return "";
+}
+function lockedByOther(k,d){var o=ownerOf(k,d);return !!(o&&o!==staff)}
+function slug(x){return String(x||"").replace(/[^A-Za-z0-9\u0900-\u097F]+/g,"_")}
 function load(){
   var c=$("mtcAttCls").value,d=$("mtcAttDate").value;marks={};
   students(c).forEach(function(k){var v=base[k]&&base[k][d];if(v==="P"||v==="A")marks[k]=v});
@@ -9218,10 +9234,11 @@ function render(){
   var c=$("mtcAttCls").value,d=$("mtcAttDate").value,R=window.MTC_ROLL||{},h="";
   if(!d){$("mtcAttList").innerHTML="";$("mtcAttSum").textContent="";return}
   students(c).forEach(function(k){
-    var m=marks[k]||"";
-    h+='<div class="arow"><span class="rn">'+esc(R[k]||k)+'</span><span class="nm">'+esc(STUDENTS[k][0])+'</span>'
-     +'<button type="button" class="p'+(m==="P"?" on":"")+'" onclick="mtcAttSet(\''+k+'\',\'P\')">P</button>'
-     +'<button type="button" class="a'+(m==="A"?" on":"")+'" onclick="mtcAttSet(\''+k+'\',\'A\')">A</button></div>';
+    var m=marks[k]||"",lk=lockedByOther(k,d),ow=ownerOf(k,d),dis=lk?" disabled":"";
+    h+='<div class="arow'+(lk?" lk":"")+'"><span class="rn">'+esc(R[k]||k)+'</span><span class="nm">'+esc(STUDENTS[k][0])
+     +(lk?'<small class="ow">🔒 '+esc(ow)+' ने लगाई</small>':(m&&ow===staff?'<small class="ow me">✔ आपने लगाई</small>':''))+'</span>'
+     +'<button type="button" class="p'+(m==="P"?" on":"")+'"'+dis+' onclick="mtcAttSet(\''+k+'\',\'P\')">P</button>'
+     +'<button type="button" class="a'+(m==="A"?" on":"")+'"'+dis+' onclick="mtcAttSet(\''+k+'\',\'A\')">A</button></div>';
   });
   $("mtcAttList").innerHTML=h;sum();try{window.mtcAttBy&&window.mtcAttBy()}catch(e){}
 }
@@ -9233,21 +9250,76 @@ function sum(){
 window.mtcAttPick=function(){if(this&&this.id==="mtcAttCls")fillDates();load();render();msg("",true)};
 $("mtcAttCls").onchange=function(){fillDates();load();render();msg("",true)};
 $("mtcAttDate").onchange=function(){load();render();msg("",true)};
-window.mtcAttSet=function(k,v){marks[k]=(marks[k]===v)?"":v;if(!marks[k])delete marks[k];render()};
-window.mtcAttAll=function(v){var c=$("mtcAttCls").value;marks={};if(v)students(c).forEach(function(k){marks[k]=v});render()};
+window.mtcAttSet=function(k,v){
+  var d=$("mtcAttDate").value;
+  if(lockedByOther(k,d)){msg("🔒 इस विद्यार्थी की उपस्थिति "+ownerOf(k,d)+" लगा चुके हैं — आप इसे नहीं बदल सकते।",false);return}
+  marks[k]=(marks[k]===v)?"":v;if(!marks[k])delete marks[k];render()};
+window.mtcAttAll=function(v){
+  var c=$("mtcAttCls").value,d=$("mtcAttDate").value;
+  if(v&&!confirm("जिन विद्यार्थियों की उपस्थिति अभी किसी ने नहीं लगाई, उन सबको Present लगाना है?\n(दूसरे कमरे के बच्चे भी इसमें आ सकते हैं — सिर्फ़ अपने कमरे वाले हों तो P/A अलग-अलग दबाएँ।)"))return;
+  students(c).forEach(function(k){
+    if(lockedByOther(k,d))return;
+    if(v){if(!marks[k])marks[k]=v}else delete marks[k];
+  });render()};
 window.mtcAttSave=function(){
   var c=$("mtcAttCls").value,d=$("mtcAttDate").value;
-  if(!d){msg("❌ पहले परीक्षा की तारीख़ चुनें।",false);return}
+  if(!staff){window.__mtcSigBlocked=true;msg("❌ पहले Staff Login करें।",false);return}
+  if(!d){window.__mtcSigBlocked=true;msg("❌ पहले परीक्षा की तारीख़ चुनें।",false);return}
   if(!(window.mtcSigHas&&window.mtcSigHas())){window.__mtcSigBlocked=true;msg("✍️ पहले नीचे Invigilator Signature करें, फिर Save दबाएँ।",false);return}
-  window.__mtcSigData=window.mtcSigGet();window.__mtcSigAt=new Date().toISOString();
-  students(c).forEach(function(k){
-    if(marks[k]){base[k]=base[k]||{};base[k][d]=marks[k]}
-    else if(base[k]){delete base[k][d]}
+  var sigData=window.mtcSigGet(),sigAt=new Date().toISOString();
+  msg("⏳ दूसरे Teachers की उपस्थिति जाँच रहे हैं…",true);
+  var pr=(typeof window.mtcFsPull==="function")?Promise.race([window.mtcFsPull().catch(function(){}),new Promise(function(r){setTimeout(r,5000)})]):Promise.resolve();
+  pr.then(function(){doSave(c,d,sigData,sigAt)});
+};
+function doSave(c,d,sigData,sigAt){
+  var ks=students(c),skipped=0,mineN=0,clr=0;
+  /* पहले जाँचो: Save से पहले दूसरे Teacher ने जो बच्चे लगा दिए, उन्हें छुओ मत */
+  ks.forEach(function(k){
+    if(lockedByOther(k,d)){
+      var cur=base[k]&&base[k][d]||"";if((marks[k]||"")!==cur){skipped++}
+      if(cur)marks[k]=cur;else delete marks[k];
+    }else if(marks[k])mineN++;
+    else if(base[k]&&base[k][d])clr++;
   });
-  base._by=base._by||{};base._by[d+"|"+c]=staff;
-  base._at=base._at||{};base._at[d+"|"+c]=window.__mtcSigAt;base._sig=base._sig||{};base._sig[d+"|"+c]=window.__mtcSigData;
-  var ok=persist();if(ok&&window.mtcSigClear)window.mtcSigClear();try{window.mtcAttBy&&window.mtcAttBy()}catch(e){}
-  msg(ok?"✅ उपस्थिति Save हो गई ("+staff+")।":"⚠️ Save नहीं हो पाया — Browser storage बंद है।",ok);
+  if(!mineN&&!clr){render();msg(skipped?"🔒 वे बच्चे "+"दूसरे Teacher पहले ही लगा चुके हैं। अपने कमरे के बच्चों की उपस्थिति लगाएँ।":"❌ कम से कम एक विद्यार्थी की P/A लगाएँ।",false);return}
+  base._st=base._st||{};base._st[d]=base._st[d]||{};
+  var cleared={};
+  ks.forEach(function(k){
+    if(lockedByOther(k,d))return;
+    if(marks[k]){base[k]=base[k]||{};base[k][d]=marks[k];base._st[d][k]=staff}
+    else if(base[k]&&base[k][d]){delete base[k][d];delete base._st[d][k];cleared[k]=1}
+  });
+  var kk=d+"|"+c;base._tsig=base._tsig||{};base._tsig[kk]=base._tsig[kk]||{};base._tsig[kk][staff]={sig:sigData,at:sigAt};
+  var ok=persist();if(ok&&window.mtcSigClear)window.mtcSigClear();
+  render();
+  if(!ok){msg("⚠️ Save नहीं हो पाया — Browser storage बंद है।",false);return}
+  var base0="✅ आपके "+mineN+" विद्यार्थियों की उपस्थिति Save और Lock हो गई ("+staff+")"+(skipped?" • "+skipped+" बच्चे दूसरे Teacher ने पहले लगा दिए थे, वे नहीं बदले":"")+"।";
+  msg(base0,true);
+  try{
+    var dm={},p=0,a=0;
+    ks.forEach(function(k){if(base._st[d][k]===staff&&base[k]&&base[k][d]){dm[k]=base[k][d];if(dm[k]==="P")p++;else a++}else if(cleared[k])dm[k]=""});
+    var sd=$("mtcAttDate"),opt=sd.options[sd.selectedIndex];
+    var pq=window.mtcFsQueue&&window.mtcFsQueue("attendance",d+"_"+c+"_"+slug(staff),{kind:"att2",date:d,studentClass:c,paper:opt?opt.text:"",staff:staff,marks:dm,present:p,absent:a,signature:sigData,signedAt:sigAt});
+    if(pq&&pq.then)pq.then(function(res){
+      if(res&&res.left===0)msg(base0+" ☁️ Online भी Save हो गई।",true);
+      else msg(base0+" ☁️ Internet नहीं मिला — जुड़ते ही अपने-आप चली जाएगी।",false);
+    });
+  }catch(e){}
+}
+/* Firestore से आए हर Teacher के अलग record को जोड़ना (किसी का Mark मिटाए बिना) */
+window.__mtcAtt2Merge=function(v){
+  if(!v||!v.date||!v.studentClass||!v.marks||!v.staff)return;
+  var d=v.date,kk=d+"|"+v.studentClass,st=String(v.staff);
+  base._st=base._st||{};base._st[d]=base._st[d]||{};base._tsig=base._tsig||{};base._tsig[kk]=base._tsig[kk]||{};
+  var T=base._tsig[kk];
+  Object.keys(v.marks).forEach(function(k){
+    var m=v.marks[k],o=base._st[d][k];
+    if(m==="P"||m==="A"){
+      if(o&&o!==st){var oa=T[o]&&T[o].at||"",na=v.signedAt||"";if(!(oa&&na&&String(na)<String(oa)))return}
+      base[k]=base[k]||{};base[k][d]=m;base._st[d][k]=st;
+    }else if(m===""&&o===st){if(base[k])delete base[k][d];delete base._st[d][k]}
+  });
+  if(v.signature||v.signedAt)T[st]={sig:v.signature||"",at:v.signedAt||""};
 };
 window.mtcAttExport=function(){
   var txt=JSON.stringify(base,null,1);
@@ -9270,6 +9342,10 @@ window.mtcAttOpen=function(){
   $("mtcAttWho").textContent="👨‍🏫 Staff: "+staff;
   fillSelects();load();render();msg("",true);
   var o=$("mtcAtt");o.classList.add("open");o.setAttribute("aria-hidden","false");
+  try{if(typeof window.mtcFsPull==="function")Promise.race([window.mtcFsPull().catch(function(){}),new Promise(function(r){setTimeout(r,8000)})]).then(function(){
+    var c=$("mtcAttCls").value,d=$("mtcAttDate").value;if(!d)return;
+    students(c).forEach(function(k){if(lockedByOther(k,d)){var v=base[k]&&base[k][d];if(v)marks[k]=v}});render();
+  })}catch(e){}
 };
 window.mtcAttClose=function(){var o=$("mtcAtt");o.classList.remove("open");o.setAttribute("aria-hidden","true")};
 /* the button appears only after a Staff ID login (the existing Staff Login) */
@@ -9667,10 +9743,12 @@ function pull(){
       var base=window.MTC_ATTENDANCE=window.MTC_ATTENDANCE||{},n=0;
       snap.forEach(function(s){
         var v=s.data();if(v&&v.kind==="admit-sign"&&v.studentId&&v.signature){(window.MTC_ADMSIG=window.MTC_ADMSIG||{})[v.studentId]={by:v.staff,at:v.signedAt,sig:v.signature};return}
+        if(v&&v.kind==="att2"){try{window.__mtcAtt2Merge&&window.__mtcAtt2Merge(v)}catch(e){}return}
         if(!v||!v.marks||!v.date||!v.studentClass)return;
         var kk=v.date+"|"+v.studentClass;base._by=base._by||{};if(v.staff)base._by[kk]=v.staff;if(v.signature){base._sig=base._sig||{};base._sig[kk]=v.signature}if(v.signedAt){base._at=base._at||{};base._at[kk]=v.signedAt}
         Object.keys(STUDENTS).forEach(function(k){
           if(STUDENTS[k][1]!==v.studentClass||!/^\d{1,3}$/.test(k))return;
+          if(base._st&&base._st[v.date]&&base._st[v.date][k])return;
           var m=v.marks[k];
           if(m==="P"||m==="A"){base[k]=base[k]||{};base[k][v.date]=m;n++}
           else if(base[k]){delete base[k][v.date]}
@@ -9687,7 +9765,7 @@ if(typeof window.mtcAttSave==="function"){
   window.mtcAttSave=function(){
     window.__mtcSigBlocked=false;var r=_save.apply(this,arguments),ok=false;
     if(window.__mtcSigBlocked){window.__mtcSigBlocked=false;return r}
-    try{ok=queueAtt()}catch(e){}
+    ok=false;/* अब हर Teacher का अलग record mtcAttSave से जाता है */
     if(ok){
       var local=($("mtcAttMsg")||{}).textContent||"";
       flush().then(function(res){
@@ -10238,7 +10316,11 @@ window.mtcSigGet=function(){
 function fmt(iso){try{var d=new Date(iso);if(isNaN(d))return "";var z=function(n){return ("0"+n).slice(-2)};return z(d.getDate())+"-"+z(d.getMonth()+1)+"-"+d.getFullYear()+" "+z(d.getHours())+":"+z(d.getMinutes())}catch(e){return ""}}
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 window.mtcAttByHtml=function(c,d){
-  var A=window.MTC_ATTENDANCE||{},k=d+"|"+c,by=A._by&&A._by[k];
+  var A=window.MTC_ATTENDANCE||{},k=d+"|"+c,T=A._tsig&&A._tsig[k],h="";
+  if(T){Object.keys(T).forEach(function(n){var o=T[n]||{};
+    h+='<div style="margin-top:5px">✍️ <b>'+esc(n)+'</b>'+(o.at?' • '+esc(fmt(o.at)):'')+(o.sig?'<br><img alt="signature" src="'+o.sig+'" style="margin-top:3px;max-width:200px;height:auto;background:#fff;border:1px solid #ccc;border-radius:6px">':'')+'</div>'});
+    if(h)return 'उपस्थिति लगाने वाले Teachers:'+h}
+  var by=A._by&&A._by[k];
   if(!by)return "";
   var at=A._at&&A._at[k],sg=A._sig&&A._sig[k];
   return '✍️ उपस्थिति लगाने वाले: <b>'+esc(by)+'</b>'+(at?' • '+esc(fmt(at)):'')+(sg?'<br><img alt="signature" src="'+sg+'" style="margin-top:4px;max-width:200px;height:auto;background:#fff;border:1px solid #ccc;border-radius:6px">':'');
@@ -11173,7 +11255,7 @@ html body #mtcStaffBox #mtcStaffIdEm.opPhoto{background-size:cover!important;bac
 </style>
 <script>
 (function(){
-var IDS=["mtcListFab","mtcAttFab","mtcPaFab","mtcMkFab","mtcDrFab","mtcTsFab","mtcApFab"];
+var IDS=["mtcListFab","mtcAttFab","mtcPaFab","mtcMkFab","mtcDrFab","mtcTsFab","mtcApFab","mtcPhFab"];
 function build(){
   var d=document.getElementById("mtcDock");
   if(d)return d;
@@ -11223,5 +11305,265 @@ function wrap(){
     return r};
   w.__op=1;window.mtcStaffPick=w}
 wrap();window.addEventListener("load",wrap);
+})();
+</script>
+
+<!-- Result Card Admin Lock: Result Card केवल Admin Password (दो बार) डालने पर खुलेगा -->
+<style id="mtc-result-admin-lock-style">
+#mtcRcLock{display:none;position:fixed;inset:0;z-index:900000;background:#000c;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}
+#mtcRcLock.open,html body.gateLocked #mtcRcLock.open,html body.dolOpen #mtcRcLock.open{display:flex!important;visibility:visible!important}
+#mtcRcLock .bx{width:min(380px,100%);background:#fff;border-radius:20px;border:4px solid #c62828;padding:18px;text-align:center;box-sizing:border-box;box-shadow:0 10px 35px #0006}
+#mtcRcLock h3{margin:6px 0;color:#c62828;font-size:21px}
+#mtcRcLock .hn{font-size:14px;font-weight:700;color:#555;margin-bottom:4px}
+#mtcRcLock input{width:100%;padding:13px;margin:6px 0;border:3px solid #1565c0;border-radius:12px;font-size:20px;text-align:center;font-weight:800;box-sizing:border-box;letter-spacing:4px}
+#mtcRcLock button{width:100%;padding:13px;margin:4px 0;border:0;border-radius:12px;color:#fff;font-size:17px;font-weight:900;cursor:pointer}
+#mtcRcLockMsg{min-height:22px;font-weight:900;font-size:15px;color:#c62828}
+</style>
+<div id="mtcRcLock" aria-hidden="true"><div class="bx"><div style="font-size:42px">🔒</div><h3>Admin Lock — Result Card</h3>
+<div class="hn">यह Result Card केवल Admin खोल सकता है।<br>Admin Password दो बार डालें।</div>
+<input id="mtcRcPw1" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Admin Password 1">
+<input id="mtcRcPw2" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Admin Password 2 (वही Password दोबारा)">
+<button type="button" style="background:linear-gradient(135deg,#263238,#1565c0)" onclick="mtcRcLockGo()">🔓 Result Card खोलें</button>
+<button type="button" style="background:#757575" onclick="mtcRcLockClose()">✖ बंद करें</button>
+<div id="mtcRcLockMsg"></div></div></div>
+<script id="mtc-result-admin-lock">
+(function(){
+var H="ac4c8e9867776e5909e2ed257a850642230962adba12e34121f05ce03642ae8f";
+var orig=window.mtcShowResultCard,pending=null,fails=0,blockUntil=0;
+if(typeof orig!=="function")return;
+function $(i){return document.getElementById(i)}
+function hash(v){try{return __sh(String(v))}catch(e){return ""}}
+function msg(t){var m=$("mtcRcLockMsg");if(m)m.textContent=t||""}
+window.mtcRcLockClose=function(){
+  var o=$("mtcRcLock");if(o){o.classList.remove("open");o.setAttribute("aria-hidden","true")}
+  $("mtcRcPw1").value="";$("mtcRcPw2").value="";msg("");pending=null;
+};
+window.mtcRcLockGo=function(){
+  var now=Date.now();
+  if(now<blockUntil){msg("⏳ बहुत ज़्यादा गलत कोशिशें। "+Math.ceil((blockUntil-now)/1000)+" सेकंड बाद दोबारा करें।");return}
+  var p1=$("mtcRcPw1").value,p2=$("mtcRcPw2").value;
+  if(!p1){msg("❌ Admin Password 1 डालें।");return}
+  if(hash(p1)!==H){
+    fails++;$("mtcRcPw1").value="";$("mtcRcPw2").value="";
+    if(fails>=5){fails=0;blockUntil=Date.now()+30000;msg("⏳ 5 गलत कोशिशें। 30 सेकंड रुकें।")}else msg("❌ Admin Password सही नहीं है।");
+    return}
+  if(!p2){msg("❌ Password 2 भी डालें (वही Password दोबारा)।");return}
+  if(p2!==p1){msg("❌ Password 2, Password 1 से मेल नहीं खाता।");$("mtcRcPw2").value="";return}
+  var sid=pending;fails=0;
+  window.mtcRcLockClose();
+  if(sid!==null)orig.call(window,sid);
+};
+/* हर बार Result Card खुलने से पहले Admin Password (दो बार) ज़रूरी */
+window.mtcShowResultCard=function(sid){
+  pending=sid;
+  try{if(window.mtcRsAskClose)window.mtcRsAskClose()}catch(e){}
+  try{if(window.mtcMkAllClose)window.mtcMkAllClose()}catch(e){}
+  $("mtcRcPw1").value="";$("mtcRcPw2").value="";msg("");
+  var o=$("mtcRcLock");o.classList.add("open");o.setAttribute("aria-hidden","false");
+  setTimeout(function(){try{$("mtcRcPw1").focus()}catch(e){}},80);
+};
+["mtcRcPw1","mtcRcPw2"].forEach(function(id){
+  $(id).addEventListener("keydown",function(e){if(e.key==="Enter"){if(id==="mtcRcPw1")$("mtcRcPw2").focus();else mtcRcLockGo()}});
+});
+})();
+</script>
+
+<!-- Student Photo: Staff फोटो खींचे → Admit Card व Result Card पर अपने-आप लगे; Save के बाद दोबारा नहीं बदलेगी -->
+<style id="mtc-student-photo-style">
+#mtcPhFab{display:none;border:0;cursor:pointer;font-weight:900}
+#mtcPhFab.show,html body.gateLocked #mtcPhFab.show,html body.dolOpen #mtcPhFab.show{display:block!important;visibility:visible!important}
+#mtcPhOv{display:none;position:fixed;inset:0;z-index:2100000;background:#000d;align-items:center;justify-content:center;padding:10px;box-sizing:border-box;overflow:auto}
+#mtcPhOv.open,html body.gateLocked #mtcPhOv.open,html body.dolOpen #mtcPhOv.open{display:flex!important;visibility:visible!important}
+#mtcPhOv .bx{width:min(400px,100%);background:#fff;border-radius:20px;border:4px solid #1565c0;padding:16px;text-align:center;box-sizing:border-box;box-shadow:0 10px 35px #0006;margin:auto}
+#mtcPhOv h3{margin:4px 0 2px;color:#1565c0;font-size:21px}
+#mtcPhOv .sub{font-size:13px;font-weight:700;color:#555;margin-bottom:6px}
+#mtcPhOv input[type=tel]{width:100%;padding:13px;margin:8px 0;border:3px solid #1565c0;border-radius:12px;font-size:20px;text-align:center;font-weight:800;box-sizing:border-box}
+#mtcPhOv button{width:100%;padding:12px;margin:4px 0;border:0;border-radius:12px;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
+#mtcPhOv .row{display:flex;gap:8px}#mtcPhOv .row button{flex:1}
+#mtcPhOv video,#mtcPhOv .pv{width:240px;height:300px;max-width:100%;background:#000;border-radius:12px;object-fit:cover;display:block;margin:8px auto;border:3px solid #1565c0}
+#mtcPhOv .pv{background:#fff}
+#mtcPhWho{font-weight:900;color:#0d1b4c;font-size:17px;margin:6px 0}
+#mtcPhMsg{min-height:22px;font-weight:900;font-size:15px;color:#c62828;margin-top:4px}
+#mtcPhMsg.ok{color:#2e7d32}
+</style>
+<div id="mtcPhOv" aria-hidden="true"><div class="bx">
+<div style="font-size:40px">📷</div><h3>Student Photo</h3>
+<div class="sub" id="mtcPhStaff"></div>
+<div id="mtcPhS1">
+<div class="sub">Student ID डालें</div>
+<input id="mtcPhId" type="tel" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Student ID">
+<button type="button" style="background:linear-gradient(135deg,#1565c0,#2f7fd8)" onclick="mtcPhNext()">➡️ आगे</button>
+</div>
+<div id="mtcPhS2" style="display:none">
+<div id="mtcPhWho"></div>
+<div id="mtcPhView"></div>
+<div id="mtcPhBtns"></div>
+</div>
+<button type="button" style="background:#757575" onclick="mtcPhClose()">✖ बंद करें</button>
+<div id="mtcPhMsg"></div>
+</div></div>
+<script id="mtc-student-photo">
+(function(){
+function $(i){return document.getElementById(i)}
+function key(id){return "mtcPhoto_"+id}
+function lkey(id){return "mtcPhotoLock_"+id}
+function stu(){try{return typeof STUDENTS!=="undefined"?STUDENTS:{}}catch(e){return {}}}
+function isStu(id){var s=stu()[id];return !!(s&&/^\d{1,3}$/.test(id)&&s[1]&&!/admin|staff|teacher/i.test(String(s[1])))}
+function getP(id){try{return window.mtcGetPhoto?window.mtcGetPhoto(id):""}catch(e){return ""}}
+function isLocked(id){try{if(localStorage.getItem(lkey(id))==="1")return true}catch(e){}return !!getP(id)}
+function msg(t,ok){var m=$("mtcPhMsg");m.textContent=t||"";m.className=ok?"ok":""}
+function staffName(){return String(window.__mtcStaffName||"")}
+var cur="",stream=null,facing="environment",shot="",busy=false,wantOpen=false;
+/* ---- फोटो सिर्फ़ दिखाओ: पुराना "दोबारा खींचें" बटन हटाया ---- */
+window.mtcPhotoHtml=function(id){
+  var p=getP(id);
+  return '<div class="rcPhoto"><div class="rcPhImg" id="rcPhImg">'+(p?'<img alt="Student Photo" src="'+p+'">':'👤')+'</div></div>';
+};
+window.mtcCamOpen=function(){alert("📷 फोटो केवल Staff द्वारा 'Student Photo' बटन से खींची जाती है, और Save के बाद बदली नहीं जा सकती।")};
+/* ---- cards पर फोटो लगाना ---- */
+function admitInject(){
+  var o=$("mtcAdmit");if(!o)return;var who=o.querySelector(".adWho");if(!who)return;
+  var b=who.querySelector(".adCirc b");if(!b)return;var sid=String(b.textContent||"").trim();
+  var ph=who.querySelector("#mtcAdPh"),p=getP(sid);
+  if(!ph){ph=document.createElement("div");ph.id="mtcAdPh";ph.style.cssText="order:4;flex:none;width:84px;height:105px;border:4px solid #7b1fa2;border-radius:10px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:40px;box-sizing:border-box";who.appendChild(ph)}
+  ph.innerHTML=p?'<img alt="Student Photo" style="width:100%;height:100%;object-fit:cover;display:block" src="'+p+'">':'👤';
+}
+function resultRefresh(){
+  var box=$("rcPhImg");if(!box)return;var b=document.querySelector("#mtcRes .rcWho .rcCirc b");if(!b)return;
+  var p=getP(String(b.textContent||"").trim());box.innerHTML=p?'<img alt="Student Photo" src="'+p+'">':'👤';
+}
+function refreshCards(){try{admitInject()}catch(e){}try{resultRefresh()}catch(e){}}
+try{var as=$("mtc-admit-style");if(as)as.textContent+="\n#mtcAdmit.adA4 #mtcAdPh{width:112px!important;height:140px!important;border-width:6px!important}\n@media (max-width:430px){#mtcAdmit:not(.adA4) #mtcAdPh{width:62px!important;height:78px!important;border-width:3px!important;font-size:28px!important}}\n"}catch(e){}
+/* ---- Firestore से फोटो लाना (सभी devices पर एक जैसी) ---- */
+function pullPhotos(){
+  if(typeof window.mtcFsPullCol!=="function")return Promise.resolve(false);
+  return window.mtcFsPullCol("photos").then(function(list){
+    var ch=false;
+    (list||[]).forEach(function(d){
+      if(!d||!d.studentId||!d.photo)return;var id=String(d.studentId);
+      if(getP(id)!==d.photo){try{localStorage.setItem(key(id),d.photo);ch=true}catch(e){}}
+      try{localStorage.setItem(lkey(id),"1")}catch(e){}
+    });
+    if(ch)refreshCards();return ch;
+  }).catch(function(){return false});
+}
+window.mtcPullPhotos=pullPhotos;
+var _sa=window.mtcShowAdmit;
+if(typeof _sa==="function")window.mtcShowAdmit=function(sid){var r=_sa.apply(this,arguments);refreshCards();pullPhotos();return r};
+var _sr=window.mtcShowResultCard;
+if(typeof _sr==="function")window.mtcShowResultCard=function(sid){var r=_sr.apply(this,arguments);pullPhotos();return r};
+setTimeout(pullPhotos,3500);window.addEventListener("online",pullPhotos);
+/* ---- Camera ---- */
+function stopCam(){if(stream){try{stream.getTracks().forEach(function(t){t.stop()})}catch(e){}stream=null}}
+function startCam(){
+  stopCam();var v=$("mtcPhVid");if(!v)return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){msg("⚠️ इस Browser में Live Camera नहीं है — '🖼️ Camera App' से फोटो लें।");return}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:960}},audio:false}).then(function(s){
+    stream=s;v.srcObject=s;v.play&&v.play().catch(function(){});msg("");
+  }).catch(function(){msg("⚠️ Camera नहीं खुला। Permission दें या '🖼️ Camera App' से फोटो लें।")});
+}
+function toData(src,w,h){
+  var cv=document.createElement("canvas"),tw=300,th=375;cv.width=tw;cv.height=th;var cx=cv.getContext("2d");
+  var r=tw/th,sr=w/h,sx=0,sy=0,sw=w,sh=h;
+  if(sr>r){sw=h*r;sx=(w-sw)/2}else{sh=w/r;sy=(h-sh)/2}
+  cx.fillStyle="#fff";cx.fillRect(0,0,tw,th);cx.drawImage(src,sx,sy,sw,sh,0,0,tw,th);
+  return cv.toDataURL("image/jpeg",.82);
+}
+function btn(t,bg,fn){return '<button type="button" style="background:'+bg+'" onclick="'+fn+'">'+t+'</button>'}
+function showLocked(){
+  stopCam();var p=getP(cur);
+  $("mtcPhView").innerHTML=p?'<img class="pv" alt="Student Photo" src="'+p+'">':'';
+  $("mtcPhBtns").innerHTML='<div style="font-weight:900;color:#2e7d32;margin:6px 0">✅ फोटो Save हो चुकी है 🔒<br><small style="color:#555">यह फोटो Admit Card व Result Card पर लगी है। Save के बाद दोबारा नहीं बदली जा सकती।</small></div>'+btn("🆔 दूसरे Student की फोटो","#1565c0","mtcPhAnother()");
+}
+function showCamera(){
+  shot="";
+  $("mtcPhView").innerHTML='<video id="mtcPhVid" autoplay playsinline muted></video>';
+  $("mtcPhBtns").innerHTML=btn("📸 फोटो खींचें","#2e7d32","mtcPhShoot()")
+    +'<div class="row">'+btn("🔄 Camera बदलें","#6a1b9a","mtcPhFlip()")+btn("🖼️ Camera App","#f57c00","mtcPhFile()")+'</div>';
+  startCam();
+}
+function showPreview(){
+  stopCam();
+  $("mtcPhView").innerHTML='<img class="pv" alt="Preview" src="'+shot+'">';
+  $("mtcPhBtns").innerHTML='<div class="sub" style="color:#c62828">साफ़ न हो तो दोबारा लें। 💾 Save के बाद फोटो बदली नहीं जा सकेगी।</div>'
+    +btn("💾 फोटो Save करें","#2e7d32","mtcPhSave()")+btn("🔁 दोबारा फोटो लें","#f57c00","mtcPhRetake()");
+}
+window.mtcPhShoot=function(){
+  var v=$("mtcPhVid");if(!v||!v.videoWidth){msg("⏳ Camera अभी तैयार नहीं है।");return}
+  shot=toData(v,v.videoWidth,v.videoHeight);msg("");showPreview();
+};
+window.mtcPhFlip=function(){facing=facing==="environment"?"user":"environment";startCam()};
+window.mtcPhFile=function(){
+  var f=$("mtcPhFile");
+  if(!f){f=document.createElement("input");f.type="file";f.accept="image/*";f.setAttribute("capture","environment");f.id="mtcPhFile";f.style.cssText="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0";document.body.appendChild(f);
+    f.addEventListener("change",function(){
+      var fl=f.files&&f.files[0];if(!fl)return;var u=URL.createObjectURL(fl),im=new Image();
+      im.onload=function(){shot=toData(im,im.naturalWidth,im.naturalHeight);URL.revokeObjectURL(u);f.value="";msg("");showPreview()};
+      im.onerror=function(){msg("⚠️ फोटो पढ़ नहीं पाया, दोबारा कोशिश करें।")};im.src=u;
+    })}
+  f.value="";f.click();
+};
+window.mtcPhRetake=function(){if(isLocked(cur)){showLocked();return}msg("");showCamera()};
+window.mtcPhSave=function(){
+  if(busy)return;
+  if(!staffName()){msg("❌ पहले Staff Login करें।");return}
+  if(!shot){msg("❌ पहले फोटो खींचें।");return}
+  if(isLocked(cur)){msg("🔒 इस Student की फोटो पहले से Save है।");showLocked();return}
+  busy=true;msg("⏳ Save हो रही है…",true);
+  var id=cur,data=shot;
+  /* दूसरे device पर पहले से Save फोटो हो तो वही रखो (पहली Save फोटो ही अंतिम) */
+  var chk=typeof window.mtcFsPullCol==="function"?Promise.race([window.mtcFsPullCol("photos"),new Promise(function(_,r){setTimeout(function(){r(1)},6000)})]).catch(function(){return null}):Promise.resolve(null);
+  chk.then(function(list){
+    var ex=null;(list||[]).forEach(function(d){if(d&&String(d.studentId)===id&&d.photo)ex=d});
+    if(ex){try{localStorage.setItem(key(id),ex.photo);localStorage.setItem(lkey(id),"1")}catch(e){}busy=false;refreshCards();msg("🔒 इस Student की फोटो पहले ही Save हो चुकी थी।");showLocked();return}
+    try{localStorage.setItem(key(id),data);localStorage.setItem(lkey(id),"1")}
+    catch(e){busy=false;msg("⚠️ फोटो Save नहीं हो पाई (Storage भर गया हो सकता है)।");return}
+    var st=stu()[id]||["",""];
+    try{window.mtcFsQueue&&window.mtcFsQueue("photos","photo_"+id,{kind:"student-photo",studentId:id,studentName:st[0],studentClass:st[1],staff:staffName(),takenAt:new Date().toISOString(),photo:data,locked:true})}catch(e){}
+    busy=false;refreshCards();showLocked();msg("✅ फोटो Save हो गई — Admit Card व Result Card पर लग गई।",true);
+  });
+};
+window.mtcPhAnother=function(){stopCam();cur="";$("mtcPhS2").style.display="none";$("mtcPhS1").style.display="block";$("mtcPhId").value="";msg("");setTimeout(function(){try{$("mtcPhId").focus()}catch(e){}},60)};
+window.mtcPhNext=function(){
+  var id=String($("mtcPhId").value||"").trim().replace(/\s+/g,"");
+  if(!id){msg("❌ पहले Student ID डालें।");return}
+  if(!isStu(id)){msg("❌ यह Student ID मान्य नहीं है।");return}
+  cur=id;var st=stu()[id];msg("");
+  $("mtcPhS1").style.display="none";$("mtcPhS2").style.display="block";
+  $("mtcPhWho").textContent=st[0]+" • Class "+st[1]+" • ID "+id;
+  if(isLocked(id)){showLocked();return}
+  pullPhotos().then(function(){if(cur===id&&isLocked(id))showLocked()});
+  showCamera();
+};
+window.mtcPhClose=function(){stopCam();var o=$("mtcPhOv");o.classList.remove("open");o.setAttribute("aria-hidden","true");cur="";shot="";msg("")};
+function openOv(){
+  try{var sp=$("mtcStaffPanel");if(sp){sp.classList.remove("open");sp.setAttribute("aria-hidden","true")}}catch(e){}
+  var o=$("mtcPhOv");$("mtcPhStaff").textContent="👨‍🏫 Staff: "+staffName();
+  $("mtcPhS2").style.display="none";$("mtcPhS1").style.display="block";$("mtcPhId").value="";msg("");
+  o.classList.add("open");o.setAttribute("aria-hidden","false");
+  setTimeout(function(){try{$("mtcPhId").focus()}catch(e){}},80);
+}
+window.mtcPhotoOpen=function(){
+  if(!staffName()){wantOpen=true;try{mtcOpenStaff()}catch(e){alert("पहले Staff Login करें।")}return}
+  openOv();
+};
+$("mtcPhId").addEventListener("keydown",function(e){if(e.key==="Enter")mtcPhNext()});
+var _ss=window.mtcStaffStart;
+window.mtcStaffStart=function(n){
+  var r=typeof _ss==="function"?_ss.apply(this,arguments):undefined;
+  window.__mtcStaffName=String(n||window.__mtcStaffName||"");
+  try{var pf=$("mtcPhFab");if(pf)pf.classList.add("show")}catch(e){}
+  if(wantOpen){wantOpen=false;setTimeout(openOv,150)}
+  return r;
+};
+/* Hub में बटन */
+function addBtn(){
+  if($("mtcPhotoBtn"))return true;var ref=$("mtcStaffLandingCard")||document.querySelector("#mtcHub .hubAdminRow");if(!ref)return false;
+  var b=document.createElement("button");b.type="button";b.id="mtcPhotoBtn";
+  b.innerHTML="📷 Student Photo (Staff)";b.style.cssText="display:block;width:100%;margin:10px 0 0;border:0;border-radius:25px;padding:12px 6px;font-size:18px;font-weight:900;color:#fff;background:linear-gradient(135deg,#00897b,#1565c0);cursor:pointer";b.onclick=function(ev){ev.stopPropagation();mtcPhotoOpen()};
+  ref.appendChild(b);return true;
+}
+(function(){if($("mtcPhFab"))return;var f=document.createElement("button");f.type="button";f.id="mtcPhFab";f.textContent="📷 Student Photo";f.onclick=function(){mtcPhotoOpen()};document.body.appendChild(f)})();
+if(!addBtn()){var n=0,iv=setInterval(function(){if(addBtn()||++n>20)clearInterval(iv)},500)}
 })();
 </script>
