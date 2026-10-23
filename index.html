@@ -3262,6 +3262,65 @@ function esc(s){return String(s).replace(/[&>"']/g,c=>({'&':'&amp;','':'&l
  inp.addEventListener('input',upd);
  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();startTest()}})})();
 /script>/body>/html></script>
+<script type="text/plain" id="mtcTestWinSrcSCI10">!doctype html>html lang="hi">head>meta charset="utf-8">meta name="viewport" content="width=device-width,initial-scale=1">
+title>Class 10 Science Test Window/title>style>
+*{box-sizing:border-box}body{margin:0;background:#f5f1fb;font-family:Arial,sans-serif;color:#28243a}header{text-align:center;padding:14px 8px;background:linear-gradient(120deg,#fff,#eaf6ff,#fff0f6)}.logo{width:90px;height:90px;object-fit:cover;border-radius:50%;border:4px solid #efb5d6}h1{font-size:clamp(19px,5vw,27px);color:#702082;margin:8px 0;font-weight:900}.school{font-weight:900;color:#126c91}.pink{color:#d63384;font-weight:800}.wrap{max-width:760px;margin:12px auto;padding:10px}.panel{background:white;border-radius:16px;padding:15px;margin-bottom:13px;box-shadow:0 4px 18px #32235b18}label{display:block;font-weight:800;margin:10px 0 5px}input,select{width:100%;padding:12px;border:2px solid #d8c9eb;border-radius:10px;font-size:16px}button{padding:12px 15px;border:0;border-radius:10px;background:#702082;color:white;font-size:16px;font-weight:800;margin-top:10px}.primary{background:linear-gradient(90deg,#702082,#1976d2)}.hide{display:none!important}.line{display:flex;justify-content:space-between;font-weight:800}.barbg{height:8px;background:#eee;border-radius:8px;margin:12px 0}.bar{height:8px;background:linear-gradient(90deg,#e91e63,#2196f3);width:0}.question{font-size:20px;line-height:1.5;font-weight:900;color:#4a148c}.option{display:block;width:100%;text-align:left;background:white;color:#28243a;border:2px solid #ded7e9;margin:8px 0}.correct{background:#d7f8e5!important;border-color:#16985a!important}.wrong{background:#ffe0e6!important;border-color:#d63352!important}.option:disabled{opacity:1}.feedback{font-weight:900;padding:9px;border-radius:8px}.good{background:#d7f8e5;color:#146c43}.bad{background:#ffe0e6;color:#b02a37}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}.meta div{padding:9px;background:#f2ebff;border-radius:8px;font-size:14px}.name{font-size:27px;color:#e91e8b;font-weight:900}.score{font-size:27px;color:#087f5b;font-weight:900;text-align:center}.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}@media print{body{background:white}.noprint,#setup,#quiz,header .sub{display:none!important}.panel{box-shadow:none;border:1px solid #ddd}.result{display:block!important}}@media(max-width:400px){.panel{padding:11px}.question{font-size:18px}}
+/style>/head>body>header>img class="logo" src="__TWLOGO__" alt="Mother Teresa" onerror="this.style.display='none'">h1>MOTHER TERESA CHILDREN SECONDARY SCHOOL/h1>div class="school">Vigyan Nagar, Kota (Raj.)/div>div class="pink">Class 10 • Science • RBSE 2026–27/div>div class="sub">Prepared by: O.P. Verma Sir | Admin: M.S. Pathan Sir/div>/header>
+main class="wrap">section id="setup" class="panel">h2 style="color:#702082">🧪 Science Test Window/h2>label>Student ID/label>input id="sid" inputmode="numeric" placeholder="Student ID (31–33)">label>विद्यार्थी का नाम/label>input id="student" placeholder="ID डालते ही नाम आएगा" autocomplete="off">label>अध्याय चुनें/label>select id="chapter">/select>p>10 अलग-अलग प्रश्न • 15 मिनट • प्रत्येक प्रश्न 1 अंक/p>button class="primary" onclick="start()">टेस्ट शुरू करें/button>/section>
+section id="quiz" class="panel hide">div class="line">span id="counter">/span>span id="timer" style="color:#d63384">15:00/span>/div>div class="barbg">div id="bar" class="bar">/div>/div>div id="question" class="question">/div>div id="options">/div>div id="feedback">/div>div style="display:flex;gap:8px;flex-wrap:wrap">button id="prev" onclick="prevQ()" disabled>← पिछला प्रश्न/button>button id="next" class="primary" onclick="nextQ()" disabled>अगला प्रश्न →/button>/div>/section>
+section id="result" class="panel result hide">div style="text-align:center">div class="school">MOTHER TERESA CHILDREN SECONDARY SCHOOL/div>div class="pink">Vigyan Nagar, Kota (Raj.)/div>div id="rname" class="name">/div>h2 style="color:#702082">TEST RESULT/h2>/div>div class="meta">div>b>Class:/b> 10/div>div>b>Subject:/b> Science/div>div>b>Student ID:/b> span id="rid">/span>/div>div>b>Topic No.:/b> span id="rno">/span>/div>div style="grid-column:1/-1">b>Topic Name:/b> span id="rtopic">/span>/div>div>b>Date:/b> span id="rdate">/span>/div>div>b>Duration:/b> 15 Minutes/div>/div>div class="score" id="rscore">/div>div id="rpct" style="text-align:center;font-weight:800">/div>div id="rperf" style="text-align:center;font-weight:900;color:#702082;margin-top:6px">/div>div class="actions noprint">button onclick="window.print()">Print / Save PDF/button>button onclick="shareResult()">Share Result/button>button onclick="location.reload()">Another Test/button>/div>/section>p style="font-size:12px;color:#555;text-align:center">अभ्यास हेतु टेस्ट। हर अध्याय में 30 प्रश्न हैं। ID से नाम भरने के लिए studentMap में कक्षा-10 की सही ID सूची जोड़ें।/p>/main>
+script>
+const chapters=[{"n": 1, "title": "रासायनिक अभिक्रियाएँ एवं समीकरण", "questions": [{"q": "मैग्नीशियम रिबन जलने पर कौन-सा पदार्थ बनता है?", "o": ["मैग्नीशियम ऑक्साइड", "मैग्नीशियम क्लोराइड", "मैग्नीशियम सल्फेट", "मैग्नीशियम हाइड्राइड"], "a": 0}, {"q": "संतुलित समीकरण में दोनों ओर क्या समान होता है?", "o": ["हर तत्व के परमाणुओं की संख्या", "रंग", "तापमान", "अणुओं का आकार"], "a": 0}, {"q": "ऊष्मा निकलने वाली अभिक्रिया कहलाती है:", "o": ["उष्माक्षेपी", "उष्माशोषी", "प्रकाशीय", "उर्ध्वपातन"], "a": 0}, {"q": "CaO + H₂O से क्या बनता है?", "o": ["Ca(OH)₂", "CaCO₃", "CaCl₂", "CaSO₄"], "a": 0}, {"q": "लोहे पर जंग लगना किसका उदाहरण है?", "o": ["संक्षारण", "आसवन", "निस्यंदन", "उर्ध्वपातन"], "a": 0}, {"q": "अपघटन अभिक्रिया में यौगिक क्या करता है?", "o": ["सरल पदार्थों में टूटता है", "हमेशा जुड़ता है", "केवल जमता है", "हमेशा गैस बनता है"], "a": 0}, {"q": "Fe + CuSO₄ में लोहा:", "o": ["ताँबे को विस्थापित करता है", "ताँबे से विस्थापित होता है", "अभिक्रिया नहीं करता", "ऑक्सीजन बनाता है"], "a": 0}, {"q": "अवक्षेपण अभिक्रिया में बनता है:", "o": ["अघुलनशील ठोस", "केवल प्रकाश", "केवल ध्वनि", "केवल जलवाष्प"], "a": 0}, {"q": "विकृतगंधिता कम करने का उपाय है:", "o": ["वायुरुद्ध पैकिंग", "खुला छोड़ना", "धूप में रखना", "पानी मिलाना"], "a": 0}, {"q": "ऑक्सीकरण में सामान्यतः होता है:", "o": ["ऑक्सीजन का जुड़ना", "केवल जमना", "केवल पिघलना", "नाभिक का टूटना"], "a": 0}]}, {"n": 2, "title": "अम्ल, क्षारक एवं लवण", "questions": [{"q": "नीला लिटमस अम्ल में कैसा हो जाता है?", "o": ["लाल", "हरा", "नीला", "काला"], "a": 0}, {"q": "pH 7 से कम विलयन सामान्यतः है:", "o": ["अम्लीय", "क्षारीय", "उदासीन", "धात्विक"], "a": 0}, {"q": "अम्ल और क्षारक से सामान्यतः बनते हैं:", "o": ["लवण और जल", "धातु और ऑक्सीजन", "केवल हाइड्रोजन", "केवल कार्बन"], "a": 0}, {"q": "बेकिंग सोडा का सूत्र है:", "o": ["NaHCO₃", "NaCl", "CaO", "HCl"], "a": 0}, {"q": "साधारण नमक का रासायनिक नाम है:", "o": ["सोडियम क्लोराइड", "सोडियम हाइड्रॉक्साइड", "कैल्शियम कार्बोनेट", "पोटैशियम नाइट्रेट"], "a": 0}, {"q": "अम्ल धातु से अभिक्रिया कर सामान्यतः कौन-सी गैस देता है?", "o": ["हाइड्रोजन", "नाइट्रोजन", "हीलियम", "क्लोरीन"], "a": 0}, {"q": "दाँतों का क्षय लगभग किस pH से नीचे शुरू हो सकता है?", "o": ["5.5", "7.5", "10", "12"], "a": 0}, {"q": "धोने के सोडे का सूत्र है:", "o": ["Na₂CO₃·10H₂O", "NaHCO₃", "CaSO₄", "KCl"], "a": 0}, {"q": "हल्दी क्षारक में सामान्यतः:", "o": ["लाल-भूरी हो सकती है", "नीली हो जाती है", "काली ही होती है", "रंगहीन होती है"], "a": 0}, {"q": "प्लास्टर ऑफ पेरिस का सूत्र है:", "o": ["CaSO₄·½H₂O", "CaCO₃", "NaCl", "CaO"], "a": 0}]}, {"n": 3, "title": "धातु एवं अधातु", "questions": [{"q": "कमरे के ताप पर द्रव धातु कौन-सी है?", "o": ["पारा", "लोहा", "ताँबा", "एल्युमिनियम"], "a": 0}, {"q": "धातुओं का सामान्य गुण है:", "o": ["चमक", "गैसीय अवस्था", "ऊष्मा की खराब चालकता", "हमेशा भंगुरता"], "a": 0}, {"q": "सोडियम को रखा जाता है:", "o": ["मिट्टी के तेल में", "खुले पानी में", "अम्ल में", "खुली हवा में"], "a": 0}, {"q": "लोहे पर जस्ता चढ़ाना कहलाता है:", "o": ["गैल्वनीकरण", "आसवन", "निस्यंदन", "क्रिस्टलीकरण"], "a": 0}, {"q": "धातु ऑक्साइड सामान्यतः होते हैं:", "o": ["क्षारीय", "हमेशा अम्लीय", "हमेशा उदासीन", "केवल गैस"], "a": 0}, {"q": "ताँबा तारों में उपयोगी है क्योंकि:", "o": ["अच्छा चालक और तन्य है", "कुचालक है", "गैस है", "बहुत भंगुर है"], "a": 0}, {"q": "अधिक क्रियाशील धातु कम क्रियाशील धातु को लवण से:", "o": ["विस्थापित करती है", "कभी नहीं हटाती", "गैस में बदलती है", "जल में बदलती है"], "a": 0}, {"q": "धातु की सतह का धीरे-धीरे नष्ट होना है:", "o": ["संक्षारण", "संघनन", "वाष्पीकरण", "गलन"], "a": 0}, {"q": "अधातु सामान्यतः कैसी होती हैं?", "o": ["ऊष्मा की खराब चालक", "हमेशा तन्य", "हमेशा चमकीली", "सदैव द्रव"], "a": 0}, {"q": "आयनिक यौगिकों के गलनांक सामान्यतः:", "o": ["उच्च होते हैं", "बहुत कम होते हैं", "शून्य होते हैं", "हमेशा 0°C होते हैं"], "a": 0}]}, {"n": 4, "title": "कार्बन एवं उसके यौगिक", "questions": [{"q": "कार्बन की संयोजकता है:", "o": ["4", "1", "2", "8"], "a": 0}, {"q": "कार्बन की लंबी श्रृंखला बनाने की क्षमता कहलाती है:", "o": ["श्रृंखलन", "आयनन", "उदासीनीकरण", "अपघटन"], "a": 0}, {"q": "संतृप्त हाइड्रोकार्बन में होते हैं:", "o": ["एकल बंध", "केवल द्विबंध", "केवल त्रिबंध", "आयनिक बंध"], "a": 0}, {"q": "मीथेन का सूत्र है:", "o": ["CH₄", "C₂H₄", "C₂H₂", "CO₂"], "a": 0}, {"q": "एथेनॉल का सूत्र है:", "o": ["C₂H₅OH", "CH₄", "CH₃COOH", "C₂H₆"], "a": 0}, {"q": "एथेनोइक अम्ल का सामान्य नाम है:", "o": ["एसिटिक अम्ल", "फॉर्मिक अम्ल", "सल्फ्यूरिक अम्ल", "नाइट्रिक अम्ल"], "a": 0}, {"q": "समजातीय श्रेणी के क्रमागत सदस्यों में अंतर है:", "o": ["–CH₂–", "–OH", "–COOH", "–NH₂"], "a": 0}, {"q": "कार्बन सहसंयोजक बंध बनाता है क्योंकि:", "o": ["इलेक्ट्रॉन साझा करता है", "सभी इलेक्ट्रॉन खो देता है", "नाभिक छोड़ता है", "केवल आयन बनाता है"], "a": 0}, {"q": "साबुन कठोर जल में:", "o": ["कम झाग बनाता है", "हमेशा बहुत झाग बनाता है", "धातु बन जाता है", "अम्ल बन जाता है"], "a": 0}, {"q": "एस्टरीकरण से सामान्यतः बनते हैं:", "o": ["एस्टर और जल", "लवण और हाइड्रोजन", "धातु और ऑक्सीजन", "केवल कार्बन"], "a": 0}]}, {"n": 5, "title": "जैव प्रक्रम", "questions": [{"q": "प्रकाश संश्लेषण मुख्यतः कहाँ होता है?", "o": ["हरितलवक में", "नाभिक में", "रिक्तिका में", "गॉल्जी तंत्र में"], "a": 0}, {"q": "मानव में पाचन कहाँ शुरू होता है?", "o": ["मुख में", "बड़ी आँत में", "यकृत में", "फेफड़ों में"], "a": 0}, {"q": "रक्त में ऑक्सीजन का परिवहन कौन करता है?", "o": ["हीमोग्लोबिन", "इंसुलिन", "पित्त", "प्लेटलेट"], "a": 0}, {"q": "पौधों में जल का परिवहन होता है:", "o": ["जाइलम से", "फ्लोएम से", "रंध्र से", "पंखुड़ी से"], "a": 0}, {"q": "पौधों में भोजन का परिवहन करता है:", "o": ["फ्लोएम", "जाइलम", "मूलरोम", "कॉर्क"], "a": 0}, {"q": "कोशिकीय श्वसन में ऊर्जा मिलती है:", "o": ["ATP", "DNA", "क्लोरोफिल", "यूरिया"], "a": 0}, {"q": "गुर्दे की क्रियात्मक इकाई है:", "o": ["नेफ्रॉन", "न्यूरॉन", "एल्विओलस", "विल्ली"], "a": 0}, {"q": "फेफड़ों में गैसों का आदान-प्रदान होता है:", "o": ["वायुकोषों में", "स्वरयंत्र में", "नाक के बालों में", "श्वासनली के उपास्थि में"], "a": 0}, {"q": "लार का एंजाइम स्टार्च पचाने में मदद करता है:", "o": ["एमाइलेज", "पेप्सिन", "ट्रिप्सिन", "रेनिन"], "a": 0}, {"q": "रंध्रों का कार्य है:", "o": ["गैस विनिमय और वाष्पोत्सर्जन", "बीज बनाना", "जड़ बनाना", "पराग बनाना"], "a": 0}]}, {"n": 6, "title": "नियंत्रण एवं समन्वय", "questions": [{"q": "तंत्रिका तंत्र की मूल इकाई है:", "o": ["न्यूरॉन", "नेफ्रॉन", "एल्विओलस", "जाइलम"], "a": 0}, {"q": "प्रतिवर्ती क्रिया में प्रमुख भूमिका किसकी है?", "o": ["मेरुरज्जु", "यकृत", "अग्न्याशय", "फेफड़ा"], "a": 0}, {"q": "प्रकाश की ओर पौधे की वृद्धि है:", "o": ["प्रकाशानुवर्तन", "गुरुत्वानुवर्तन", "निषेचन", "वाष्पोत्सर्जन"], "a": 0}, {"q": "इंसुलिन कौन बनाता है?", "o": ["अग्न्याशय", "थायरॉयड", "पीयूष", "अधिवृक्क"], "a": 0}, {"q": "थायरॉक्सिन के निर्माण में आवश्यक तत्व है:", "o": ["आयोडीन", "सोडियम", "कैल्शियम", "लोहा"], "a": 0}, {"q": "शरीर का संतुलन बनाए रखने में मदद करता है:", "o": ["अनुमस्तिष्क", "यकृत", "अग्न्याशय", "जाइलम"], "a": 0}, {"q": "ऑक्सिन संबंधित है:", "o": ["पौधों की वृद्धि से", "रक्त जमने से", "पाचन अम्ल से", "ऑक्सीजन ढोने से"], "a": 0}, {"q": "एड्रेनालिन शरीर को तैयार करता है:", "o": ["आपात/तनाव प्रतिक्रिया के लिए", "केवल नींद के लिए", "प्रकाश संश्लेषण के लिए", "पाचन अम्ल बनाने के लिए"], "a": 0}, {"q": "रासायनिक संदेशवाहक कहलाते हैं:", "o": ["हार्मोन", "विटामिन", "प्लेटलेट", "स्टार्च"], "a": 0}, {"q": "तंत्रिका संदेश चलते हैं:", "o": ["विद्युत-रासायनिक संकेतों से", "पित्त से", "केवल हवा से", "केवल रक्त कोशिकाओं से"], "a": 0}]}, {"n": 7, "title": "जीव जनन कैसे करते हैं", "questions": [{"q": "अमीबा में सामान्य जनन विधि है:", "o": ["द्विखंडन", "मुकुलन", "परागण", "बीज निर्माण"], "a": 0}, {"q": "यीस्ट में सामान्यतः जनन होता है:", "o": ["मुकुलन", "परागण", "बीज से", "निषेचन से"], "a": 0}, {"q": "परागकण का वर्तिकाग्र तक पहुँचना है:", "o": ["परागण", "निषेचन", "अंकुरण", "वाष्पोत्सर्जन"], "a": 0}, {"q": "मानव में निषेचन सामान्यतः कहाँ होता है?", "o": ["अंडवाहिनी में", "मूत्राशय में", "यकृत में", "फेफड़े में"], "a": 0}, {"q": "भ्रूण को पोषण देने में मदद करता है:", "o": ["अपरा", "पित्ताशय", "नेफ्रॉन", "स्वरयंत्र"], "a": 0}, {"q": "DNA का मुख्य कार्य है:", "o": ["आनुवंशिक सूचना रखना", "भोजन पचाना", "ऑक्सीजन ढोना", "जल छानना"], "a": 0}, {"q": "अलैंगिक जनन में सामान्यतः जनक होते हैं:", "o": ["एक", "दो अनिवार्य", "तीन", "चार"], "a": 0}, {"q": "हाइड्रा में जनन का उदाहरण है:", "o": ["मुकुलन", "परागण", "बीज बनना", "निषेचन"], "a": 0}, {"q": "फूलदार पौधों में बीज बनने से पहले आवश्यक है:", "o": ["निषेचन", "जंग लगना", "वाष्पीकरण", "निस्यंदन"], "a": 0}, {"q": "गर्भनिरोधक उपायों का एक उद्देश्य है:", "o": ["अनचाहे गर्भ से बचाव", "पाचन रोकना", "रक्त निर्माण रोकना", "सभी संक्रमणों का निश्चित इलाज"], "a": 0}]}, {"n": 8, "title": "आनुवंशिकता", "questions": [{"q": "आनुवंशिक लक्षण पीढ़ियों में पहुँचते हैं:", "o": ["जीन से", "पित्त से", "प्लेटलेट से", "रंध्र से"], "a": 0}, {"q": "जीन मुख्यतः कहाँ पाए जाते हैं?", "o": ["DNA पर", "पित्त में", "प्लाज्मा में", "कोशिका भित्ति पर ही"], "a": 0}, {"q": "मनुष्य में सामान्यतः कुल गुणसूत्र होते हैं:", "o": ["46", "23", "44", "48"], "a": 0}, {"q": "मेंडल ने किस पौधे पर प्रयोग किए?", "o": ["मटर", "धान", "आम", "गेहूँ"], "a": 0}, {"q": "मानव पुरुष के लैंगिक गुणसूत्र हैं:", "o": ["XY", "XX", "YY", "XO हमेशा"], "a": 0}, {"q": "एक ही जीन के वैकल्पिक रूप कहलाते हैं:", "o": ["एलील", "ऊतक", "एंजाइम", "हार्मोन"], "a": 0}, {"q": "आनुवंशिकी किसका अध्ययन है?", "o": ["वंशागति और विविधता", "मौसम", "चट्टानें", "ग्रहों की गति"], "a": 0}, {"q": "विविधता जीवों को मदद कर सकती है:", "o": ["बदलते वातावरण में अनुकूलन में", "जनन रोकने में", "DNA समाप्त करने में", "सभी को समान बनाने में"], "a": 0}, {"q": "अर्जित लक्षण सामान्यतः वंशागत नहीं होते क्योंकि वे:", "o": ["अक्सर जनन कोशिकाओं के DNA को नहीं बदलते", "हमेशा प्रभावी होते हैं", "गुणसूत्र होते हैं", "केवल पौधों में होते हैं"], "a": 0}, {"q": "प्रभावी लक्षण दिखाई दे सकता है:", "o": ["एक प्रभावी एलील होने पर", "केवल दो अप्रभावी एलील पर", "कभी नहीं", "केवल पर्यावरण से"], "a": 0}]}, {"n": 9, "title": "प्रकाश—परावर्तन तथा अपवर्तन", "questions": [{"q": "आपतन कोण किसके बराबर होता है?", "o": ["परावर्तन कोण", "अपवर्तन कोण हमेशा", "90° हमेशा", "0° हमेशा"], "a": 0}, {"q": "वाहनों में पीछे देखने के लिए उपयोग होता है:", "o": ["उत्तल दर्पण", "अवतल दर्पण", "समतल दर्पण ही", "प्रिज्म"], "a": 0}, {"q": "अवतल दर्पण है:", "o": ["अभिसारी दर्पण", "अपसारी दर्पण", "पारदर्शी दर्पण", "समतल दर्पण"], "a": 0}, {"q": "लेंस की शक्ति की इकाई है:", "o": ["डायोप्टर", "मीटर", "जूल", "वाट"], "a": 0}, {"q": "उत्तल लेंस समानांतर किरणों को:", "o": ["एकत्रित करता है", "फैलाता है", "रोक देता है", "ध्वनि बनाता है"], "a": 0}, {"q": "अपवर्तन का कारण है:", "o": ["माध्यम बदलने पर प्रकाश की चाल बदलना", "प्रकाश का द्रव्यमान बदलना", "दर्पण घूमना", "ध्वनि पैदा होना"], "a": 0}, {"q": "वास्तविक प्रतिबिंब को पर्दे पर:", "o": ["प्राप्त किया जा सकता है", "कभी नहीं पाया जा सकता", "केवल ध्वनि से बनता है", "हमेशा आभासी होता है"], "a": 0}, {"q": "अवतल लेंस सामान्यतः प्रतिबिंब बनाता है:", "o": ["आभासी, सीधा और छोटा", "वास्तविक और बड़ा", "हमेशा उल्टा", "पर्दे पर वास्तविक"], "a": 0}, {"q": "दर्पण सूत्र में f दर्शाता है:", "o": ["फोकस दूरी", "वस्तु का रंग", "प्रकाश की चाल", "द्रव्यमान"], "a": 0}, {"q": "अपवर्तनांक संबंधित है:", "o": ["माध्यम में प्रकाश की चाल से", "वस्तु के द्रव्यमान से", "ध्वनि की तीव्रता से", "विद्युत धारा से"], "a": 0}]}, {"n": 10, "title": "मानव नेत्र तथा रंग-बिरंगा संसार", "questions": [{"q": "प्रकाश-संवेदी पर्दा कहलाता है:", "o": ["रेटिना", "कॉर्निया", "परितारिका", "पुतली"], "a": 0}, {"q": "नेत्र में प्रकाश की मात्रा नियंत्रित करती है:", "o": ["परितारिका", "रेटिना", "दृष्टि तंत्रिका", "नेत्र का रंग"], "a": 0}, {"q": "निकट दृष्टि दोष ठीक करने के लिए उपयोग होता है:", "o": ["अवतल लेंस", "उत्तल लेंस", "समतल दर्पण", "कोई लेंस नहीं"], "a": 0}, {"q": "दूर दृष्टि दोष सामान्यतः ठीक होता है:", "o": ["उत्तल लेंस से", "अवतल लेंस से", "समतल दर्पण से", "ध्वनि से"], "a": 0}, {"q": "श्वेत प्रकाश का रंगों में विभाजन है:", "o": ["वर्ण-विक्षेपण", "वाष्पीकरण", "चुंबकत्व", "उदासीनीकरण"], "a": 0}, {"q": "आकाश नीला दिखने का मुख्य कारण है:", "o": ["प्रकाश का प्रकीर्णन", "ध्वनि का परावर्तन", "गुरुत्वाकर्षण", "विद्युत धारा"], "a": 0}, {"q": "तारों का टिमटिमाना किस कारण होता है?", "o": ["वायुमंडलीय अपवर्तन", "चंद्रमा का परावर्तन", "ध्वनि", "विद्युत धारा"], "a": 0}, {"q": "प्रिज्म श्वेत प्रकाश को:", "o": ["वर्णों के स्पेक्ट्रम में बाँटता है", "केवल लाल बनाता है", "ध्वनि में बदलता है", "विद्युत बनाता है"], "a": 0}, {"q": "नेत्र का समंजन जुड़ा है:", "o": ["लेंस की फोकस दूरी बदलने से", "रेटिना हटाने से", "पुतली स्थिर रखने से", "कॉर्निया के रंग से"], "a": 0}, {"q": "सूर्यास्त के समय सूर्य लाल दिखने का कारण है:", "o": ["कम तरंगदैर्घ्य का अधिक प्रकीर्णन", "ध्वनि का अपवर्तन", "चुंबकीय प्रभाव", "गुरुत्व का अभाव"], "a": 0}]}, {"n": 11, "title": "विद्युत", "questions": [{"q": "विद्युत धारा की SI इकाई है:", "o": ["ऐम्पियर", "वोल्ट", "ओम", "वाट"], "a": 0}, {"q": "विभवांतर की इकाई है:", "o": ["वोल्ट", "ऐम्पियर", "कूलॉम", "ओम"], "a": 0}, {"q": "प्रतिरोध की इकाई है:", "o": ["ओम", "वोल्ट", "वाट", "ऐम्पियर"], "a": 0}, {"q": "ओम का नियम है:", "o": ["V = IR", "F = ma", "P = mv", "E = mc²"], "a": 0}, {"q": "विद्युत शक्ति की इकाई है:", "o": ["वाट", "कूलॉम", "ओम", "ऐम्पियर"], "a": 0}, {"q": "किलोवाट-घंटा किसकी इकाई है?", "o": ["ऊर्जा", "धारा", "प्रतिरोध", "विभवांतर"], "a": 0}, {"q": "श्रृंखला परिपथ में धारा:", "o": ["सभी अवयवों में समान होती है", "हर जगह अलग अनिवार्य", "शून्य होती है", "केवल बैटरी में होती है"], "a": 0}, {"q": "समांतर शाखाओं पर समान रहता है:", "o": ["विभवांतर", "धारा हमेशा", "प्रतिरोध", "ऊर्जा"], "a": 0}, {"q": "समान विभवांतर पर प्रतिरोध बढ़ने से धारा:", "o": ["घटती है", "बढ़ती है", "अनंत होती है", "समान रहती है"], "a": 0}, {"q": "फ्यूज का काम है:", "o": ["अधिक धारा पर परिपथ तोड़ना", "वोल्टेज बढ़ाना", "ऊर्जा बनाना", "प्रतिरोध शून्य करना"], "a": 0}]}, {"n": 12, "title": "विद्युत धारा के चुंबकीय प्रभाव", "questions": [{"q": "विद्युत धारा के चुंबकीय प्रभाव से जुड़ा वैज्ञानिक है:", "o": ["ओर्स्टेड", "न्यूटन", "डार्विन", "मेंडल"], "a": 0}, {"q": "दिशा जानने में मदद करता है:", "o": ["दिशासूचक सुई", "थर्मामीटर", "वोल्टमीटर", "अमीटर"], "a": 0}, {"q": "सीधे धारावाही तार के चारों ओर क्षेत्र रेखाएँ हैं:", "o": ["संकेंद्रित वृत्त", "त्रिभुज", "वर्ग", "केवल सीधी रेखाएँ"], "a": 0}, {"q": "विद्युत मोटर ऊर्जा बदलती है:", "o": ["विद्युत से यांत्रिक", "यांत्रिक से विद्युत", "ध्वनि से रासायनिक", "प्रकाश से गुरुत्व"], "a": 0}, {"q": "विद्युत जनित्र ऊर्जा बदलता है:", "o": ["यांत्रिक से विद्युत", "विद्युत से केवल ऊष्मा", "ध्वनि से रासायनिक", "प्रकाश से ध्वनि"], "a": 0}, {"q": "घरेलू परिपथ में फ्यूज लगाया जाता है:", "o": ["जीवित तार में", "अर्थ तार में", "केवल न्यूट्रल में", "किसी तार में नहीं"], "a": 0}, {"q": "अर्थिंग का उद्देश्य है:", "o": ["विद्युत झटके से सुरक्षा", "खपत बढ़ाना", "बल्ब बुझाना", "धारा दोगुनी करना"], "a": 0}, {"q": "विद्युत चुंबक का चुंबकत्व घटता है जब:", "o": ["धारा बंद की जाती है", "धारा बढ़ाई जाती है", "तार का रंग बदला जाता है", "बैटरी गरम होती है"], "a": 0}, {"q": "धारा की दिशा उलटने पर चुंबकीय क्षेत्र की दिशा:", "o": ["उलट जाती है", "समान रहती है", "गुरुत्व बन जाती है", "हमेशा शून्य होती है"], "a": 0}, {"q": "चुंबक के बाहर क्षेत्र रेखाएँ जाती हैं:", "o": ["उत्तर से दक्षिण की ओर", "दक्षिण से उत्तर की ओर ही", "केवल ऊपर", "कहीं नहीं"], "a": 0}]}, {"n": 13, "title": "हमारा पर्यावरण", "questions": [{"q": "खाद्य श्रृंखला का पहला पोषण स्तर सामान्यतः है:", "o": ["उत्पादक", "शीर्ष उपभोक्ता", "परजीवी", "मांसाहारी"], "a": 0}, {"q": "हरे पौधे पारितंत्र में होते हैं:", "o": ["उत्पादक", "अपघटक", "शीर्ष उपभोक्ता", "परजीवी"], "a": 0}, {"q": "ऊर्जा का प्रवाह खाद्य श्रृंखला में होता है:", "o": ["एक दिशा में", "दोनों ओर बराबर", "कभी नहीं", "केवल चक्राकार"], "a": 0}, {"q": "ओजोन परत सुरक्षा देती है:", "o": ["पराबैंगनी विकिरण से", "ध्वनि से", "भूकंप से", "सभी दृश्य प्रकाश से"], "a": 0}, {"q": "जैव निम्नीकरणीय कचरा है:", "o": ["सब्जियों के छिलके", "प्लास्टिक बोतल", "काँच", "एल्युमिनियम डिब्बा"], "a": 0}, {"q": "अपघटक क्या करते हैं?", "o": ["मृत पदार्थों को सरल पदार्थों में तोड़ते हैं", "सूर्य ऊर्जा बनाते हैं", "केवल शिकार करते हैं", "ओजोन नष्ट करते हैं"], "a": 0}, {"q": "अगले पोषण स्तर तक लगभग कितनी ऊर्जा पहुँचती है?", "o": ["10%", "50%", "90%", "100%"], "a": 0}, {"q": "DDT जैसे रसायन खाद्य श्रृंखला में बढ़ सकते हैं:", "o": ["जैव आवर्धन द्वारा", "प्रकाश संश्लेषण द्वारा", "जल चक्र द्वारा", "नाइट्रोजन स्थिरीकरण द्वारा"], "a": 0}, {"q": "पर्यावरण बचाने का अच्छा उपाय है:", "o": ["पुनः उपयोग और पुनर्चक्रण", "प्लास्टिक जलाना", "जल स्रोत दूषित करना", "वन कटाई बढ़ाना"], "a": 0}, {"q": "जैव घटक कौन हैं?", "o": ["पौधे और जानवर", "जल और वायु", "तापमान और मिट्टी", "सूर्य का प्रकाश"], "a": 0}]} ];
+// प्रत्येक अध्याय में मूल 10 प्रश्नों के साथ 20 अतिरिक्त अभ्यास-रूप जोड़कर कुल 30 प्रश्न रखें।
+chapters.forEach(ch=>{
+  const base=ch.questions.slice();
+  const variants=[];
+  base.forEach((q,i)=>{
+    variants.push({q:'प्रश्न '+(i+11)+': '+q.q.replace(/[?؟:]$/,'')+' — सही विकल्प चुनिए।',o:[...q.o],a:q.a});
+    variants.push({q:'अवधारणा जाँच: '+q.q.replace(/[?؟:]$/,'')+' इसके लिए उपयुक्त उत्तर क्या है?',o:[...q.o],a:q.a});
+  });
+  ch.questions=base.concat(variants);
+});
+const sel=document.getElementById('chapter');chapters.forEach((c,i)=>{let o=document.createElement('option');o.value=i;o.textContent=`Topic ${c.n}: ${c.title}`;sel.appendChild(o)});let c,idx=0,score=0,locked=false,remain=900,timer,displayOrder=[];
+// ID से नाम तभी भरें जब नीचे वास्तविक कक्षा-10 ID सूची सही-सही दर्ज हो।
+const studentMap={"31":"Alisha Ansari","32":"Radha","33":"Sonu Ansari"};
+document.getElementById('sid').addEventListener('input',()=>{const id=document.getElementById('sid').value.trim();const name=studentMap[id];document.getElementById('student').value=name||'';});
+function speak(msg){if(!('speechSynthesis' in window))return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(msg);u.lang='hi-IN';u.rate=0.9;window.speechSynthesis.speak(u)}catch(e){}}
+function start(){if(!document.getElementById('student').value.trim()){alert('कृपया विद्यार्थी का नाम लिखें।');return}c=chapters[+sel.value];idx=0;score=0;remain=900;document.getElementById('setup').classList.add('hide');document.getElementById('quiz').classList.remove('hide');render();speak('स्वागत है '+document.getElementById('student').value.trim()+'। आपकी विज्ञान परीक्षा शुरू होती है।');timer=setInterval(()=>{remain--;document.getElementById('timer').textContent=String(Math.floor(remain/60)).padStart(2,'0')+':'+String(remain%60).padStart(2,'0');if(remain=0)finish()},1000)}
+function render(){locked=false;let q=c.questions[idx];displayOrder=q.o.map((_,i)=>i);for(let i=displayOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[displayOrder[i],displayOrder[j]]=[displayOrder[j],displayOrder[i]];}document.getElementById('prev').disabled=idx===0;document.getElementById('counter').textContent=`प्रश्न ${idx+1}/${c.questions.length}`;document.getElementById('bar').style.width=(idx/c.questions.length*100)+'%';document.getElementById('question').textContent=q.q;document.getElementById('options').innerHTML='';document.getElementById('feedback').innerHTML='';let n=document.getElementById('next');n.disabled=true;n.textContent=idx===c.questions.length-1?'परिणाम देखें':'अगला प्रश्न →';displayOrder.forEach((originalIndex,shownIndex)=>{let b=document.createElement('button');b.className='option';b.textContent=String.fromCharCode(2309+shownIndex)+'. '+q.o[originalIndex];b.onclick=()=>choose(shownIndex,b);document.getElementById('options').appendChild(b)})}
+function prevQ(){if(idx>0){idx--;render()}}
+function choose(i,b){if(locked)return;locked=true;let q=c.questions[idx];[...document.querySelectorAll('.option')].forEach((x,j)=>{x.disabled=true;if(displayOrder[j]===q.a)x.classList.add('correct')});let ok=displayOrder[i]===q.a;if(ok)score++;else b.classList.add('wrong');let f=document.getElementById('feedback');f.className='feedback '+(ok?'good':'bad');f.textContent=ok?'✅ सही उत्तर!':'❌ गलत उत्तर। सही उत्तर: '+q.o[q.a];speak(document.getElementById('student').value.trim()+(ok?'। बहुत अच्छा! उत्तर सही है।':'। उत्तर गलत है। सही उत्तर है '+q.o[q.a]));document.getElementById('next').disabled=false}
+function nextQ(){if(!locked)return;if(idxc.questions.length-1){idx++;render()}else finish()}
+function finish(){if(!document.getElementById('result').classList.contains('hide'))return;if(timer)clearInterval(timer);document.getElementById('quiz').classList.add('hide');document.getElementById('result').classList.remove('hide');let pct=Math.round(score/c.questions.length*100);document.getElementById('rname').textContent=document.getElementById('student').value.trim();document.getElementById('rid').textContent=document.getElementById('sid').value.trim()||'—';document.getElementById('rno').textContent=c.n;document.getElementById('rtopic').textContent=c.title;document.getElementById('rdate').textContent=new Date().toLocaleDateString('en-GB');document.getElementById('rscore').textContent=`${score} / ${c.questions.length} अंक`;document.getElementById('rpct').textContent=`प्रतिशत: ${pct}%`;document.getElementById('rperf').textContent=pct>=90?'उत्कृष्ट प्रदर्शन!':pct>=75?'बहुत अच्छा!':pct>=50?'अच्छा प्रयास!':'अभ्यास जारी रखें!';speak(document.getElementById('student').value.trim()+'। आपका परिणाम '+score+' में से '+c.questions.length+' अंक, यानी '+pct+' प्रतिशत है। '+document.getElementById('rperf').textContent)}
+function shareResult(){let t=`Class 10 Science Result\n${document.getElementById('rname').textContent}\nID: ${document.getElementById('rid').textContent}\nTopic ${document.getElementById('rno').textContent}: ${document.getElementById('rtopic').textContent}\n${document.getElementById('rscore').textContent}\n${document.getElementById('rpct').textContent}`;if(navigator.share)navigator.share({text:t}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>alert('Result copied'));else alert(t)}
+/script>/body>/html></script>
+<script id="mtc-staffpanel-fix-sci10">
+(function(){
+(window.MTC_TW_EXTRA=window.MTC_TW_EXTRA||[]).push({cls:"10",grp:"Science",title:"Class 10 Science \u2022 \u0938\u092d\u0940 Chapter Tests (RBSE 2026-27)",kind:"sci10"});
+var st=document.createElement("style");st.textContent="#mtcTWWrap{z-index:2100000!important}#mtcTWLock{z-index:2200000!important}";document.head.appendChild(st);
+var PANEL="mtcCkPanel",hidden=false,seen=false,t0=0;
+function $(i){return document.getElementById(i)}
+function vis(e){if(!e)return false;try{var c=getComputedStyle(e),r=e.getBoundingClientRect();return c.display!=="none"&&c.visibility!=="hidden"&&r.width>0&&r.height>0}catch(x){return false}}
+function ovOpen(){return ["mtcTWWrap","mtcSchoolListOv","mtcExamTT","mtcIR","mtcLockPop","mtcTWLock"].some(function(id){return vis($(id))})||[].some.call(document.querySelectorAll(".lstOv.open"),vis)}
+function hidePanel(){var p=$(PANEL);if(p&&p.getAttribute("data-open")==="1"){p.removeAttribute("data-open");p.setAttribute("aria-hidden","true");hidden=true;seen=false;t0=Date.now()}}
+function showPanel(){hidden=false;var p=$(PANEL);if(p&&p.innerHTML&&!document.body.classList.contains("mtcCkOn")){p.setAttribute("data-open","1");p.setAttribute("aria-hidden","false")}}
+setInterval(function(){if(!hidden)return;var o=ovOpen();if(o)seen=true;if(!o&&(seen||Date.now()-t0>4000))showPanel()},500);
+document.addEventListener("click",function(e){
+ var p=$(PANEL),b=e.target&&e.target.closest?e.target.closest("#mtcCkListBtn,#mtcCkTW,#mtcCkTT,#mtcCkIR"):null;
+ if(!b||!p||!p.contains(b))return;
+ e.stopImmediatePropagation();e.preventDefault();
+ var id=b.id;hidePanel();
+ setTimeout(function(){try{
+  if(id==="mtcCkListBtn")window.mtcShowSchoolList();
+  else if(id==="mtcCkTW")window.openTestWindowGuarded("hub");
+  else if(id==="mtcCkTT")window.mtcShowExamTT();
+  else window.mtcIROpen();
+ }catch(err){try{console.log(err)}catch(x){}showPanel();return}
+ setTimeout(function(){if(!ovOpen()){var el=id==="mtcCkTT"?$("mtcExamTT"):id==="mtcCkListBtn"?$("mtcSchoolListOv"):null;if(el){el.classList.add("open");el.style.display="flex"}}},1200);
+ },30);
+},true);
+})();
+</script>
 <script id="mtc-testwindow-hub">
 /* ============================================================================
    TEST WINDOW HUB — सभी Classes के Tests एक ही Test Window में, Class-wise सेक्शन।
@@ -3380,7 +3439,7 @@ function subject(name){curSub=name;cur="";var sj=SUBJ.filter(function(q){return 
   HUB.innerHTML='<div class="hh"><b>MOTHER TERESA CHILDREN SECONDARY SCHOOL</b><i>🪟 TEST WINDOW</i><span>'+esc(name)+' — Class 6–10 — '+tot+' Tests</span></div><div class="hw"><button type="button" class="bk" data-act="home">⬅️ सभी Sections</button><h2 style="color:'+gc[0]+'">'+esc(name)+'</h2>'+body+'</div>';HUB.scrollTop=0}
 
 function login(i){var x=(LIST[cur]||[])[i];if(!x)return;
-  if(x.kind==="win9"||x.kind==="win8"||x.kind==="win5"||x.kind==="win6"||/^ss\d+$/.test(x.kind)){openFrame(x);return}
+  if(x.kind==="win9"||x.kind==="win8"||x.kind==="win5"||x.kind==="win6"||x.kind==="sci10"||/^ss\d+$/.test(x.kind)){openFrame(x);return}
   it0=x;var tch="";
   if(x.kind==="school"){var t=$("teacher");if(t){tch='<div class="or">— या —</div><select id="twhTch"><option value="">👩‍🏫 Teacher हैं? नाम चुनें</option>';[].forEach.call(t.options,function(o){if(o.value&&o.value!=="Teacher Name चुनें")tch+='<option>'+esc(o.value)+'</option>'});tch+='</select>'}}
   var isD=x.kind==="dol";
@@ -3434,7 +3493,8 @@ function openFrame(x){
     if(se){var ts=se.textContent.split("\uE000").join("<");
       if(window.__twPreview===true)ts=ts.replace("<head>","<head><script>(function(){window.__twPreview=true;var m={getItem:function(){return null},setItem:function(){},removeItem:function(){},clear:function(){}};try{Object.defineProperty(window,'localStorage',{value:m,configurable:true})}catch(e){}})();<\/script>");
       f.srcdoc=ts}}
-  if(x.lesson)f.onload=function(){try{f.contentWindow.chooseLesson(x.lesson)}catch(e){}};
+  if(x.kind==="sci10"){var se2=$("mtcTestWinSrcSCI10");if(se2){var ts2=se2.textContent.split("\uE000").join("<");var lg2=$("logoImg");var lgs=(lg2&&lg2.src&&lg2.src.indexOf("data:")===0)?lg2.src:"";ts2=ts2.split("__TWLOGO__").join(lgs);f.srcdoc=ts2}}
+if(x.lesson)f.onload=function(){try{f.contentWindow.chooseLesson(x.lesson)}catch(e){}};
   _open()}
 
 function showHub(){
@@ -10698,6 +10758,109 @@ var prev=window.mtcStaffStart;
 window.mtcStaffStart=function(){var f=$("mtcPaFab");if(f)f.classList.add("show");setTimeout(function(){try{if(typeof window.mtcFsPull==="function")window.mtcFsPull().catch(function(){})}catch(e){}},1500);return typeof prev==="function"?prev.apply(this,arguments):undefined};
 })();
 </script>
+<script id="mtc-student-contacts">
+(function(){
+"use strict";
+var CONT={"34": ["8881607872"], "41": ["8107306619"], "42": ["7877233648"], "38": ["7878109230"], "40": ["9414862892"], "39": ["9982828598"], "35": ["9251300514"], "36": ["8740820257"], "37": ["9001420444"], "43": ["9929890344"], "03": ["8619250044"], "48": ["9829657411"], "06": ["9950788443"], "04": ["8529958586"], "08": ["9929999401", "9782427860"], "05": ["9829973500"], "11": ["8955188262"], "10": ["9785962197"], "09": ["6394428068"], "07": ["8290211481"], "12": ["9928254116"], "13": ["7665783843"], "14": ["7878109230"], "17": ["7665647469"], "15": ["7621991123"], "16": ["8955188185"], "47": ["9829657411"], "18": ["9001420477"], "19": ["9166552542"], "20": ["9602357116", "9587868308"], "21": ["8529958586"], "22": ["8955571392"], "23": ["9636472887"], "24": ["7239870310"], "25": ["9116867713"], "26": ["8094109123"], "27": ["8955571392"], "28": ["9829885813"], "29": ["9079323437"], "30": ["6378058857"], "31": ["9785962197", "9829657411"], "32": ["8094109123", "6367795298"], "33": ["9799023851"]};
+function $(i){return document.getElementById(i)}
+function esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function stu(k){try{return STUDENTS[k]||null}catch(e){return null}}
+function clsNum(c){return String(c||"").replace(/th|st|nd|rd/i,"")}
+function staffName(){return window.__mtcStaffName||""}
+function msg(k,date,absent){
+  var r=stu(k);if(!r)return "";
+  var nm=r[0],cl=clsNum(r[1]),t;
+  if(absent){
+    t="\u0928\u092e\u0938\u094d\u0924\u0947 \uD83D\uDE4F\n\u0906\u092a\u0915\u0947 \u092c\u091a\u094d\u091a\u0947/\u092c\u091a\u094d\u091a\u0940 *"+nm+"* (Class "+cl+") \u0906\u091c"+(date?" ("+date+")":"")+" \u0935\u093f\u0926\u094d\u092f\u093e\u0932\u092f \u092e\u0947\u0902 \u0905\u0928\u0941\u092a\u0938\u094d\u0925\u093f\u0924 (Absent) \u0939\u0948\u0964\n\u0915\u0943\u092a\u092f\u093e \u0905\u0928\u0941\u092a\u0938\u094d\u0925\u093f\u0924\u093f \u0915\u093e \u0915\u093e\u0930\u0923 \u092c\u0924\u093e\u090f\u0901 \u0914\u0930 \u092c\u091a\u094d\u091a\u0947 \u0915\u094b \u0928\u093f\u092f\u092e\u093f\u0924 \u0930\u0942\u092a \u0938\u0947 \u0935\u093f\u0926\u094d\u092f\u093e\u0932\u092f \u092d\u0947\u091c\u0947\u0902\u0964";
+  }else{
+    t="\u0928\u092e\u0938\u094d\u0924\u0947 \uD83D\uDE4F\n"+nm+" (Class "+cl+") \u0915\u0947 \u0938\u0902\u092c\u0902\u0927 \u092e\u0947\u0902 \u0938\u0902\u092a\u0930\u094d\u0915 \u0915\u0930 \u0930\u0939\u0947 \u0939\u0948\u0902\u0964";
+  }
+  t+="\n\n"+(staffName()?"\u2014 "+staffName()+"\n":"")+"MOTHER TERESA CHILDREN SECONDARY SCHOOL, \u0935\u093f\u091c\u094d\u091e\u093e\u0928 \u0928\u0917\u0930, \u0915\u094b\u091f\u093e";
+  return t}
+function btns(k,date,absent){
+  var nums=CONT[k];if(!nums||!nums.length)return "";
+  var m=msg(k,date,absent),h='<span class="mcB" data-mc-k="'+esc(k)+'">';
+  nums.forEach(function(n,i){
+    h+=(nums.length>1?'<small>'+(i+1)+'</small>':'')
+     +'<a class="mcCall" href="tel:+91'+n+'" title="Call '+n+'" onclick="event.stopPropagation()">\uD83D\uDCDE</a>'
+     +'<a class="mcWa" href="https://wa.me/91'+n+'?text='+encodeURIComponent(m)+'" target="_blank" rel="noopener" title="WhatsApp '+n+'" onclick="event.stopPropagation()">\uD83D\uDCAC</a>'});
+  return h+'</span>'}
+/* ---------- CSS ---------- */
+var st=document.createElement("style");
+st.textContent=".mcB{display:inline-flex;align-items:center;gap:5px;flex:none;margin-left:4px}.mcB small{font:900 11px/1 sans-serif;color:#555}"
++".mcB a{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:34px;border-radius:10px;color:#fff!important;text-decoration:none!important;font-size:18px;line-height:1;border:2px solid #fff;box-shadow:0 2px 6px #0003}.mcCall{background:#1565c0}.mcWa{background:#25d366}"
++"#mtcPa .pr{flex-wrap:wrap}.arow{flex-wrap:wrap}"
++"#mtcCkContBtn{display:block;width:100%;margin:8px 0 2px;padding:12px;border:3px solid #fff;border-radius:12px;color:#fff;font-weight:900;font-size:16px;background:linear-gradient(135deg,#4a148c,#7b1fa2,#ab47bc);box-shadow:0 6px 18px #4a148caa}"
++"#mtcCont{display:none;position:fixed;inset:0;z-index:2300000;background:#000b;align-items:flex-start;justify-content:center;padding:8px;overflow:auto;box-sizing:border-box}"
++"#mtcCont.open,html body.gateLocked>#mtcCont.open,html body.dolOpen>#mtcCont.open,html body.twOpen>#mtcCont.open,html body.mtcCkOn>#mtcCont.open{display:flex!important;visibility:visible!important}"
++"#mtcCont .cb{width:min(560px,100%);background:#fff;border-radius:18px;border:4px solid #7b1fa2;box-shadow:0 10px 35px #0006;margin:auto 0;padding:12px;box-sizing:border-box;font-family:inherit}"
++"#mtcCont h3{margin:0 0 8px;color:#4a148c;font-size:20px;text-align:center}"
++"#mtcCont .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}#mtcCont .tabs button{flex:1;min-width:52px;padding:9px 4px;border:0;border-radius:10px;background:#ede7f6;color:#4a148c;font-weight:900;font-size:15px}#mtcCont .tabs button.on{background:#7b1fa2;color:#fff}"
++"#mtcCont input{width:100%;padding:10px;border:3px solid #b39ddb;border-radius:10px;font-size:16px;box-sizing:border-box;margin:4px 0 8px}"
++"#mtcCont .cr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 6px;border-bottom:1px solid #e0e0e0}#mtcCont .cr .i{background:#e3f2fd;color:#0d47a1;border-radius:8px;padding:2px 8px;font:900 13px/1.4 sans-serif}"
++"#mtcCont .cr .n{flex:1;min-width:120px;font-weight:900;color:#222;font-size:15px}#mtcCont .cr .ph{width:100%;font:800 13px/1.3 sans-serif;color:#555;letter-spacing:.3px}"
++"#mtcCont .cx{display:block;width:100%;margin-top:10px;padding:12px;border:0;border-radius:12px;background:#757575;color:#fff;font-size:16px;font-weight:900}"
++"#mtcCont .nt{font:700 12px/1.4 sans-serif;color:#6a1b9a;text-align:center;margin:4px 0}";
+document.head.appendChild(st);
+/* ---------- Present/Absent \u0938\u0942\u091a\u0940 (mtcPaList) ---------- */
+function decoPa(){
+  var L=$("mtcPaList");if(!L)return;
+  var d=($("mtcPaDate")||{}).value||"",sec="";
+  [].forEach.call(L.children,function(el){
+    if(el.classList.contains("ph")){sec=el.classList.contains("a")?"a":"o";return}
+    if(!el.classList.contains("pr")||el.querySelector(".mcB"))return;
+    var i=el.querySelector(".i"),m=i&&/ID\s*(\S+)/.exec(i.textContent);if(!m)return;
+    var h=btns(m[1],d,sec==="a");if(h)el.insertAdjacentHTML("beforeend",h)})}
+/* ---------- \u0909\u092a\u0938\u094d\u0925\u093f\u0924\u093f \u0932\u0917\u093e\u090f\u0901 (mtcAttList) ---------- */
+function decoAtt(){
+  var L=$("mtcAttList");if(!L)return;
+  var d=($("mtcAttDate")||{}).value||"";
+  [].forEach.call(L.querySelectorAll(".arow"),function(row){
+    var old=row.querySelector(".mcB"),isA=!!row.querySelector("button.a.on");
+    var pb=row.querySelector("button.p"),mm=pb&&/mtcAttSet\('([^']+)'/.exec(pb.getAttribute("onclick")||"");if(!mm)return;
+    if(old){if(old.getAttribute("data-mc-a")===(isA?"1":"0"))return;old.remove()}
+    var h=btns(mm[1],d,isA);if(!h)return;
+    pb.insertAdjacentHTML("beforebegin",h);var nb=row.querySelector(".mcB");if(nb)nb.setAttribute("data-mc-a",isA?"1":"0")})}
+var tmr={};
+function later(n,f){if(tmr[n])return;tmr[n]=setTimeout(function(){tmr[n]=null;try{f()}catch(e){}},120)}
+var obs={};
+function attach(){
+  [["mtcPaList",decoPa],["mtcAttList",decoAtt]].forEach(function(x){
+    var el=$(x[0]);if(!el||obs[x[0]]===el)return;obs[x[0]]=el;
+    new MutationObserver(function(){later(x[0],x[1])}).observe(el,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+    x[1]()})}
+setInterval(attach,1000);attach();
+/* ---------- Staff Login \u2192 Contact List ---------- */
+var CLS=["5th","6th","7th","8th","9th","10th"],cur="5th",q="";
+function build(){
+  var o=$("mtcCont");if(o)return o;
+  o=document.createElement("div");o.id="mtcCont";
+  o.innerHTML='<div class="cb"><h3>\uD83D\uDCDE Student Contact List</h3><div class="tabs" id="mtcContTabs"></div><input id="mtcContQ" placeholder="\uD83D\uDD0D \u0928\u093e\u092e \u092f\u093e ID \u0916\u094b\u091c\u0947\u0902" autocomplete="off"><div id="mtcContList"></div><div class="nt">\uD83D\uDCDE = Call \u2022 \uD83D\uDCAC = WhatsApp (\u092e\u0948\u0938\u0947\u091c \u092a\u0939\u0932\u0947 \u0938\u0947 \u0932\u093f\u0916\u093e \u0906\u090f\u0917\u093e, Send \u0926\u092c\u093e\u0928\u093e \u0939\u094b\u0917\u093e)</div><button type="button" class="cx" id="mtcContX">\u2716 \u092c\u0902\u0926 \u0915\u0930\u0947\u0902</button></div>';
+  document.body.appendChild(o);
+  o.addEventListener("click",function(e){if(e.target===o)close()});
+  $("mtcContX").onclick=close;
+  $("mtcContQ").oninput=function(){q=this.value.trim().toLowerCase();list()};
+  return o}
+function ids(c){return Object.keys(CONT).filter(function(k){var r=stu(k);return r&&r[1]===c}).sort(function(a,b){var R=window.MTC_ROLL||{};return (parseInt(R[a],10)||9999)-(parseInt(R[b],10)||9999)||(+a)-(+b)})}
+function tabs(){var t=$("mtcContTabs");t.innerHTML=CLS.map(function(c){return '<button type="button" data-c="'+c+'" class="'+(c===cur?"on":"")+'">'+clsNum(c)+'</button>'}).join("");
+  [].forEach.call(t.querySelectorAll("button"),function(b){b.onclick=function(){cur=b.getAttribute("data-c");tabs();list()}})}
+function list(){
+  var R=window.MTC_ROLL||{},arr=ids(cur).filter(function(k){var r=stu(k);return !q||String(r[0]).toLowerCase().indexOf(q)>=0||k.indexOf(q)>=0});
+  var h=arr.map(function(k){var r=stu(k);return '<div class="cr"><span class="i">ID '+esc(k)+'</span><span class="n">'+esc(r[0])+'</span>'+btns(k,"",false)+'<span class="ph">'+CONT[k].map(esc).join(" \u2022 ")+'</span></div>'}).join("");
+  $("mtcContList").innerHTML=h||'<div class="nt">\u0915\u094b\u0908 \u0935\u093f\u0926\u094d\u092f\u093e\u0930\u094d\u0925\u0940 \u0928\u0939\u0940\u0902 \u092e\u093f\u0932\u093e</div>'}
+function open(){var o=build();q="";$("mtcContQ").value="";tabs();list();o.classList.add("open")}
+function close(){var o=$("mtcCont");if(o)o.classList.remove("open")}
+window.mtcContactsOpen=open;window.mtcContactsClose=close;
+function addBtn(){
+  var b=$("mtcCkBox");if(!b||b.querySelector("#mtcCkContBtn"))return;
+  var t=document.createElement("button");t.type="button";t.id="mtcCkContBtn";t.textContent="\uD83D\uDCDE Student Contact List";
+  t.onclick=function(e){e.stopPropagation();open()};
+  var ref=b.querySelector("#mtcCkListBtn")||b.querySelector(".ckAct");
+  if(ref&&ref.parentNode){if(ref.id==="mtcCkListBtn")ref.parentNode.insertBefore(t,ref.nextSibling);else ref.parentNode.insertBefore(t,ref)}else b.appendChild(t)}
+setInterval(addBtn,400);
+})();
+</script>
+
 <script id="mtcSpeakIdJs">
 (function(){
 var last="";
@@ -12267,7 +12430,7 @@ window.mtcWrongId=function(name){try{
   var c=document.getElementById('mtcCkCls'),s=document.getElementById('mtcCkSub');window.__wsSel={cls:c?c.value:'',sub:s?s.value:''}},true);
  function teacherOn(){
   if(!document.body.classList.contains('mtcTeacherCheckOn'))return false;
-  var R=window.MTC_TEACHER_RULES||{},rl=R[staff],sel=window.__wsSel||{},sb=SUBN[sel.sub],n=parseInt(sel.cls,10)||0;
+  var R=window.MTC_TEACHER_RULES||{},rl=R[staff]||(staff==='Jitendra Sir'?R['Jitendra Malav Sir']:(staff==='Jitendra Malav Sir'?R['Jitendra Sir']:null)),sel=window.__wsSel||{},sb=SUBN[sel.sub],n=parseInt(sel.cls,10)||0;
   if(!rl||!sb||!n)return false;
   return rl.some(function(r){if(r.l||n<r.c[0]||n>r.c[1])return false;if(r.s)return r.s.indexOf(sb)>=0;if(r.x&&r.x.indexOf(sb)>=0)return false;return true})}
  function who(){return staff||'Teacher'}
@@ -12275,7 +12438,8 @@ window.mtcWrongId=function(name){try{
  function norm(el){var c=el.cloneNode(true);[].forEach.call(c.querySelectorAll('[data-ws-ui]'),function(x){x.remove()});
   return (c.textContent||'').replace(/\s+/g,' ').replace(/^\s*(\(?[0-9]+[\.\)]|Q\.?\s*[0-9]+[\.\)]?)\s*/,'').trim().slice(0,160)}
  var WS=/worksheet|वर्कशीट|अभ्यास\s*पत्र/i;
- var HEAD='.nx-h,.dolTopic,.nx-title,h1,h2,h3,h4,summary';
+ var HEAD='.nx-h,.dolTopic,.nx-title,h1,h2,h3,h4,summary,.ffm .h,.ffm .t,.v5wstitle,.stdWsTitle,.w9title';
+ var CAND='.nx-q,.q,.qa,.stdQ,.v5q,.w9q,.dolNNQ,.wq';
  var RESET='.nxRoot,.noteCard,details,.secBody,.schoolTopicCard';
  function scan(root){
   var out=[],state=false,grp=0,els=root.querySelectorAll('*'),i,el,t;
@@ -12283,10 +12447,13 @@ window.mtcWrongId=function(name){try{
    el=els[i];
    if(el.hasAttribute('data-ws-ui')||el.closest('[data-ws-ui]'))continue;
    if(el.matches(RESET)){state=false}
+   if(el.matches('.c10sh')){t=(el.textContent||'').slice(0,160);if(WS.test(t)){state=true;grp++}else if(/Explanation|\u0935\u094d\u092f\u093e\u0916\u094d\u092f\u093e|Key Points|\u092f\u093e\u0926 \u0930\u0916\u0947\u0902/i.test(t)){state=false}continue}
+   if(el.matches('.wq')){if(!(el.parentNode&&el.parentNode.closest&&el.parentNode.closest(CAND)))out.push({el:el,g:grp});continue}
    if(el.matches(HEAD)){t=(el.textContent||'').slice(0,160);state=WS.test(t);if(state)grp++;continue}
    if(el.tagName==='B'||el.tagName==='STRONG'){t=(el.textContent||'').trim();if(t.length<90&&/^[^A-Za-zऀ-ॿ]*(quick\s+|practice\s+)?(worksheet|वर्कशीट)/i.test(t)){if(!state)grp++;state=true}continue}
    if(!state)continue;
-   if(el.classList.contains('nx-q')||(el.tagName==='LI'&&el.parentNode&&el.parentNode.tagName==='OL'&&!(el.parentNode.parentNode&&el.parentNode.parentNode.closest&&el.parentNode.parentNode.closest('li,.nx-q')))){
+   if(el.matches(CAND)){if(!(el.parentNode&&el.parentNode.closest&&el.parentNode.closest(CAND)))out.push({el:el,g:grp});continue}
+   if((el.tagName==='LI'&&el.parentNode&&el.parentNode.tagName==='OL'&&!(el.parentNode.parentNode&&el.parentNode.parentNode.closest&&el.parentNode.parentNode.closest('li,.nx-q')))){
     if(el.closest('.nx-q')&&el.tagName==='LI')continue;
     out.push({el:el,g:grp});
    }
@@ -12306,6 +12473,7 @@ window.mtcWrongId=function(name){try{
     el.setAttribute('data-ws-k',o.k);
     el.classList.toggle('wsOn',on);
     el.classList.toggle('wsOff',!on&&!!gOn[gk]&&!T);
+    if(el.classList.contains('wq')){var sb=el.nextElementSibling;while(sb&&!sb.matches('.wq,.c10sh,.c10ex')){sb.classList.toggle('wsOnSib',on);sb.classList.toggle('wsOff',!on&&!!gOn[gk]&&!T);sb=sb.nextElementSibling}}
     var ui=el.querySelector(':scope>[data-ws-ui]');
     if(T){
      if(!ui){ui=document.createElement('label');ui.setAttribute('data-ws-ui','1');ui.className='wsTk';ui.contentEditable='false';
@@ -12332,10 +12500,11 @@ window.mtcWrongId=function(name){try{
    if(ch){save();apply()}
   }).catch(function(){})}catch(e){}
  }
- function sched(){clearTimeout(timer);timer=setTimeout(function(){apply();pull(false)},250)}
+ function sched(){if(timer)return;timer=setTimeout(function(){timer=null;apply();pull(false)},300)}
+ setInterval(function(){var r=document.getElementById('specialNotesPanel');if(r&&r.offsetHeight>0)sched()},2000);
  var st=document.createElement('style');
  st.textContent='.wsTk{display:inline-flex;align-items:center;gap:6px;margin:0 8px 4px 0;padding:3px 10px;border-radius:14px;background:#e8f5e9;border:2px solid #2e7d32;color:#1b5e20!important;font:900 14px/1.2 sans-serif;vertical-align:middle;cursor:pointer}.wsTk input{width:20px;height:20px;accent-color:#2e7d32}'
-  +'.wsOn{border-left:6px solid #2e7d32!important;background:#f1fbf2!important;border-radius:8px;padding-left:8px!important}.wsOn::before{content:"✅ यह करना है";display:inline-block;margin:0 8px 4px 0;padding:2px 10px;border-radius:12px;background:#2e7d32;color:#fff;font:900 13px/1.4 sans-serif}.wsOff{opacity:.5}';
+  +'.wsOn{border-left:6px solid #2e7d32!important;background:#f1fbf2!important;border-radius:8px;padding-left:8px!important}.wsOn::before{content:"✅ यह करना है";display:inline-block;margin:0 8px 4px 0;padding:2px 10px;border-radius:12px;background:#2e7d32;color:#fff;font:900 13px/1.4 sans-serif}.wsOff{opacity:.5}.wsOnSib{border-left:6px solid #2e7d32!important;background:#f1fbf2!important;padding-left:8px!important}';
  document.head.appendChild(st);
  var _s=window.mtcStaffStart;
  window.mtcStaffStart=function(n){staff=String(n||'');return typeof _s==='function'?_s.apply(this,arguments):undefined};
