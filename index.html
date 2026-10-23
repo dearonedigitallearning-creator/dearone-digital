@@ -12188,7 +12188,7 @@ function card(k){var S=ST(),r=RL()[k];return '<div style="background:#f3e5f5;bor
 function build(){
  if($("mtcIR"))return;
  var o=document.createElement("div");o.id="mtcIR";
- o.style.cssText="display:none;position:fixed;inset:0;z-index:2147483600;background:#000a;overflow:auto;padding:14px;box-sizing:border-box";
+ o.style.cssText="position:fixed;inset:0;z-index:2147483600;background:#000a;overflow:auto;padding:14px;box-sizing:border-box";
  var inp="width:100%;box-sizing:border-box;padding:13px;font-size:20px;font-weight:900;border:3px solid #7b1fa2;border-radius:12px;margin:6px 0;text-align:center";
  o.innerHTML='<div style="max-width:460px;margin:0 auto;background:#fff;border-radius:18px;border:4px solid #7b1fa2;padding:14px;font-family:Arial,sans-serif">'
  +'<div style="text-align:center;font-size:22px;font-weight:900;color:#4a148c">🔎 ID ↔ Roll No. जाँच</div>'
@@ -12207,12 +12207,12 @@ function build(){
   var f=ids().filter(function(k){return ST()[k][1]===c&&parseInt(RL()[k],10)===n});
   $("mtcIRb").innerHTML=f.length?f.map(card).join(""):'<div style="color:#c62828;font-weight:900">❌ Class '+esc(c)+' में Roll No. '+esc(v)+' नहीं मिला।</div>'}
  $("mtcIRid").oninput=byId;$("mtcIRr").oninput=byRoll;$("mtcIRc").onchange=byRoll;
- $("mtcIRx").onclick=function(){o.style.display="none"};
+ $("mtcIRx").onclick=function(){o.removeAttribute("data-open")};
 }
-window.mtcIROpen=function(){build();var o=$("mtcIR");o.style.display="block";$("mtcIRid").value="";$("mtcIRr").value="";$("mtcIRa").innerHTML="";$("mtcIRb").innerHTML="";setTimeout(function(){try{$("mtcIRid").focus()}catch(e){}},80)};
+window.mtcIROpen=function(){build();var o=$("mtcIR");o.setAttribute("data-open","1");$("mtcIRid").value="";$("mtcIRr").value="";$("mtcIRa").innerHTML="";$("mtcIRb").innerHTML="";setTimeout(function(){try{$("mtcIRid").focus()}catch(e){}},80)};
 var st=document.createElement("style");
 st.textContent='html body #mtcCkBox #mtcCkIR{display:block;width:100%;margin:8px 0 2px!important;background:linear-gradient(135deg,#4a148c,#7b1fa2,#ab47bc)!important;color:#fff!important;font-size:21px!important;font-weight:1000!important;padding:17px 6px!important;border:3px solid #fff!important;border-radius:16px;box-shadow:0 5px 14px #4a148caa!important;-webkit-text-stroke:.5px #fff}';
-document.head.appendChild(st);
+st.textContent+='#mtcIR:not([data-open="1"]){display:none!important}html body #mtcIR[data-open="1"],html body.gateLocked #mtcIR[data-open="1"],html body.dolOpen #mtcIR[data-open="1"]{display:block!important;visibility:visible!important}';document.head.appendChild(st);
 function add(){var b=$("mtcCkBox");if(!b||!b.classList.contains("t")||b.querySelector("#mtcCkIR"))return;
  var t=document.createElement("button");t.type="button";t.id="mtcCkIR";t.textContent="\uD83D\uDD0E ID \u2194 ROLL NO. \u091C\u093E\u0901\u091A";
  t.onclick=function(e){e.stopPropagation();window.mtcIROpen()};
