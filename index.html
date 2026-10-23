@@ -2738,6 +2738,11 @@ window.openTestWindow=function(){
     }
     f.srcdoc=t5;
   }
+  if(window.__twClass==="8"&&!f.hasAttribute("srcdoc")){
+    if(!window.__mtcTW8Txt)window.__mtcTW8Txt=$("mtcTestWinSrc8").textContent.split("\uE000").join("<");
+    var m8={};try{for(var k8=18;k8<=20;k8++){var r8=STUDENTS[String(k8)];if(r8)m8[k8]=[r8[0],r8[1],(window.MTC_ROLL||{})[String(k8)]||""]}}catch(e){}
+    f.srcdoc=window.__mtcTW8Txt.replace("/*TW_PREVIEW*/false",window.__twPreview===true?"true":"false").replace('/*TW_LOGO*/""',function(){var l=$("logoImg");return JSON.stringify((l&&l.src&&l.src.indexOf("data:")===0)?l.src:"")}).replace("/*TW_NAMES*/{}",function(){return JSON.stringify(m8).replace(/</g,"\\u003c")});
+  }
   if(window.__twClass==="6"&&!f.hasAttribute("srcdoc")){
     if(!window.__mtcTW6Txt)window.__mtcTW6Txt=$("mtcTestWinSrc6").textContent.split("\uE000").join("<");
     var t6=window.__mtcTW6Txt;
@@ -3080,6 +3085,182 @@ function showFeedback(){let q=data[ci].questions[qi],a=answers[qi];$('feedback')
 $('prev').onclick=()=>{if(qi>0){qi--;render()}};$('next').onclick=()=>{if(qidata[ci].questions.length-1){qi++;render()}};$('submit').onclick=()=>{if(answers.every(x=>x!==null))finish();else alert('पहले सभी प्रश्नों के उत्तर दें।')};
 function finish(){if(finished)return;finished=true;clearInterval(clock);let qs=data[ci].questions,score=answers.reduce((s,a,i)=>s+(a===qs[i][2]?1:0),0);$('quiz').classList.add('hidden');$('result').classList.remove('hidden');$('rname').textContent=$('student').value.trim()+' • ID: '+$('sid').value.trim();$('rmeta').textContent='Class 10 • अध्याय '+(ci+1)+' — '+data[ci].title+' • '+new Date().toLocaleString('hi-IN');$('score').textContent=score+' / '+qs.length;$('percent').textContent='प्रतिशत: '+(score/qs.length*100).toFixed(1)+'%'}
 /script>/body>/html></script>
+<script type="text/plain" id="mtcTestWinSrc8">!doctype html>
+html lang="en">
+head>
+meta charset="utf-8">meta name="viewport" content="width=device-width,initial-scale=1">
+title>Test Window | Class 8 English Honeydew/title>
+style>
+:root{--navy:#17324d;--pink:#e83e8c;--gold:#ffcf4a;--green:#13834a;--red:#c62828}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef8ff,#fff0f7);font-family:Arial,Helvetica,sans-serif;color:#17212b}
+header{background:linear-gradient(120deg,#17324d,#315c83);color:#fff;text-align:center;padding:22px 12px}header h1{margin:0;font-size:clamp(21px,4vw,31px);font-weight:900}header p{margin:6px 0;font-weight:bold}
+.wrap{max-width:850px;margin:18px auto;padding:0 12px}.card{background:#fff;border-radius:17px;padding:18px;margin:14px 0;box-shadow:0 6px 20px #17324d18;border:1px solid #dbe7f2}
+h2{color:var(--navy);margin-top:0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.lesson{padding:17px;border:2px solid #d7e5f0;border-radius:14px;background:#fff;cursor:pointer;text-align:left;font-size:16px}.lesson:hover{border-color:var(--pink)}
+.lesson strong{display:block;color:var(--pink);font-size:18px;margin-bottom:7px}
+input[type=text]{width:100%;padding:13px;border:2px solid #b9cad9;border-radius:10px;font-size:17px;margin:8px 0 12px}
+button{border:0;border-radius:10px;padding:12px 17px;font-size:16px;font-weight:800;cursor:pointer}.primary{background:var(--gold);color:var(--navy)}.dark{background:var(--navy);color:white}.hidden{display:none!important}.muted{color:#5b6874;font-size:13px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.timer{background:#fff0f0;color:#b71c1c;border-radius:10px;padding:9px 12px;font-weight:900;font-size:18px}
+.bar{height:9px;background:#e5ebf1;border-radius:99px;overflow:hidden;margin:12px 0 18px}.bar div{height:100%;background:var(--gold);width:0}
+.qtitle{color:var(--pink);font-size:20px;font-weight:900;line-height:1.45;margin-bottom:14px}
+.option{display:flex;align-items:flex-start;gap:11px;padding:13px;margin:9px 0;border:2px solid #e0e7ed;border-radius:12px;cursor:pointer;color:#111;font-weight:600;line-height:1.35}
+.option input{width:auto;margin:2px 0 0;accent-color:var(--navy)}.option.correct{border-color:var(--green);background:#e9f8ef}.option.wrong{border-color:var(--red);background:#fff0f0}.option.locked{cursor:not-allowed}
+.feedback{font-weight:900;font-size:17px;margin:14px 0}.good{color:var(--green)}.bad{color:var(--red)}
+.warning{padding:12px;border-radius:10px;background:#fff6d9;color:#604b00;font-size:14px}.autoNote{font-weight:bold;color:#37536e;margin:10px 0}
+#resultScore{font-size:30px;color:var(--green);font-weight:900}footer{text-align:center;padding:20px;color:#697581;font-size:12px}
+.rc{border:5px solid #e91e63;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#fff8e1,#fce4ec 45%,#e3f2fd);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rcHead{background:linear-gradient(120deg,#17324d,#6a1b9a 55%,#e91e63);color:#fff;text-align:center;padding:16px 10px 12px}
+.rcLogo{width:112px;height:112px;border-radius:50%;object-fit:cover;border:5px solid #ffcf4a;box-shadow:0 4px 14px #0006;background:#fff}
+.rcSch{font-size:clamp(17px,4.4vw,25px);font-weight:900;margin-top:8px;line-height:1.25;color:#fff}.rcAddr{font-size:14px;font-weight:800;color:#ffe082}
+.rcTitle{display:inline-block;margin-top:9px;background:#ffcf4a;color:#17324d;font-weight:900;font-size:17px;padding:6px 16px;border-radius:20px}
+.rcBody{padding:14px 14px 10px;text-align:center}
+.rcLab{font-size:13px;font-weight:900;color:#6a1b9a;letter-spacing:.5px}
+.rcName{font-size:clamp(26px,7vw,38px);font-weight:900;color:#e91e63;-webkit-text-stroke:1.2px #e91e63;text-shadow:1px 2px 0 #ad1457;line-height:1.2;margin:2px 0 10px;word-break:break-word}
+.rcGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+.rcGrid div{border-radius:12px;padding:8px 10px;font-weight:800;color:#17212b;font-size:15px;line-height:1.35}
+.rcGrid div b{display:block;font-size:12px;color:#fff;border-radius:6px;padding:0 7px;margin-bottom:3px;width:max-content}
+.rcG1{background:#e3f2fd}.rcG1 b{background:#1565c0}.rcG2{background:#e8f5e9}.rcG2 b{background:#2e7d32}.rcG3{background:#fff3e0}.rcG3 b{background:#ef6c00}.rcG4{background:#f3e5f5}.rcG4 b{background:#7b1fa2}.rcG5{background:#e0f7fa}.rcG5 b{background:#00838f}
+.rcWide{grid-column:1/-1}
+.rcScore{margin:12px 0 6px;background:linear-gradient(90deg,#43a047,#00838f,#1565c0);color:#fff;border-radius:16px;padding:10px}
+.rcScore #resultScore{color:#fff;font-size:32px}.rcScore #percent{margin:2px 0;font-weight:900;font-size:19px;color:#fff}.rcScore #rcGrade{font-weight:900;color:#ffe082;font-size:17px}
+#remark{font-weight:900;color:#4a148c;margin:8px 0 6px}
+@media print{body{background:#fff}header,footer,.noprint,#choose,#login,#test{display:none!important}.card{box-shadow:none;border:0}}
+/style>/head>
+body>
+header>h1>MOTHER TERESA CHILDREN SECONDARY SCHOOL/h1>p>VIGYAN NAGAR, KOTA (RAJ.)/p>p style="color:#ffcf4a;font-size:22px">TEST WINDOW/p>p>Class 8 English • Honeydew • Online Tests/p>div id="pvBar" class="hidden" style="background:#ffcf4a;color:#17324d;font-weight:900;padding:8px 10px;border-radius:10px;margin:8px auto 0;max-width:640px">🛡️ ADMIN PREVIEW — यह Test Students के लिए बंद है। यहाँ दिया गया Test कहीं Save नहीं होगा।/div>/header>
+main class="wrap">
+section class="card" id="choose">h2>Choose Your Test/h2>div class="grid">
+div style="grid-column:1/-1;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(90deg,#f57c00,#e91e63);padding:9px 14px;border-radius:12px;margin:4px 0 0">📘 HONEYDEW (Main Course Book)/div>
+button class="lesson" onclick="chooseLesson('c1')">strong>LESSON 1/strong>The Best Christmas Present in the Worldsmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>20 Chapter + 10 Poem: The Ant and the Cricket/small>/button>
+button class="lesson" onclick="chooseLesson('c2')">strong>LESSON 2/strong>The Tsunamismall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>20 Chapter + 10 Poem: Geography Lesson/small>/button>
+button class="lesson" onclick="chooseLesson('c3')">strong>LESSON 3/strong>Glimpses of the Pastsmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>20 Chapter + 10 Poem: Macavity: The Mystery Cat/small>/button>
+button class="lesson" onclick="chooseLesson('c4')">strong>LESSON 4/strong>Bepin Choudhury&#39;s Lapse of Memorysmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>20 Chapter + 10 Poem: The Last Bargain/small>/button>
+button class="lesson" onclick="chooseLesson('c5')">strong>LESSON 5/strong>The Summit Withinsmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>20 Chapter + 10 Poem: The School Boy/small>/button>
+button class="lesson" onclick="chooseLesson('c6')">strong>LESSON 6/strong>This is Jody&#39;s Fawnsmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>20 Chapter + 10 Poem: On the Grasshopper and Cricket/small>/button>
+button class="lesson" onclick="chooseLesson('c7')">strong>LESSON 7/strong>A Visit to Cambridgesmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>All 30 questions from the chapter/small>/button>
+button class="lesson" onclick="chooseLesson('c8')">strong>LESSON 8/strong>A Short Monsoon Diarysmall style="display:block;margin-top:8px;color:#526273">30 Questions • 30 Marksbr>All 30 questions from the chapter/small>/button>
+/div>/section>
+section class="card hidden" id="login">h2 id="loginTitle">Student Login/h2>label for="studentId">b>Enter Student ID (18–20)/b>/label>input id="studentId" type="text" inputmode="numeric" maxlength="4" placeholder="Enter ID 18 to 20">
+button class="primary" onclick="startTest()">START TEST/button> button class="dark" onclick="backToLessons()">Back to Test Window/button>p id="loginMsg" class="feedback" role="status">/p>
+div class="warning">One-time rule is saved in this browser for each ID and lesson. To enforce it across different phones or browsers and securely store results, connect a shared database with server-side validation./div>/section>
+section class="card hidden" id="test">div class="row">b id="who">/b>span class="timer">⏱ span id="timer">15:00/span>/span>b>Question span id="qnum">1/span> / 30/b>button id="audioBtn" type="button" class="dark" style="padding:6px 10px;font-size:13px" onclick="toggleAudio()">🔊 Audio ON/button>/div>
+div class="bar">div id="barFill">/div>/div>div id="questionArea">/div>
+div class="row" style="margin-top:18px">
+button class="dark" id="prev" onclick="step(-1)">← Previous/button>
+span id="answeredCount" class="muted">Answered: 0 / 30/span>
+button class="primary" id="next" onclick="step(1)">Next →/button>
+/div>
+div class="row" style="margin-top:14px">
+span id="submitHint" class="muted">Submit will appear after all 30 questions are answered./span>
+button id="submitTest" class="hidden" style="background:#13834a;color:#fff;font-weight:900" onclick="finishTest(false)">✓ SUBMIT TEST/button>
+/div>
+p class="autoNote" id="autoNote">Choose an answer: checking is instant; the next question appears automatically after 8 seconds./p>
+p class="muted">उत्तर चुनने के बाद उत्तर लॉक रहेगा। अगला प्रश्न 8 सेकंड बाद अपने-आप खुलेगा या Next बटन से तुरंत जा सकते हैं। सभी 30 प्रश्नों के उत्तर देने पर आखिरी प्रश्न पर हरे रंग का Submit बटन दिखाई देगा।/p>/section>
+section class="card hidden" id="result" style="padding:10px">div class="rc" id="rcCard">
+div class="rcHead">img id="rcLogo" class="rcLogo" alt="Mother Teresa" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">div class="rcSch">MOTHER TERESA CHILDREN SECONDARY SCHOOL/div>div class="rcAddr">VIGYAN NAGAR, KOTA (RAJ.)/div>div class="rcTitle">🏆 ONLINE TEST RESULT CARD/div>/div>
+div class="rcBody">div class="rcLab">STUDENT NAME/div>div class="rcName" id="rcName">/div>
+div class="rcGrid">div class="rcG1">b>🆔 STUDENT ID/b>span id="rcId">/span>/div>div class="rcG2">b>🏫 CLASS/b>span id="rcClass">/span>/div>div class="rcG3 rcWide">b>📚 TEST/b>span id="rcTest">/span>/div>div class="rcG4">b>📅 DATE/b>span id="rcDate">/span>/div>div class="rcG5">b>🕒 TIME/b>span id="rcTime">/span>/div>/div>
+div class="rcScore">div id="resultScore">/div>p id="percent">/p>div id="rcGrade">/div>/div>
+p id="remark">/p>/div>/div>
+div class="noprint">div id="review">/div>button class="primary" onclick="window.print()">🖨️ Print Result Card/button> button class="dark" onclick="location.reload()">Back to Test Window/button>/div>/section>
+/main>footer>Class 9 English • Beehive • Test Window/footer>
+script>
+const BANK={c1:[],c2:[],c3:[],c4:[],c5:[],c6:[],c7:[],c8:[]};
+const NAMES={c1:"Lesson 1: The Best Christmas Present in the World + The Ant and the Cricket",c2:"Lesson 2: The Tsunami + Geography Lesson",c3:"Lesson 3: Glimpses of the Past + Macavity: The Mystery Cat",c4:"Lesson 4: Bepin Choudhury's Lapse of Memory + The Last Bargain",c5:"Lesson 5: The Summit Within + The School Boy",c6:"Lesson 6: This is Jody's Fawn + On the Grasshopper and Cricket",c7:"Lesson 7: A Visit to Cambridge",c8:"Lesson 8: A Short Monsoon Diary"};
+let lesson=null,student="",pos=0,answers=[],locked=[],finished=false,timeLeft=900,timerHandle=null,autoHandle=null;
+function hide(id){document.getElementById(id).classList.add('hidden')}function show(id){document.getElementById(id).classList.remove('hidden')}
+function storageKey(){return 'mtc_test_submitted_'+student+'_'+lesson}
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+var audioOn=true;
+function sayTW(parts){try{if(!audioOn)return;var ss=window.speechSynthesis;if(!ss)return;ss.cancel();var vs=ss.getVoices?ss.getVoices():[];
+ parts.forEach(function(p){var u=new SpeechSynthesisUtterance(p[0]);u.lang=p[1];u.rate=.9;u.volume=1;
+  var v=vs.find(function(x){return String(x.lang).replace('_','-')===p[1]})||vs.find(function(x){return String(x.lang).slice(0,2)===p[1].slice(0,2)});if(v)u.voice=v;ss.speak(u)})}catch(e){}}
+function stopTW(){try{window.speechSynthesis.cancel()}catch(e){}}
+function toggleAudio(){audioOn=!audioOn;var b=document.getElementById('audioBtn');if(b)b.textContent=audioOn?'🔊 Audio ON':'🔇 Audio OFF';if(!audioOn)stopTW()}
+function speakFeedback(ok,q){
+ if(ok)sayTW([['सही जवाब! शाबाश।','hi-IN']]);
+ else sayTW([['गलत जवाब। सही उत्तर है','hi-IN'],[String.fromCharCode(65+q[2])+'. '+q[1][q[2]],'en-IN']])}
+var TW_PREVIEW=/*TW_PREVIEW*/false;
+var TW_LOGO=/*TW_LOGO*/"";
+window.__TW_NAMES=/*TW_NAMES*/{};
+function nm(id){var o=(window.__TW_NAMES||{})[id];return o?o[0]:''}
+function info(id){var o=(window.__TW_NAMES||{})[id];if(!o)return '';return 'Class '+(o[1]||'8')+(o[2]?' • Roll No. '+o[2]:'')}
+function chooseLesson(id){if(!BANK[id]||BANK[id].length30){alert('इस Lesson के 30 Questions अभी जोड़े जा रहे हैं।');return}lesson=id;hide('choose');show('login');document.getElementById('loginTitle').textContent=NAMES[id]+' — Student Login';document.getElementById('loginMsg').textContent='';document.getElementById('studentId').value=''}
+function backToLessons(){hide('login');show('choose')}
+function startTest(){
+ const id=document.getElementById('studentId').value.trim(),msg=document.getElementById('loginMsg');
+ if(!/^(18|19|20)$/.test(id)){msg.className='feedback bad';msg.textContent='Invalid ID. Enter ID 18, 19 or 20.';return}
+ student=id;
+ if(!TW_PREVIEW&&lsGet(storageKey())){msg.className='feedback bad';msg.textContent='This ID has already submitted this lesson in this browser. Retake is locked.';return}
+ pos=0;answers=Array(30).fill(null);locked=Array(30).fill(false);finished=false;timeLeft=900;
+ document.getElementById('who').textContent=(nm(student)?nm(student)+' — ':'')+'ID '+student+' • '+NAMES[lesson];
+ hide('login');show('test');render();updateTimer();clearInterval(timerHandle);timerHandle=setInterval(tick,1000)
+}
+function updateTimer(){let m=Math.floor(timeLeft/60),s=timeLeft%60;document.getElementById('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function tick(){if(finished)return;timeLeft--;updateTimer();if(timeLeft=0){clearInterval(timerHandle);finishTest(true)}}
+function render(){
+ clearTimeout(autoHandle);
+ const q=BANK[lesson][pos],area=document.getElementById('questionArea');
+ document.getElementById('qnum').textContent=pos+1;document.getElementById('barFill').style.width=((pos+1)/30*100)+'%';
+ document.getElementById('answeredCount').textContent='Answered: '+answers.filter(v=>v!==null).length+' / 30';area.innerHTML='';
+ const title=document.createElement('div');title.className='qtitle';title.textContent='Q'+(pos+1)+'. '+q[0];area.appendChild(title);
+ q[1].forEach((option,i)=>{
+  const label=document.createElement('label');label.className='option'+(locked[pos]?' locked':'');
+  const radio=document.createElement('input');radio.type='radio';radio.name='answer';radio.checked=answers[pos]===i;radio.disabled=locked[pos];
+  const span=document.createElement('span');span.textContent=String.fromCharCode(65+i)+'. '+option;label.appendChild(radio);label.appendChild(span);
+  if(locked[pos]&&i===q[2])label.classList.add('correct');if(locked[pos]&&answers[pos]===i&&i!==q[2])label.classList.add('wrong');
+  label.addEventListener('click',e=>{if(locked[pos]){e.preventDefault();return}chooseAnswer(i)});area.appendChild(label)
+ });
+ const note=document.getElementById('autoNote');
+ if(locked[pos]){
+  const fb=document.createElement('div');fb.className='feedback '+(answers[pos]===q[2]?'good':'bad');
+  fb.textContent=answers[pos]===q[2]?'✅ Correct Answer!':'❌ Incorrect. Correct answer: '+String.fromCharCode(65+q[2])+'. '+q[1][q[2]];area.appendChild(fb);
+  note.textContent=pos===29?'Last question reached. Submit when all 30 questions have been answered.':'Next question will open automatically in 8 seconds, or use Next.';
+  autoHandle=setTimeout(()=>{if(finished)return;if(pos29){stopTW();pos++;render()}},8000)
+ }else{note.textContent='Choose an answer: instant checking begins immediately; after selecting, the next question opens in 8 seconds.'}
+ document.getElementById('prev').disabled=pos===0;
+ document.getElementById('next').disabled=pos===29;
+ const allAnswered=answers.every(v=>v!==null);
+ const submit=document.getElementById('submitTest');
+ submit.classList.toggle('hidden',!(pos===29 && allAnswered));
+ document.getElementById('submitHint').textContent=allAnswered
+   ? (pos===29?'All 30 questions answered. You can submit your test now.':'All 30 answered — go to Question 30 to submit.')
+   : 'Submit will appear on Question 30 after all 30 questions are answered.';
+}
+function chooseAnswer(i){if(locked[pos]||finished)return;answers[pos]=i;locked[pos]=true;render();var q=BANK[lesson][pos];speakFeedback(i===q[2],q)}
+function step(n){if(finished)return;stopTW();clearTimeout(autoHandle);pos=Math.max(0,Math.min(29,pos+n));render()}
+function finishTest(timeExpired){
+ if(finished)return;finished=true;clearInterval(timerHandle);clearTimeout(autoHandle);
+ let score=0;BANK[lesson].forEach((q,i)=>{if(answers[i]===q[2])score++});
+ if(!TW_PREVIEW)try{localStorage.setItem(storageKey(),JSON.stringify({score,answers,submittedAt:new Date().toISOString(),lesson}))}catch(e){}
+ hide('test');show('result');fillCard(timeExpired);
+ document.getElementById('resultScore').textContent='Score: '+score+' / 30';
+ sayTW([['टेस्ट पूरा हुआ। आपने तीस में से '+score+' अंक प्राप्त किए।','hi-IN']]);
+ const pct=Math.round(score/30*100);document.getElementById('percent').textContent='Percentage: '+pct+'%';document.getElementById('rcGrade').textContent=(pct>=90?'Grade: A+ 🌟':pct>=80?'Grade: A':pct>=70?'Grade: B+':pct>=60?'Grade: B':pct>=50?'Grade: C':'Grade: Keep Practising');
+ document.getElementById('remark').textContent=timeExpired?'Time is over. Your test has been submitted automatically.':pct>=80?'Excellent work! Keep it up.':pct>=60?'Good effort! Revise the lesson again.':'Keep practising and revise the lesson carefully.';
+ const review=document.getElementById('review');review.innerHTML='h3 style="color:#17324d">Answer Review/h3>';
+ BANK[lesson].forEach((q,i)=>{const p=document.createElement('p');const your=answers[i]===null?'Not answered':String.fromCharCode(65+answers[i])+'. '+q[1][answers[i]];
+ p.innerHTML='b style="color:#e83e8c">Q'+(i+1)+'. '+esc(q[0])+'/b>br>span style="color:#111">Your answer: '+esc(your)+'/span>br>span style="color:#13834a;font-weight:bold">Correct: '+String.fromCharCode(65+q[2])+'. '+esc(q[1][q[2]])+'/span>';review.appendChild(p)})
+}
+function fillCard(expired){
+ var o=(window.__TW_NAMES||{})[student]||[],d=new Date(),z=function(n){return ('0'+n).slice(-2)},h=d.getHours(),ap=h>=12?'PM':'AM';h=h%12||12;
+ function set(i,t){var e=document.getElementById(i);if(e)e.textContent=t}
+ set('rcName',o[0]||('ID '+student));set('rcId',student);set('rcClass','Class '+(o[1]||'9th')+(o[2]?' • Roll No. '+o[2]:''));
+ set('rcTest','Class 9 English • '+(String(lesson).charAt(0)==='m'?'Moments':'Beehive')+' • '+NAMES[lesson]+(expired?' (Time expired)':'')+(TW_PREVIEW?' • ADMIN PREVIEW':''));
+ set('rcDate',z(d.getDate())+'-'+z(d.getMonth()+1)+'-'+d.getFullYear());set('rcTime',z(h)+':'+z(d.getMinutes())+' '+ap);
+ var im=document.getElementById('rcLogo');if(im&&TW_LOGO)im.src=TW_LOGO;
+}
+if(TW_PREVIEW){var pb=document.getElementById('pvBar');if(pb)pb.classList.remove('hidden')}
+function esc(s){return String(s).replace(/[&>"']/g,c=>({'&':'&amp;','':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+(function(){var inp=document.getElementById('studentId');if(!inp)return;
+ function upd(){var v=inp.value.trim().replace(/\D/g,'');if(inp.value!==v)inp.value=v;var m=document.getElementById('loginMsg');
+  if(!v){m.textContent='';return}
+  if(/^(18|19|20)$/.test(v)){var n=nm(v);m.className='feedback good';m.textContent=n?('✅ '+n+(info(v)?' — '+info(v):'')):('✅ ID '+v)}
+  else if(v.length>=2){m.className='feedback bad';m.textContent='Invalid ID. Enter ID 18, 19 or 20.'}
+  else{m.textContent=''}}
+ inp.addEventListener('input',upd);
+ inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();startTest()}})})();
+/script>/body>/html></script>
 <script id="mtc-testwindow-hub">
 /* ============================================================================
    TEST WINDOW HUB — सभी Classes के Tests एक ही Test Window में, Class-wise सेक्शन।
@@ -3121,6 +3302,8 @@ function collect(){
   /* Class 9 English (Test Window) */
   BEE.forEach(function(t,i){add("9","Beehive • Lesson "+(i+1)+" — "+t,"win9","English","l"+(i+1))});
   MOM.forEach(function(t,i){add("9","Moments • Chapter "+(i+1)+" — "+t,"win9","English","m"+(i+1))});
+  var HW8=['Ch-1 The Best Christmas Present in the World + Poem 1 The Ant and the Cricket', 'Ch-2 The Tsunami + Poem 2 Geography Lesson', 'Ch-3 Glimpses of the Past + Poem 3 Macavity: The Mystery Cat', "Ch-4 Bepin Choudhury's Lapse of Memory + Poem 4 The Last Bargain", 'Ch-5 The Summit Within + Poem 5 The School Boy', "Ch-6 This is Jody's Fawn + Poem 6 On the Grasshopper and Cricket", 'Ch-7 A Visit to Cambridge', 'Ch-8 A Short Monsoon Diary'];
+  HW8.forEach(function(t,i){add("8","Honeydew • "+t,"win8","English","c"+(i+1))});
   /* Class 5 हिन्दी (Test Window) */
   add("5","Class 5 हिन्दी — पाठ 1 से 15 के Tests","win5","हिन्दी");
   /* स्कूल / Dear One के बाकी सभी Tests — वही list जो पुराने Test section में बनती है */
@@ -3196,7 +3379,7 @@ function subject(name){curSub=name;cur="";var sj=SUBJ.filter(function(q){return 
   HUB.innerHTML='<div class="hh"><b>MOTHER TERESA CHILDREN SECONDARY SCHOOL</b><i>🪟 TEST WINDOW</i><span>'+esc(name)+' — Class 6–10 — '+tot+' Tests</span></div><div class="hw"><button type="button" class="bk" data-act="home">⬅️ सभी Sections</button><h2 style="color:'+gc[0]+'">'+esc(name)+'</h2>'+body+'</div>';HUB.scrollTop=0}
 
 function login(i){var x=(LIST[cur]||[])[i];if(!x)return;
-  if(x.kind==="win9"||x.kind==="win5"||x.kind==="win6"||/^ss\d+$/.test(x.kind)){openFrame(x);return}
+  if(x.kind==="win9"||x.kind==="win8"||x.kind==="win5"||x.kind==="win6"||/^ss\d+$/.test(x.kind)){openFrame(x);return}
   it0=x;var tch="";
   if(x.kind==="school"){var t=$("teacher");if(t){tch='<div class="or">— या —</div><select id="twhTch"><option value="">👩‍🏫 Teacher हैं? नाम चुनें</option>';[].forEach.call(t.options,function(o){if(o.value&&o.value!=="Teacher Name चुनें")tch+='<option>'+esc(o.value)+'</option>'});tch+='</select>'}}
   var isD=x.kind==="dol";
@@ -3245,7 +3428,7 @@ function openFrame(x){
   var f=$("mtcTWFrame");try{window.speechSynthesis.cancel()}catch(e){}
   HUB.style.display="none";f.style.display="block";var lb=$("mtcTWListBtn");if(lb)lb.style.display="inline-block";
   f.onload=null;try{f.removeAttribute("srcdoc")}catch(e){}
-  window.__twClass=(x.kind==="win5")?"5":(x.kind==="win6")?"6":"9";
+  window.__twClass=(x.kind==="win5")?"5":(x.kind==="win6")?"6":(x.kind==="win8")?"8":"9";
   if(/^ss\d+$/.test(x.kind)){var se=$("mtcTestWinSrcSS"+x.kind.slice(2));
     if(se){var ts=se.textContent.split("\uE000").join("<");
       if(window.__twPreview===true)ts=ts.replace("<head>","<head><script>(function(){window.__twPreview=true;var m={getItem:function(){return null},setItem:function(){},removeItem:function(){},clear:function(){}};try{Object.defineProperty(window,'localStorage',{value:m,configurable:true})}catch(e){}})();<\/script>");
@@ -4191,30 +4374,20 @@ var MTC_RBSE={
 ["Rani Abbakka","Biography",null,"रानी अब्बक्का ने पुर्तगालियों का डटकर सामना किया और अपनी भूमि की रक्षा की।",["She was the queen of Ullal.","She resisted the Portuguese.","Courage and leadership."],[["Who resisted the Portuguese?","Rani Abbakka","Rani Laxmibai","___ resisted the Portuguese."],["Of which place was she queen?","Ullal","Jaipur","She was the queen of ___."],["Which qualities does she show?","Courage and leadership","Fear","She shows courage and ___."],["What did she protect?","Her land and people","A palace only","She protected her land and ___."]]]
 ],
 "8":[
-["Honeydew • Prose • Chapter 1 — The Best Christmas Present in the World", "Prose", null, "", [], []],
-["Honeydew • Prose • Chapter 2 — The Tsunami", "Prose", null, "", [], []],
-["Honeydew • Prose • Chapter 3 — Glimpses of the Past", "Prose", null, "", [], []],
-["Honeydew • Prose • Chapter 4 — Bepin Choudhury's Lapse of Memory", "Prose", null, "", [], []],
-["Honeydew • Prose • Chapter 5 — The Summit Within", "Prose", null, "", [], []],
-["Honeydew • Prose • Chapter 6 — This is Jody's Fawn", "Prose", null, "", [], []],
-["Honeydew • Prose • Chapter 7 — A Visit to Cambridge", "Prose", null, "", [], []],
-["Honeydew • Prose • Chapter 8 — A Short Monsoon Diary", "Prose", null, "", [], []],
-["Honeydew • Poetry • Poem 1 — The Ant and the Cricket", "Poem", null, "", [], []],
-["Honeydew • Poetry • Poem 2 — Geography Lesson", "Poem", null, "", [], []],
-["Honeydew • Poetry • Poem 3 — Macavity: The Mystery Cat", "Poem", null, "", [], []],
-["Honeydew • Poetry • Poem 4 — The Last Bargain", "Poem", null, "", [], []],
-["Honeydew • Poetry • Poem 5 — The School Boy", "Poem", null, "", [], []],
-["Honeydew • Poetry • Poem 6 — On the Grasshopper and Cricket", "Poem", null, "", [], []],
-["It So Happened • Chapter 1 — How the Camel Got His Hump", "Story", null, "", [], []],
-["It So Happened • Chapter 2 — Children at Work", "Story", null, "", [], []],
-["It So Happened • Chapter 3 — The Selfish Giant", "Story", null, "", [], []],
-["It So Happened • Chapter 4 — The Treasure Within", "Story", null, "", [], []],
-["It So Happened • Chapter 5 — Princess September", "Story", null, "", [], []],
-["It So Happened • Chapter 6 — The Fight", "Story", null, "", [], []],
-["It So Happened • Chapter 7 — The Open Window", "Story", null, "", [], []],
-["It So Happened • Chapter 8 — Jalebis", "Story", null, "", [], []],
-["It So Happened • Chapter 9 — The Comet – I", "Story", null, "", [], []],
-["It So Happened • Chapter 10 — The Comet – II", "Story", null, "", [], []]
+["Chapter 1: The Best Christmas Present in the World", "Prose", null, "", [], []],
+["Chapter 2: The Tsunami", "Prose", null, "", [], []],
+["Chapter 3: Glimpses of the Past", "Prose", null, "", [], []],
+["Chapter 4: Bepin Choudhury's Lapse of Memory", "Prose", null, "", [], []],
+["Chapter 5: The Summit Within", "Prose", null, "", [], []],
+["Chapter 6: This is Jody's Fawn", "Prose", null, "", [], []],
+["Chapter 7: A Visit to Cambridge", "Prose", null, "", [], []],
+["Chapter 8: A Short Monsoon Diary", "Prose", null, "", [], []],
+["Poem 1: The Ant and the Cricket", "Poem", null, "", [], []],
+["Poem 2: Geography Lesson", "Poem", null, "", [], []],
+["Poem 3: Macavity: The Mystery Cat", "Poem", null, "", [], []],
+["Poem 4: The Last Bargain", "Poem", null, "", [], []],
+["Poem 5: The School Boy", "Poem", null, "", [], []],
+["Poem 6: On the Grasshopper and Cricket", "Poem", null, "", [], []]
 ]};
 
 /* ===== MTC: RBSE Class 5/7/8 English Textbook + Admin-only time lock ===== */
@@ -4681,7 +4854,7 @@ window.mtcGreet=function(v){var N={'601':'मयंक मालव','1101':'ज
  const official='https://rajeduboard.rajasthan.gov.in/books/home.htm';
  const english={
  '5th':['We Shall Overcome','Let’s Learn Pranayam','The Rats and the Elephants','School is a Temple','Adding Colours','The Dussehra Festival','Who Will Play with Me?','A Genie Whom No One Liked','The Star','Say No to Tobacco','A Talkative Tortoise','Chittorgarh: A Glimpse of Glory','Firefly in My Room','A Gurubhakt Girl: Kalibai','The Choice is Yours'],
- '8th':[{"h": "📘 1. मुख्य पाठ्यपुस्तक: Honeydew — Prose (गद्यांश)"}, "Chapter 1: The Best Christmas Present in the World", "Chapter 2: The Tsunami", "Chapter 3: Glimpses of the Past", "Chapter 4: Bepin Choudhury's Lapse of Memory", "Chapter 5: The Summit Within", "Chapter 6: This is Jody's Fawn", "Chapter 7: A Visit to Cambridge", "Chapter 8: A Short Monsoon Diary", {"h": "(नोट: The Great Stone Face I & II को NCERT द्वारा सिलेबस से हटा दिया गया है।)", "note": 1}, {"h": "Poetry (कविताएं)"}, "Poem 1: The Ant and the Cricket", "Poem 2: Geography Lesson", "Poem 3: Macavity: The Mystery Cat", "Poem 4: The Last Bargain", "Poem 5: The School Boy", "Poem 6: On the Grasshopper and Cricket", {"h": "(नोट: The Duck and the Kangaroo और When I Set Out for Lyonnesse को हटा दिया गया है।)", "note": 1}, {"h": "📗 2. पूरक पुस्तक: It So Happened"}, "Chapter 1: How the Camel Got His Hump", "Chapter 2: Children at Work", "Chapter 3: The Selfish Giant", "Chapter 4: The Treasure Within", "Chapter 5: Princess September", "Chapter 6: The Fight", "Chapter 7: The Open Window", "Chapter 8: Jalebis", "Chapter 9: The Comet – I", "Chapter 10: The Comet – II"],
+ '8th':[{"h": "📘 Prose (गद्यांश)"}, "Chapter 1: The Best Christmas Present in the World", "Chapter 2: The Tsunami", "Chapter 3: Glimpses of the Past", "Chapter 4: Bepin Choudhury's Lapse of Memory", "Chapter 5: The Summit Within", "Chapter 6: This is Jody's Fawn", "Chapter 7: A Visit to Cambridge", "Chapter 8: A Short Monsoon Diary", {"h": "Poetry (कविताएं)"}, "Poem 1: The Ant and the Cricket", "Poem 2: Geography Lesson", "Poem 3: Macavity: The Mystery Cat", "Poem 4: The Last Bargain", "Poem 5: The School Boy", "Poem 6: On the Grasshopper and Cricket"],
  '9th':['The Fun They Had','The Road Not Taken','The Lost Child','The Sound of Music','Wind','The Adventures of Toto','The Little Girl','Rain on the Roof','Iswaran the Storyteller','A Truly Beautiful Mind','The Lake Isle of Innisfree','In the Kingdom of Fools','The Snake and the Mirror','A Legend of the Northland','The Happy Prince','My Childhood','No Men Are Foreign','Reach for the Top','On Killing a Tree','The Last Leaf','Kathmandu','A Slumber Did My Spirit Seal','A House Is Not a Home','If I Were You','The Beggar'],
  '10th':['A Letter to God','Nelson Mandela: Long Walk to Freedom','Two Stories about Flying','From the Diary of Anne Frank','The Hundred Dresses','Glimpses of India','Mijbil the Otter','Madam Rides the Bus','The Sermon at Benares','The Proposal','Dust of Snow','Fire and Ice','A Tiger in the Zoo','How to Tell Wild Animals','The Ball Poem','Amanda!','The Trees','Fog','The Tale of Custard the Dragon','For Anne Gregory']};
  const hindi={
@@ -11971,4 +12144,13 @@ function addBtn(){
 (function(){if($("mtcPhFab"))return;var f=document.createElement("button");f.type="button";f.id="mtcPhFab";f.textContent="📷 Student Photo";f.onclick=function(){mtcPhotoOpen()};document.body.appendChild(f)})();
 if(!addBtn()){var n=0,iv=setInterval(function(){if(addBtn()||++n>20)clearInterval(iv)},500)}
 })();
+</script>
+
+<style id="mtc-c8-purple">
+#mtcListFab,#mtcCkListBtn{background:linear-gradient(135deg,#4a148c,#7b1fa2,#ab47bc)!important;color:#fff!important;border:3px solid #fff!important;box-shadow:0 6px 18px #4a148caa!important}
+html body #mtcCkBox #mtcCkGo,html body #mtcCkBox #mtcCkTW{background:linear-gradient(135deg,#4a148c,#7b1fa2,#ab47bc)!important;color:#fff!important;font-size:21px!important;font-weight:1000!important;padding:17px 6px!important;border:3px solid #fff!important;box-shadow:0 5px 14px #4a148caa!important;-webkit-text-stroke:.5px #fff}
+html body #mtcCkBox #mtcCkTW{display:block;width:100%;margin:8px 0 2px!important}
+</style>
+<script id="mtc-c8-staffbtn">
+(function(){function add(){var b=document.getElementById("mtcCkBox");if(!b||!b.classList.contains("t")||b.querySelector("#mtcCkTW"))return;var t=document.createElement("button");t.type="button";t.id="mtcCkTW";t.textContent="\uD83E\uDE9F TEST WINDOW";t.onclick=function(e){e.stopPropagation();if(typeof window.openTestWindowGuarded==="function")window.openTestWindowGuarded("hub")};var act=b.querySelector(".ckAct");if(act&&act.parentNode)act.parentNode.insertBefore(t,act.nextSibling);else b.appendChild(t)}setInterval(add,400)})();
 </script>
