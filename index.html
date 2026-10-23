@@ -1412,6 +1412,7 @@ function showMyResult(){
     if(typeof STUDENTS!=="undefined") student=STUDENTS[idv];
   }
   if(!student){
+    try{mtcWrongId("")}catch(e){}
     alert("ID गलत है या इस Portal की ID नहीं है।");
     return;
   }
@@ -4655,7 +4656,7 @@ function mtcRedeemValue(v,st){
  if(__sh(v)===MTC_PW_H){var s2=Date.now();return {ok:1,g:{c:st[1],s:s2,u:s2+24*3600000,i:'all'}}}
  var g=mtcParseCode(v);
  if(g){if(g.u<=Date.now())return {err:'यह Code Expire हो चुका है।'};if(g.c!==st[1])return {err:'यह Code आपकी Class के लिए नहीं है।'};if(!mtcAllowed(g,id))return {err:'यह Code आपकी ID के लिए नहीं है।'};return {ok:1,g:g}}
- return {err:'Student ID सही नहीं है। कृपया अपनी खुद की Student ID डालें।'};
+ try{mtcWrongId(st&&st[0])}catch(e){}return {err:'Student ID सही नहीं है। कृपया अपनी खुद की Student ID डालें।'};
 }
 function snLockCard(t,subj,sec){var k=snEsc(t.k),title=snEsc(t.title);
  return '<div class="schoolTopicCard"><div class="schoolTopicHeader"> '+snEsc(subj)+' '+snEsc(sec)+'<br><span>'+snType(sec)+'-'+k+' '+title+'</span></div><div class="topicLockBox"><div class="topicLockIcon">&#128274;</div><h3>Topic Locked</h3><p>यह Topic Locked है। अपनी Student ID डालकर खुद Unlock करें — Unlock होने के बाद 24 घंटे तक खुला रहेगा।</p><label>अपनी Student ID डालें</label><input id="mtcCode_'+k+'" type="text" inputmode="numeric" placeholder="Student ID" autocomplete="off" onkeydown="if(event.key===\'Enter\')mtcRedeem(\''+k+'\')"><button onclick="mtcRedeem(\''+k+'\')">&#128275; Unlock</button><div id="snLockMsg_'+k+'" class="topicLockMsg"></div></div></div>'}
@@ -4783,7 +4784,7 @@ function redeem(sub,sec,k,val){
   if(!STUDENTS[id])return {err:'पहले Student ID से प्रवेश करें।'};
   var key=ck(sub,sec,k),all=Ls(KEY),rec=all[key],n=Date.now(),v=String(val||'').trim(),h=hoursFor(sub,sec,k);
   if(__sh(v)!==PWH){
-    if(v!==String(id))return {err:'Student ID सही नहीं है। अपनी खुद की ID डालें।'};
+    if(v!==String(id)){try{mtcWrongId((STUDENTS[id]||[])[0])}catch(e){}return {err:'Student ID सही नहीं है। अपनी खुद की ID डालें।'};}
     if(rec&&rec.used)return {err:'यह Chapter लॉक हो चुका है। दोबारा खोलने के लिए Admin Password चाहिए।'};
   }
   var s=day7(n),u=s+h*3600000;
@@ -6814,14 +6815,14 @@ function stepChoose(){
   var SC=['#d81b60','#6d4c41','#2e7d32','#1565c0','#ef6c00','#6a1b9a','#00838f','#c62828'];
   var CL=['4','5','6','7','8','9','10'];
   panel.innerHTML='<div id="mtcCkBox" class="cmp'+(t?' t':'')+'"><div class="ckTop">\u2705 '+(t?'Teacher \u091c\u093e\u0901\u091a \u091a\u093e\u0932\u0942 \u2022 '+esc(teacher):'Admin \u091c\u093e\u0901\u091a \u091a\u093e\u0932\u0942')+'</div>'+
-   '<div class="ckLbl">\U0001F4DA Class \u091a\u0941\u0928\u0947\u0902</div><div class="ckGrid c">'+CL.map(function(c,i){return '<button type="button" class="cc" data-c="'+c+'" style="background:'+CC[i]+'">Class '+c+'</button>'}).join('')+'</div>'+
-   '<div class="ckLbl">\U0001F4D6 Subject \u091a\u0941\u0928\u0947\u0902</div><div class="ckGrid s">'+SUBJ.map(function(x,i){return '<button type="button" class="cs" data-s="'+x[0]+'" style="background:'+SC[i%SC.length]+'">'+x[1]+'</button>'}).join('')+'</div>'+
+   '<div class="ckLbl">\uD83D\uDCDA Class \u091a\u0941\u0928\u0947\u0902</div><div class="ckGrid c">'+CL.map(function(c,i){return '<button type="button" class="cc" data-c="'+c+'" style="background:'+CC[i]+'">Class '+c+'</button>'}).join('')+'</div>'+
+   '<div class="ckLbl">\uD83D\uDCD6 Subject \u091a\u0941\u0928\u0947\u0902</div><div class="ckGrid s">'+SUBJ.map(function(x,i){return '<button type="button" class="cs" data-s="'+x[0]+'" style="background:'+SC[i%SC.length]+'">'+x[1]+'</button>'}).join('')+'</div>'+
    '<input type="hidden" id="mtcCkCls"><input type="hidden" id="mtcCkSub">'+
    '<div class="ckSel" id="mtcCkSel">Class \u0914\u0930 Subject \u091a\u0941\u0928\u0947\u0902</div>'+
-   '<div class="ckAct"><button type="button" class="go" id="mtcCkGo">\U0001F4D8 Notes \u0916\u094b\u0932\u0947\u0902</button><button type="button" class="cx" id="mtcCkCancel">\u2716 \u092c\u0902\u0926 \u0915\u0930\u0947\u0902</button></div>'+(t?'<button type="button" id="mtcCkTT" style="background:linear-gradient(135deg,#e65100,#f9a825)!important;margin:8px 0 2px!important">📅 Half Yearly Exam Time Table 2026-27</button>':'')+'<div id="mtcCkMsg"></div></div>';
+   '<div class="ckAct"><button type="button" class="go" id="mtcCkGo">\uD83D\uDCD8 Notes \u0916\u094b\u0932\u0947\u0902</button><button type="button" class="cx" id="mtcCkCancel">\u2716 \u092c\u0902\u0926 \u0915\u0930\u0947\u0902</button></div>'+(t?'<button type="button" id="mtcCkTT" style="background:linear-gradient(135deg,#e65100,#f9a825)!important;margin:8px 0 2px!important">📅 Half Yearly Exam Time Table 2026-27</button>':'')+'<div id="mtcCkMsg"></div></div>';
   function upd(){var c=$('mtcCkCls').value,s=$('mtcCkSub').value,n='';SUBJ.forEach(function(x){if(x[0]===s)n=x[1]});$('mtcCkSel').textContent=(c||s)?('Class '+(c||'?')+' \u2022 '+(n||'Subject ?')):'Class \u0914\u0930 Subject \u091a\u0941\u0928\u0947\u0902'}
   [].forEach.call(panel.querySelectorAll('button.cc'),function(b){b.onclick=function(){[].forEach.call(panel.querySelectorAll('button.cc'),function(x){x.classList.remove('sel')});b.classList.add('sel');$('mtcCkCls').value=b.getAttribute('data-c');upd()}});
-  [].forEach.call(panel.querySelectorAll('button.cs'),function(b){b.onclick=function(){[].forEach.call(panel.querySelectorAll('button.cs'),function(x){x.classList.remove('sel')});b.classList.add('sel');$('mtcCkSub').value=b.getAttribute('data-s');upd()}});
+  [].forEach.call(panel.querySelectorAll('button.cs'),function(b){b.onclick=function(){[].forEach.call(panel.querySelectorAll('button.cs'),function(x){x.classList.remove('sel')});b.classList.add('sel');$('mtcCkSub').value=b.getAttribute('data-s');var _g=$('mtcCkGo');if(_g){_g.style.setProperty('background',b.style.background,'important');_g.style.setProperty('background-image','none','important')}upd()}});
   $('mtcCkGo').onclick=go;$('mtcCkCancel').onclick=closePanel;var _tt=$('mtcCkTT');if(_tt)_tt.onclick=function(){if(typeof window.mtcShowExamTT==='function')window.mtcShowExamTT()};
 }
 function pickId(cls,sub){
@@ -7149,10 +7150,10 @@ window.schoolOpenTopic=function(si,k){
 </div></div>
 <script id="mtc-staff-script">
 function mtcOpenStaff(){var p=document.getElementById('mtcStaffPanel');if(p){p.classList.add('open');p.setAttribute('aria-hidden','false')}}
-var MTC_STAFF=[["M.S. Pathan Sir", "e9e72c7370d7d06cea9a2a49dc56e1ef45ef12cae6fce71c8ee7eae109eada18"], ["Guddi Madam", "19f3ef664e37e22e3b1968a6b916c416efcc39a449ce7c0cb6dae8e7c9f7af88"], ["Rajesh Sir", "d3508d08fb721a2a05f6ce9911c8d1fee0b934ab9c52831b80e59f7ef638bcfc"], ["Jitendra Malav Sir", "525e443e7c65a80110c47e44c097418c723af4ac8bfd981ebdf9ae4b950def27"], ["O.P. Verma Sir", "9123f2ddec45231af3a42f0ce86ff8b4a5b068b225db4257f1818bdf203ab9fc"], ["Mukesh Sir", "cb77e81bc4eb1886cfec869989b0664612f7e936a6e562051e91440355ef984b"], ["Mushahid Sir", "5e888ee65c13ef119aa25895180f010dffd91372d10e25cde1c67a94dbe064fc"], ["Noorfsha Madam", "206252bcd869639f940541fd0c6dba355226fbf2d17aec373eec565f82d42097"], ["Khushnuma Madam", "2ad8c22911528ec0d9ab308e87f95926f44f72dd665b1e50d2d7764305da9a13"], ["Kavita Madam", "6244d5013d3ea305a5e2dcc0440d5b1c421ad3c456f4bcfab367832e3612c13a"], ["Priya Madam", "02b84f519d598c433f8710950d40f7338255f2f176faf795d66334745cdc2bce"], ["Yashika Madam", "e6c23c6beae43e7cb659c49a2b0c598a58f947f297591fcf03976cb504d354af"], ["Sameer Sir", "0ef387047ace2e675be3d46c9947e38e904940fe0bdb70a44581f4a910099c01"]];var mtcStaffSel=-1;window.MTC_HASHNAME={"Yashika Madam":"Yashima Madam"};
+var MTC_STAFF=[["M.S. Pathan Sir", "e9e72c7370d7d06cea9a2a49dc56e1ef45ef12cae6fce71c8ee7eae109eada18"], ["Guddi Madam", "19f3ef664e37e22e3b1968a6b916c416efcc39a449ce7c0cb6dae8e7c9f7af88"], ["Rajesh Sir", "d3508d08fb721a2a05f6ce9911c8d1fee0b934ab9c52831b80e59f7ef638bcfc"], ["Jitendra Malav Sir", "525e443e7c65a80110c47e44c097418c723af4ac8bfd981ebdf9ae4b950def27"], ["O.P. Verma Sir", "ee52a1773cee4c844b4802d0187b6e3edf80f91efe758a0264eefd8a07a6d94f"], ["Mukesh Sir", "cb77e81bc4eb1886cfec869989b0664612f7e936a6e562051e91440355ef984b"], ["Mushahid Sir", "5e888ee65c13ef119aa25895180f010dffd91372d10e25cde1c67a94dbe064fc"], ["Noorfsha Madam", "206252bcd869639f940541fd0c6dba355226fbf2d17aec373eec565f82d42097"], ["Khushnuma Madam", "2ad8c22911528ec0d9ab308e87f95926f44f72dd665b1e50d2d7764305da9a13"], ["Kavita Madam", "6244d5013d3ea305a5e2dcc0440d5b1c421ad3c456f4bcfab367832e3612c13a"], ["Priya Madam", "02b84f519d598c433f8710950d40f7338255f2f176faf795d66334745cdc2bce"], ["Yashika Madam", "e6c23c6beae43e7cb659c49a2b0c598a58f947f297591fcf03976cb504d354af"], ["Sameer Sir", "0ef387047ace2e675be3d46c9947e38e904940fe0bdb70a44581f4a910099c01"]];var mtcStaffSel=-1;window.MTC_HASHNAME={"Yashika Madam":"Yashima Madam"};
 function mtcStaffBack(){mtcStaffSel=-1;var a=document.getElementById('mtcStaffIdBox'),g=document.getElementById('mtcStaffGrid'),b=document.getElementById('mtcStaffBtns'),h=document.querySelectorAll('#mtcStaffBox>h2,#mtcStaffBox>.stfSub');if(a)a.style.display='none';if(g)g.style.display='grid';if(b)b.style.display='grid';h.forEach(function(x){x.style.display=''});var m=document.getElementById('mtcStaffMsg');if(m)m.textContent=''}
 function mtcStaffPick(i){mtcStaffSel=i;var n=MTC_STAFF[i][0];var a=document.getElementById('mtcStaffIdBox'),g=document.getElementById('mtcStaffGrid'),b=document.getElementById('mtcStaffBtns'),h=document.querySelectorAll('#mtcStaffBox>h2,#mtcStaffBox>.stfSub');h.forEach(function(x){x.style.display='none'});if(g)g.style.display='none';if(b)b.style.display='none';if(a)a.style.display='block';document.getElementById('mtcStaffIdEm').textContent=/Madam/.test(n)?'👩‍🏫':'👨‍🏫';document.getElementById('mtcStaffIdNm').textContent=n;var inp=document.getElementById('mtcStaffIdIn');inp.value='';document.getElementById('mtcStaffMsg').textContent='';setTimeout(function(){try{inp.focus()}catch(e){}},80);inp.onkeydown=function(e){if(e.key==='Enter')mtcStaffCheck()}}
-function mtcStaffCheck(){var m=document.getElementById('mtcStaffMsg'),inp=document.getElementById('mtcStaffIdIn');var v=String(inp.value||'').trim();if(mtcStaffSel<0)return;if(!v){m.style.color='#c62828';m.textContent='❌ पहले ID डालें।';return}var n=MTC_STAFF[mtcStaffSel][0];var ok=false;try{ok=(__sh(((window.MTC_HASHNAME||{})[n]||n)+'|'+v)===MTC_STAFF[mtcStaffSel][1])}catch(e){}if(!ok){m.style.color='#c62828';m.textContent='❌ ID सही नहीं है।';inp.value='';return}mtcCloseStaff();mtcStaffBack();try{closePortalLanding()}catch(e){}if(typeof window.mtcStaffStart==='function'){window.mtcStaffStart(n)}else{alert('Staff access उपलब्ध नहीं है।')}}
+function mtcStaffCheck(){var m=document.getElementById('mtcStaffMsg'),inp=document.getElementById('mtcStaffIdIn');var v=String(inp.value||'').trim();if(mtcStaffSel<0)return;if(!v){m.style.color='#c62828';m.textContent='❌ पहले ID डालें।';return}var n=MTC_STAFF[mtcStaffSel][0];var ok=false;try{ok=(__sh(((window.MTC_HASHNAME||{})[n]||n)+'|'+v)===MTC_STAFF[mtcStaffSel][1])}catch(e){}if(!ok){m.style.color='#c62828';m.textContent='❌ ID सही नहीं है।';try{mtcWrongId(n)}catch(e){}inp.value='';return}mtcCloseStaff();mtcStaffBack();try{closePortalLanding()}catch(e){}if(typeof window.mtcStaffStart==='function'){window.mtcStaffStart(n)}else{alert('Staff access उपलब्ध नहीं है।')}}
 function mtcCloseStaff(){var p=document.getElementById('mtcStaffPanel');if(p){p.classList.remove('open');p.setAttribute('aria-hidden','true')}}
 function mtcStaffEnter(){mtcCloseStaff()}
 function mtcAddGateStaff(){
@@ -9899,6 +9900,7 @@ var TEACHER_RULES={
   "Yashika Madam":[{c:[4,5],x:["English","Computer"]}],
   "M.S. Pathan Sir":[{c:[0,10],s:["EVS","Hindi"]}]
 };
+window.MTC_TEACHER_RULES=TEACHER_RULES;
 function cnum(c){var p={"Nursery":0,"LKG":0,"HKG":0};return p.hasOwnProperty(c)?0:(parseInt(c,10)||0)}
 function allowed(sb,c){
   if(!sb||!staff)return false;var cc=(c===undefined?cls:c),n=cnum(cc);
@@ -11672,7 +11674,7 @@ function adminHook(){
     var go=function(){
       var v=String(($("tsGdIn")||{}).value||"").trim(),ok=false,L=window.MTC_STAFF||[];
       try{L.forEach(function(x){if(x[0]==="Guddi Madam"&&__sh("Guddi Madam|"+v)===x[1])ok=true})}catch(e){}
-      if(!ok){var m=$("tsGdMsg");m.style.color="#c62828";m.textContent="❌ ID सही नहीं है।";$("tsGdIn").value="";return}
+      if(!ok){var m=$("tsGdMsg");m.style.color="#c62828";m.textContent="❌ ID सही नहीं है।";try{mtcWrongId("Guddi Madam")}catch(e){}$("tsGdIn").value="";return}
       var lo=$("mtcAdminLoginOv");
       if(window.mtcCloseOv)window.mtcCloseOv("mtcAdminLoginOv");else if(lo)lo.classList.remove("open");
       window.mtcApOpen(true,"Guddi Madam");
@@ -12243,5 +12245,104 @@ function add(){var b=$("mtcCkBox");if(!b||!b.classList.contains("t")||b.querySel
  var ref=b.querySelector("#mtcCkTW")||b.querySelector(".ckAct");
  if(ref&&ref.parentNode)ref.parentNode.insertBefore(t,ref.nextSibling);else b.appendChild(t)}
 setInterval(add,400);
+})();
+</script>
+<script id="mtc-wrong-id-voice">
+window.mtcWrongId=function(name){try{
+ if(!('speechSynthesis' in window))return;
+ var n=String(name||'').trim();try{if(typeof HN!=='undefined'&&HN[n])n=HN[n]}catch(e){}
+ var t=(n?n+', ':'')+'आप अपनी आई डी गलत डाल रहे हो, कृपा सही आई डी डाले!';
+ var ss=window.speechSynthesis;ss.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='hi-IN';u.rate=.88;u.pitch=1;u.volume=1;
+ var v=ss.getVoices?ss.getVoices():[];u.voice=v.find(function(x){return /^hi(-|_)?IN$/i.test(x.lang)})||v.find(function(x){return /^hi/i.test(x.lang)})||null;
+ ss.speak(u);}catch(e){}};
+</script>
+<script id="mtc-worksheet-ticks">
+(function(){
+ if(window.__mtcWsInit)return;window.__mtcWsInit=1;
+ var COL='wsflags',LS='mtc_ws_flags_v1',FLAGS={},staff='',lastPull=0,busy=false,timer=null;
+ try{FLAGS=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){FLAGS={}}
+ function save(){try{localStorage.setItem(LS,JSON.stringify(FLAGS))}catch(e){}}
+ var SUBN={en:'English',hi:'Hindi',sc:'Science',ma:'Maths',ss:'S.St.','sa:s':'Sanskrit','sa:u':'Urdu',evs:'EVS'};
+ document.addEventListener('click',function(e){var b=e.target&&e.target.closest&&e.target.closest('#mtcCkGo');if(!b)return;
+  var c=document.getElementById('mtcCkCls'),s=document.getElementById('mtcCkSub');window.__wsSel={cls:c?c.value:'',sub:s?s.value:''}},true);
+ function teacherOn(){
+  if(!document.body.classList.contains('mtcTeacherCheckOn'))return false;
+  var R=window.MTC_TEACHER_RULES||{},rl=R[staff],sel=window.__wsSel||{},sb=SUBN[sel.sub],n=parseInt(sel.cls,10)||0;
+  if(!rl||!sb||!n)return false;
+  return rl.some(function(r){if(r.l||n<r.c[0]||n>r.c[1])return false;if(r.s)return r.s.indexOf(sb)>=0;if(r.x&&r.x.indexOf(sb)>=0)return false;return true})}
+ function who(){return staff||'Teacher'}
+ function hash(t){var h=5381,i;for(i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(36)+t.length.toString(36)}
+ function norm(el){var c=el.cloneNode(true);[].forEach.call(c.querySelectorAll('[data-ws-ui]'),function(x){x.remove()});
+  return (c.textContent||'').replace(/\s+/g,' ').replace(/^\s*(\(?[0-9]+[\.\)]|Q\.?\s*[0-9]+[\.\)]?)\s*/,'').trim().slice(0,160)}
+ var WS=/worksheet|वर्कशीट|अभ्यास\s*पत्र/i;
+ var HEAD='.nx-h,.dolTopic,.nx-title,h1,h2,h3,h4,summary';
+ var RESET='.nxRoot,.noteCard,details,.secBody,.schoolTopicCard';
+ function scan(root){
+  var out=[],state=false,grp=0,els=root.querySelectorAll('*'),i,el,t;
+  for(i=0;i<els.length;i++){
+   el=els[i];
+   if(el.hasAttribute('data-ws-ui')||el.closest('[data-ws-ui]'))continue;
+   if(el.matches(RESET)){state=false}
+   if(el.matches(HEAD)){t=(el.textContent||'').slice(0,160);state=WS.test(t);if(state)grp++;continue}
+   if(el.tagName==='B'||el.tagName==='STRONG'){t=(el.textContent||'').trim();if(t.length<90&&/^[^A-Za-zऀ-ॿ]*(quick\s+|practice\s+)?(worksheet|वर्कशीट)/i.test(t)){if(!state)grp++;state=true}continue}
+   if(!state)continue;
+   if(el.classList.contains('nx-q')||(el.tagName==='LI'&&el.parentNode&&el.parentNode.tagName==='OL'&&!(el.parentNode.parentNode&&el.parentNode.parentNode.closest&&el.parentNode.parentNode.closest('li,.nx-q')))){
+    if(el.closest('.nx-q')&&el.tagName==='LI')continue;
+    out.push({el:el,g:grp});
+   }
+  }
+  return out;
+ }
+ function keys(list,seen){list.forEach(function(o){var b=hash(norm(o.el)),n=(seen[b]=(seen[b]||0)+1);o.k='q'+b+(n>1?'_'+n:'')})}
+ function apply(){
+  if(busy)return;busy=true;
+  try{
+   var T=teacherOn(),roots=document.querySelectorAll('#specialNotesPanel,#dolBox,#dolNNResult'),seen={},gOn={};
+   var all=[];
+   [].forEach.call(roots,function(r){if(r.offsetParent===null&&getComputedStyle(r).display==='none')return;var l=scan(r);keys(l,seen);all=all.concat(l)});
+   all.forEach(function(o){var f=FLAGS[o.k];if(f&&f.on){var gk=o.el.closest('#specialNotesPanel,#dolBox,#dolNNResult').id+'|'+o.g;gOn[gk]=1}});
+   all.forEach(function(o){
+    var el=o.el,f=FLAGS[o.k],on=!!(f&&f.on),gk=el.closest('#specialNotesPanel,#dolBox,#dolNNResult').id+'|'+o.g;
+    el.setAttribute('data-ws-k',o.k);
+    el.classList.toggle('wsOn',on);
+    el.classList.toggle('wsOff',!on&&!!gOn[gk]&&!T);
+    var ui=el.querySelector(':scope>[data-ws-ui]');
+    if(T){
+     if(!ui){ui=document.createElement('label');ui.setAttribute('data-ws-ui','1');ui.className='wsTk';ui.contentEditable='false';
+      ui.innerHTML='<input type="checkbox"><span>करना है</span>';el.insertBefore(ui,el.firstChild);
+      ui.firstChild.addEventListener('click',function(e){e.stopPropagation()});
+      ui.addEventListener('click',function(e){e.stopPropagation()});
+      ui.firstChild.addEventListener('change',function(){setFlag(el.getAttribute('data-ws-k'),this.checked,norm(el))})}
+     ui.firstChild.checked=on;
+    }else if(ui){ui.remove()}
+   });
+  }catch(e){}
+  busy=false;
+ }
+ function setFlag(k,on,txt){
+  var rec={k:k,on:!!on,by:who(),at:new Date().toISOString(),text:txt.slice(0,60)};
+  FLAGS[k]=rec;save();apply();
+  try{if(window.mtcFsQueue)window.mtcFsQueue(COL,k,rec)}catch(e){}
+ }
+ function pull(force){
+  var n=Date.now();if(!force&&n-lastPull<30000)return;lastPull=n;
+  if(typeof window.mtcFsPullCol!=='function')return;
+  try{window.mtcFsPullCol(COL).then(function(a){
+   var ch=false;(a||[]).forEach(function(d){if(!d||!d.k)return;var o=FLAGS[d.k];if(!o||String(o.at||'')<=String(d.at||'')){if(!o||o.on!==d.on){ch=true}FLAGS[d.k]=d}});
+   if(ch){save();apply()}
+  }).catch(function(){})}catch(e){}
+ }
+ function sched(){clearTimeout(timer);timer=setTimeout(function(){apply();pull(false)},250)}
+ var st=document.createElement('style');
+ st.textContent='.wsTk{display:inline-flex;align-items:center;gap:6px;margin:0 8px 4px 0;padding:3px 10px;border-radius:14px;background:#e8f5e9;border:2px solid #2e7d32;color:#1b5e20!important;font:900 14px/1.2 sans-serif;vertical-align:middle;cursor:pointer}.wsTk input{width:20px;height:20px;accent-color:#2e7d32}'
+  +'.wsOn{border-left:6px solid #2e7d32!important;background:#f1fbf2!important;border-radius:8px;padding-left:8px!important}.wsOn::before{content:"✅ यह करना है";display:inline-block;margin:0 8px 4px 0;padding:2px 10px;border-radius:12px;background:#2e7d32;color:#fff;font:900 13px/1.4 sans-serif}.wsOff{opacity:.5}';
+ document.head.appendChild(st);
+ var _s=window.mtcStaffStart;
+ window.mtcStaffStart=function(n){staff=String(n||'');return typeof _s==='function'?_s.apply(this,arguments):undefined};
+ var mo=new MutationObserver(function(m){if(busy)return;for(var i=0;i<m.length;i++){var t=m[i].target;if(t.nodeType===1&&t.closest&&t.closest('[data-ws-ui]'))continue;if(m[i].type==='attributes'&&m[i].target!==document.body)continue;sched();return}});
+ mo.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});
+ window.addEventListener('online',function(){pull(true)});
+ setTimeout(function(){pull(true);apply()},1500);
+ window.mtcWsApply=apply;
 })();
 </script>
