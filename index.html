@@ -11349,7 +11349,6 @@ hook();setInterval(hook,1000);
 
 <button type="button" id="mtcDrFab" onclick="mtcDrOpen()">📒 Daily Register</button>
 <button type="button" id="mtcTsFab" onclick="mtcTsOpen()">✍️ Teacher Sign Register</button>
-<button type="button" id="mtcApFab" onclick="mtcApOpen(true,'Guddi Madam')">✅ Sign Approval</button>
 
 <div id="mtcDr" aria-hidden="true"><div class="pb">
 <h3>📒 Daily Present Register</h3>
@@ -11377,7 +11376,7 @@ hook();setInterval(hook,1000);
 <canvas id="mtcTsCv" width="480" height="150"></canvas>
 <div class="pbtns">
 <button type="button" style="background:#757575" onclick="mtcTsClear()">🧹 Sign मिटाएँ</button>
-<button type="button" class="w" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="mtcTsSave()">📨 Sign करके Guddi Madam को Approval के लिए भेजें</button>
+<button type="button" class="w" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" onclick="mtcTsSave()">📨 Sign करके Approval के लिए भेजें</button>
 <button type="button" class="w" style="background:#c62828" onclick="mtcTsClose()">✖ बंद करें</button>
 </div>
 <div class="pmsg" id="mtcTsMsg"></div>
@@ -11388,7 +11387,7 @@ hook();setInterval(hook,1000);
 <div class="pbs" id="mtcApWho"></div>
 <input type="date" id="mtcApDate">
 <div class="psum" id="mtcApSum" style="background:#fce4ec;border-color:#f48fb1;color:#ad1457"></div>
-<div id="mtcApSignBox"><div style="font-weight:900;color:#ad1457;margin-bottom:4px">✍️ Approval देने से पहले यहाँ अपनी Sign करें (Guddi Madam)</div><canvas id="mtcApCv" width="480" height="150"></canvas><button type="button" onclick="mtcApPadClear()" style="margin-top:6px;padding:8px 14px;border:0;border-radius:8px;background:#757575;color:#fff;font-weight:800">🧹 Sign मिटाएँ</button></div>
+<div id="mtcApSignBox"><div style="font-weight:900;color:#ad1457;margin-bottom:4px">✍️ Approval देने से पहले यहाँ अपनी Sign करें (M.S. Pathan Sir)</div><canvas id="mtcApCv" width="480" height="150"></canvas><button type="button" onclick="mtcApPadClear()" style="margin-top:6px;padding:8px 14px;border:0;border-radius:8px;background:#757575;color:#fff;font-weight:800">🧹 Sign मिटाएँ</button></div>
 <div id="mtcApList"></div>
 <div class="pbtns">
 <button type="button" class="w" id="mtcApAllBtn" style="background:linear-gradient(135deg,#1b5e20,#43a047)" onclick="mtcApAll()">✅ सभी Pending को OK करें</button>
@@ -11515,8 +11514,8 @@ function tsInit(){
 function tsStatus(){
   var r=S[tsId(today(),staff)],b=$("mtcTsSt");
   if(!r){b.className="tsst n";b.textContent="आज की Sign अभी नहीं हुई।"}
-  else if(r.status==="approved"){b.className="tsst o";b.innerHTML="✅ Approved — "+esc(r.approvedBy||"Guddi Madam")+" ("+esc(dt(r.approvedAt))+")"+(okSig(r.signature)?'<img src="'+r.signature+'" alt="sign">':"")+(okSig(r.approverSignature)?'<img src="'+r.approverSignature+'" alt="approval sign">':"")}
-  else{b.className="tsst p";b.innerHTML="⏳ Approval Pending — Guddi Madam के पास भेजी गई ("+esc(dt(r.signedAt))+")"+(okSig(r.signature)?'<img src="'+r.signature+'" alt="sign">':"")}
+  else if(r.status==="approved"){b.className="tsst o";b.innerHTML="✅ Approved — "+esc(r.approvedBy||"M.S. Pathan Sir")+" ("+esc(dt(r.approvedAt))+")"+(okSig(r.signature)?'<img src="'+r.signature+'" alt="sign">':"")+(okSig(r.approverSignature)?'<img src="'+r.approverSignature+'" alt="approval sign">':"")}
+  else{b.className="tsst p";b.innerHTML="⏳ Approval Pending — M.S. Pathan Sir के पास भेजी गई ("+esc(dt(r.signedAt))+")"+(okSig(r.signature)?'<img src="'+r.signature+'" alt="sign">':"")}
 }
 window.mtcTsOpen=function(){
   if(!staff){alert("पहले Staff Login करें।");return}
@@ -11526,7 +11525,7 @@ window.mtcTsOpen=function(){
   setMsg("mtcTsMsg","",true);tsStatus();show("mtcTs");
   tsPull().then(tsStatus);
 };
-window.mtcTsClose=function(){hide("mtcTs");if(apCan&&staff==="Guddi Madam")window.mtcApOpen(true,"Guddi Madam")};
+window.mtcTsClose=function(){hide("mtcTs")};
 window.mtcTsClear=function(){tsInit();cx.clearRect(0,0,cv.width,cv.height);inked=false};
 window.mtcTsSave=function(){
   var d=today(),id=tsId(d,staff),old=S[id];
@@ -11534,7 +11533,7 @@ window.mtcTsSave=function(){
   if(!inked){setMsg("mtcTsMsg","✍️ पहले ऊपर Sign करें।",false);return}
   var rec={date:d,staff:staff,signature:cv.toDataURL("image/png"),signedAt:new Date().toISOString(),status:"pending"};
   S[id]=rec;lsSet(SK,S);window.mtcTsClear();tsStatus();
-  var t="✅ Sign हो गई — Guddi Madam के Approval के लिए भेज दी।";
+  var t="✅ Sign हो गई — M.S. Pathan Sir के Approval के लिए भेज दी।";
   setMsg("mtcTsMsg",t,true);sendFs("teacher_sign",id,rec,t,"mtcTsMsg");
 };
 
@@ -11568,7 +11567,7 @@ function apRender(){
   $("mtcApList").innerHTML=h;
   $("mtcApSum").textContent="📅 "+dmy(d)+"   |   ✅ Approved: "+o+"   |   ⏳ Pending: "+p+"   |   ⚪ बाकी: "+n;
   $("mtcApSignBox").style.display=apCan?"block":"none";$("mtcApAllBtn").style.display=apCan?"block":"none";$("mtcApMineBtn").style.display=apCan?"block":"none";
-  $("mtcApWho").textContent=apCan?"👩‍💼 Approver: "+apWho:"👁️ सिर्फ़ देखने के लिए (Approval Guddi Madam करेंगी)";
+  $("mtcApWho").textContent=apCan?"👩‍💼 Approver: "+apWho:"👁️ सिर्फ़ देखने के लिए (Approval M.S. Pathan Sir करेंगे)";
 }
 window.mtcApOpen=function(can,who){
   apCan=!!can;apWho=who||"";
@@ -11588,11 +11587,11 @@ window.mtcApDel=function(i){
   if(typeof window.mtcFsDelete!=="function"){done(false);return}
   window.mtcFsDelete("teacher_sign",id).then(done);
 };
-window.mtcApMine=function(){staff="Guddi Madam";hide("mtcAp");window.mtcTsOpen()};
+window.mtcApMine=function(){staff=apWho||"M.S. Pathan Sir";hide("mtcAp");window.mtcTsOpen()};
 window.mtcApRefresh=function(){setMsg("mtcApMsg","⏳ ताज़ा हो रहा है…",true);tsPull().then(function(){apRender();setMsg("mtcApMsg","✅ ताज़ा हो गया।",true)})};
 function approve(nm,d,asig){
   var id=tsId(d,nm),r=S[id];if(!r||r.status!=="pending")return false;
-  r.status="approved";r.approvedBy=apWho||"Guddi Madam";r.approvedAt=new Date().toISOString();r.approverSignature=asig;S[id]=r;lsSet(SK,S);
+  r.status="approved";r.approvedBy=apWho||"M.S. Pathan Sir";r.approvedAt=new Date().toISOString();r.approverSignature=asig;S[id]=r;lsSet(SK,S);
   if(typeof window.mtcFsQueue==="function")window.mtcFsQueue("teacher_sign",id,{date:r.date,staff:r.staff,signature:r.signature,signedAt:r.signedAt,status:"approved",approvedBy:r.approvedBy,approvedAt:r.approvedAt,approverSignature:asig});
   return true;
 }
@@ -11617,13 +11616,6 @@ window.mtcStaffStart=function(n){
   if(r&&myClasses().length)r.classList.add("show");
   guddiSess=false;
   var r2=typeof prevStart==="function"?prevStart.apply(this,arguments):undefined;
-  /* Guddi Madam के Staff login में Teacher जाँच नहीं खुलेगी — सीधे Sign Approval खुलेगा */
-  if(staff==="Guddi Madam"){
-    guddiSess=true;
-    try{if(window.mtcCloseAdminCheck)window.mtcCloseAdminCheck()}catch(e){}
-    ["mtcDrFab","mtcTsFab","mtcApFab"].forEach(function(i){var e=$(i);if(e)e.classList.remove("show")});
-    window.mtcApOpen(true,"Guddi Madam");
-  }
   return r2;
 };
 
@@ -11634,7 +11626,7 @@ function adminHook(){
     var bx=dash.querySelector(".lstBox");
     if(bx&&!bx.querySelector(".tsAdmBtn")&&/Admin MTC/.test((bx.querySelector("h2")||{}).textContent||"")){
       var b=document.createElement("button");b.type="button";b.className="admBtn tsAdmBtn";b.style.background="linear-gradient(135deg,#d81b60,#f06292)";b.textContent="✍️ Teacher Sign Register देखें";
-      b.onclick=function(){dash.classList.remove("open");window.mtcApOpen(false,"")};
+      b.onclick=function(){dash.classList.remove("open");window.mtcApOpen(true,"M.S. Pathan Sir")};
       bx.insertBefore(b,bx.querySelector(".lstX"));
     }
   }
@@ -11646,7 +11638,7 @@ function adminHook(){
       var mb=lb.querySelector("button.admBtn");
       if(mb&&!mb.querySelector(".mtcAdmNames")){
         var sp=document.createElement("div");sp.className="mtcAdmNames";sp.style.cssText="font-size:13px;font-weight:800;margin-top:3px";
-        sp.textContent="M.S. Pathan Sir  •  Guddi Madam";mb.appendChild(sp);
+        sp.textContent="M.S. Pathan Sir";mb.appendChild(sp);
       }
     }
   }
@@ -11671,7 +11663,7 @@ function adminHook(){
     setTimeout(function(){try{$("tsGdIn").focus()}catch(e){}},80);
   }
   window.mtcAdminPick=function(kind,direct){
-    if(kind!=="mtc"||direct)return orig.apply(this,arguments);
+    return orig.apply(this,arguments);
     orig.call(this,"mtc");
     var lo=$("mtcAdminLoginOv"),lb=lo&&lo.querySelector(".lstBox");if(!lb)return;
     var logo=lb.querySelector("img"),logoHtml=logo?'<div style="text-align:center">'+logo.parentNode.innerHTML+'</div>':'<div style="text-align:center;font-size:40px">🏫</div>';
@@ -12036,9 +12028,13 @@ function stopCam(){if(stream){try{stream.getTracks().forEach(function(t){t.stop(
 function startCam(){
   stopCam();var v=$("mtcPhVid");if(!v)return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){msg("⚠️ इस Browser में Live Camera नहीं है — '🖼️ Camera App' से फोटो लें।");return}
-  navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:960}},audio:false}).then(function(s){
-    stream=s;v.srcObject=s;v.play&&v.play().catch(function(){});msg("");
-  }).catch(function(){msg("⚠️ Camera नहीं खुला। Permission दें या '🖼️ Camera App' से फोटो लें।")});
+  var tries=[{video:{facingMode:{ideal:facing},width:{ideal:1280},height:{ideal:960}},audio:false},{video:{facingMode:{ideal:facing}},audio:false},{video:true,audio:false}],ti=0,lastErr=null,inApp=/; wv\)|FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(navigator.userAgent||"");
+  function fail(){var n=(lastErr&&lastErr.name)||"";
+    msg(n==="NotAllowedError"||n==="SecurityError"?"⚠️ Camera की Permission बंद है। Browser में इस Site को Camera Allow करें"+(inApp?" (या link को Chrome में खोलें)":"")+", या '🖼️ Camera App' से फोटो लें।":n==="NotFoundError"?"⚠️ Camera नहीं मिला। '🖼️ Camera App' से फोटो लें।":n==="NotReadableError"?"⚠️ Camera किसी दूसरे App में चालू है। उसे बंद करके 🔄 दबाएँ, या '🖼️ Camera App' से फोटो लें।":"⚠️ Camera नहीं खुला"+(inApp?" — link को Chrome में खोलें, या":" —")+" '🖼️ Camera App' से फोटो लें।")}
+  function go(){if(ti>=tries.length){fail();return}
+    navigator.mediaDevices.getUserMedia(tries[ti++]).then(function(s){stream=s;v.srcObject=s;var pl=v.play&&v.play();if(pl&&pl.catch)pl.catch(function(){});msg("")}).catch(function(e){lastErr=e;if(e&&(e.name==="NotAllowedError"||e.name==="SecurityError"))ti=tries.length;go()})}
+  if(window.isSecureContext===false){msg("⚠️ Camera सिर्फ़ https (सुरक्षित) link पर चलता है। '🖼️ Camera App' से फोटो लें।");return}
+  go();
 }
 function toData(src,w,h){
   var cv=document.createElement("canvas"),tw=300,th=375;cv.width=tw;cv.height=th;var cx=cv.getContext("2d");
@@ -12153,4 +12149,75 @@ html body #mtcCkBox #mtcCkTW{display:block;width:100%;margin:8px 0 2px!important
 </style>
 <script id="mtc-c8-staffbtn">
 (function(){function add(){var b=document.getElementById("mtcCkBox");if(!b||!b.classList.contains("t")||b.querySelector("#mtcCkTW"))return;var t=document.createElement("button");t.type="button";t.id="mtcCkTW";t.textContent="\uD83E\uDE9F TEST WINDOW";t.onclick=function(e){e.stopPropagation();if(typeof window.openTestWindowGuarded==="function")window.openTestWindowGuarded("hub")};var act=b.querySelector(".ckAct");if(act&&act.parentNode)act.parentNode.insertBefore(t,act.nextSibling);else b.appendChild(t)}setInterval(add,400)})();
+</script>
+<script id="mtc-c10-sk-sci-index">
+(function(){
+var SK=[["h","शेमुषी — द्वितीयो भागः"],["मङ्गलम्","1"],["प्रथमः पाठः — शुचिपर्यावरणम्","2–14"],["द्वितीयः पाठः — बुद्धिर्बलवती सदा","15–23"],["तृतीयः पाठः — शिशुलालनम्","24–37"],["चतुर्थः पाठः — जननी तुल्यवत्सला","38–48"],["पञ्चमः पाठः — सुभाषितानि","49–64"],["षष्ठः पाठः — सौहार्दं प्रकृतेः शोभा","65–84"],["सप्तमः पाठः — विचित्रः साक्षी","85–96"],["अष्टमः पाठः — सूक्तयः","97–107"],["नवमः पाठः — भूकम्पविभीषिका","108–116"],["दशमः पाठः — अन्योक्तयः","117–127"],["h","अपठित-अवबोधनम्"],["80–100 शब्दपरिमिताः सरल-गद्यांशाः","128–145"],["h","रचनात्मकं कार्यम्"],["1. प्रार्थनापत्रं / आत्मीयजनान् प्रति अनौपचारिकं पत्रलेखनम्","146–177"],["2. चित्राधारितं वर्णनम्","178–195"],["3. संकेताधारितम् संवादलेखनम्","196–220"],["4. अनुवाद-कार्यम् (हिन्दी वाक्यों का संस्कृत में अनुवाद)","221–237"],["5. घटनाक्रमस्य संयोजनम्","238–249"],["6. संकेताधारितम् अनुच्छेद-लेखनम्","250–257"],["h","अनुप्रयुक्त-व्याकरणम्"],["(i) सन्धिकार्यम्","258–278"],["(ii) समासः","278–296"],["(iii) कारकाणि","296–315"],["(iv) प्रत्ययज्ञानम्","315–332"],["(v) अव्ययपदानि","332–344"],["(vi) वाच्यपरिवर्तनम्","344–357"],["(vii) समयलेखनम्","357–366"],["(viii) अशुद्धि-संशोधनम्","367–378"]];
+var SC=[["h","Class 10 Science — विषय-सूची"],["1. रासायनिक अभिक्रियाएँ एवं समीकरण (Chemical Reactions and Equations)","1–31"],["2. अम्ल, क्षारक एवं लवण (Acids, Bases and Salts)","32–62"],["3. धातु एवं अधातु (Metals and Non-metals)","63–93"],["4. कार्बन एवं उसके यौगिक (Carbon and its Compounds)","94–132"],["5. जैव प्रक्रम (Life Processes)","133–170"],["6. नियंत्रण एवं समन्वय (Control and Coordination)","171–199"],["7. जीव जनन कैसे करते हैं (How do Organisms Reproduce)","200–230"],["8. आनुवंशिकता (Heredity)","231–253"],["9. प्रकाश—परावर्तन तथा अपवर्तन (Light—Reflection and Refraction)","254–307"],["10. मानव नेत्र तथा रंग-बिरंगा संसार (The Human Eye and Colourful World)","308–329"],["11. विद्युत (Electricity)","330–379"],["12. विद्युत धारा के चुम्बकीय प्रभाव (Magnetic Effects of Electric Current)","380–400"],["13. हमारा पर्यावरण (Our Environment)","401–424"]];
+function pg(x){return String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function build(title,sub,rows,c){
+ var h='<div style="font-family:Arial,sans-serif"><div style="padding:16px;border-radius:16px;color:#fff;text-align:center;font-weight:900;font-size:22px;background:linear-gradient(120deg,'+c[0]+','+c[1]+');margin:8px 0 14px">'+pg(title)+'<div style="font-size:14px;margin-top:4px">'+pg(sub)+'</div></div>';
+ rows.forEach(function(r){
+  if(r[0]==="h"){h+='<div style="background:#fff176;color:#b71c1c;border:3px solid #e65100;border-radius:10px;padding:9px 12px;margin:14px 0 6px;font-weight:900;font-size:18px">'+pg(r[1])+'</div>';return}
+  h+='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;background:#f3e5f5;border-left:7px solid '+c[0]+';border-radius:10px;padding:11px 13px;margin:7px 0;font-weight:800;font-size:17px;color:#1b1b2f"><span>'+pg(r[0])+'</span><span style="white-space:nowrap;color:#4a148c;font-size:14px">पृ. '+pg(r[1])+'</span></div>';
+ });
+ return h+'</div>';
+}
+var prev=window.getSpecialNotesSubject;
+window.getSpecialNotesSubject=function(id,subjectName){
+ var S=(typeof STUDENTS!=="undefined"?STUDENTS:window.STUDENTS),st=S&&S[id];
+ if(st&&st[1]==="10th"){
+  if(subjectName==="Science")return build("🔬 Class 10 Science","विषय-सूची",SC,["#2e7d32","#1565c0"]);
+  if(subjectName==="संस्कृत / उर्दू"&&["31","33"].indexOf(id)<0)return build("📜 Class 10 संस्कृत","शेमुषी — द्वितीयो भागः • विषय-सूची",SK,["#e65100","#7b1fa2"]);
+ }
+ return prev?prev.apply(this,arguments):null;
+};
+})();
+</script>
+<script id="mtc-idroll-check">
+(function(){
+function $(i){return document.getElementById(i)}
+function ST(){try{return STUDENTS}catch(e){return {}}}
+function RL(){return window.MTC_ROLL||{}}
+function esc(x){return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function ids(){var S=ST();return Object.keys(S).filter(function(k){return /^\d{1,3}$/.test(k)&&S[k][1]&&!/^(admin|staff|teacher)$/i.test(String(S[k][1]))})}
+var PRE={"Nursery":-3,"LKG":-2,"HKG":-1};
+function rank(c){return PRE.hasOwnProperty(c)?PRE[c]:(parseInt(c,10)||99)}
+function classes(){var o={};ids().forEach(function(k){o[ST()[k][1]]=1});return Object.keys(o).sort(function(a,b){return rank(a)-rank(b)})}
+function card(k){var S=ST(),r=RL()[k];return '<div style="background:#f3e5f5;border-left:7px solid #7b1fa2;border-radius:10px;padding:10px 12px;margin:7px 0;font-weight:800;color:#1b1b2f;font-size:17px">'+esc(S[k][0])+'<br><span style="font-size:15px;color:#4a148c">Class '+esc(S[k][1])+' • ID <b style="font-size:20px">'+esc(k)+'</b> • Roll No. <b style="font-size:20px">'+esc(r==null||r===""?"—":r)+'</b></span></div>'}
+function build(){
+ if($("mtcIR"))return;
+ var o=document.createElement("div");o.id="mtcIR";
+ o.style.cssText="display:none;position:fixed;inset:0;z-index:2147483600;background:#000a;overflow:auto;padding:14px;box-sizing:border-box";
+ var inp="width:100%;box-sizing:border-box;padding:13px;font-size:20px;font-weight:900;border:3px solid #7b1fa2;border-radius:12px;margin:6px 0;text-align:center";
+ o.innerHTML='<div style="max-width:460px;margin:0 auto;background:#fff;border-radius:18px;border:4px solid #7b1fa2;padding:14px;font-family:Arial,sans-serif">'
+ +'<div style="text-align:center;font-size:22px;font-weight:900;color:#4a148c">🔎 ID ↔ Roll No. जाँच</div>'
+ +'<div style="font-weight:900;color:#7b1fa2;margin-top:12px">1) Student ID डालें → Roll No. देखें</div>'
+ +'<input id="mtcIRid" type="tel" inputmode="numeric" maxlength="4" placeholder="Student ID" style="'+inp+'"><div id="mtcIRa"></div>'
+ +'<div style="font-weight:900;color:#7b1fa2;margin-top:12px">2) Class चुनें + Roll No. डालें → ID देखें</div>'
+ +'<select id="mtcIRc" style="'+inp+'"></select>'
+ +'<input id="mtcIRr" type="tel" inputmode="numeric" maxlength="3" placeholder="Roll No." style="'+inp+'"><div id="mtcIRb"></div>'
+ +'<button type="button" id="mtcIRx" style="width:100%;margin-top:10px;padding:13px;border:0;border-radius:12px;background:#757575;color:#fff;font-size:18px;font-weight:900">✖ बंद करें</button></div>';
+ document.body.appendChild(o);
+ $("mtcIRc").innerHTML=classes().map(function(c){return '<option value="'+esc(c)+'">Class '+esc(c)+'</option>'}).join("");
+ function byId(){var v=($("mtcIRid").value||"").replace(/\D/g,"");$("mtcIRid").value=v;var S=ST(),k=S[v]?v:(S[("0"+v)]?("0"+v):"");
+  $("mtcIRa").innerHTML=!v?"":(k&&ids().indexOf(k)>=0?card(k):'<div style="color:#c62828;font-weight:900">❌ यह ID नहीं मिली।</div>')}
+ function byRoll(){var v=($("mtcIRr").value||"").replace(/\D/g,"");$("mtcIRr").value=v;var c=$("mtcIRc").value,n=parseInt(v,10);
+  if(!v){$("mtcIRb").innerHTML="";return}
+  var f=ids().filter(function(k){return ST()[k][1]===c&&parseInt(RL()[k],10)===n});
+  $("mtcIRb").innerHTML=f.length?f.map(card).join(""):'<div style="color:#c62828;font-weight:900">❌ Class '+esc(c)+' में Roll No. '+esc(v)+' नहीं मिला।</div>'}
+ $("mtcIRid").oninput=byId;$("mtcIRr").oninput=byRoll;$("mtcIRc").onchange=byRoll;
+ $("mtcIRx").onclick=function(){o.style.display="none"};
+}
+window.mtcIROpen=function(){build();var o=$("mtcIR");o.style.display="block";$("mtcIRid").value="";$("mtcIRr").value="";$("mtcIRa").innerHTML="";$("mtcIRb").innerHTML="";setTimeout(function(){try{$("mtcIRid").focus()}catch(e){}},80)};
+var st=document.createElement("style");
+st.textContent='html body #mtcCkBox #mtcCkIR{display:block;width:100%;margin:8px 0 2px!important;background:linear-gradient(135deg,#4a148c,#7b1fa2,#ab47bc)!important;color:#fff!important;font-size:21px!important;font-weight:1000!important;padding:17px 6px!important;border:3px solid #fff!important;border-radius:16px;box-shadow:0 5px 14px #4a148caa!important;-webkit-text-stroke:.5px #fff}';
+document.head.appendChild(st);
+function add(){var b=$("mtcCkBox");if(!b||!b.classList.contains("t")||b.querySelector("#mtcCkIR"))return;
+ var t=document.createElement("button");t.type="button";t.id="mtcCkIR";t.textContent="\uD83D\uDD0E ID \u2194 ROLL NO. \u091C\u093E\u0901\u091A";
+ t.onclick=function(e){e.stopPropagation();window.mtcIROpen()};
+ var ref=b.querySelector("#mtcCkTW")||b.querySelector(".ckAct");
+ if(ref&&ref.parentNode)ref.parentNode.insertBefore(t,ref.nextSibling);else b.appendChild(t)}
+setInterval(add,400);
+})();
 </script>
